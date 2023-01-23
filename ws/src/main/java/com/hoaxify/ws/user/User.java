@@ -12,7 +12,7 @@ import lombok.Data;
 public class User {
 
  @Id
- @GeneratedValue
+ @GeneratedValue()
  private Long id;	
 	
  private String username;
