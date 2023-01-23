@@ -21,15 +21,15 @@ state = {
     onClickSignUp = event => {
       event.preventDefault()
 
+      const { username , displayName , password } = this.state;
+
        const body =  {
-
-        username: this.state.username ,
-        displayName :this.state.displayName ,
-        password: this.state.password  
-
+        username,
+        displayName,
+        password 
        }
 
-       axios.post('http://localhost:8080/api/1.0/users',body)
+       axios.post('/api/1.0/users',body)
     }
     
     render(){
