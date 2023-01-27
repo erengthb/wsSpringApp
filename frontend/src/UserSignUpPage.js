@@ -34,32 +34,33 @@ state = {
     
     render(){
         return (
-         <form>
-              <h1> Sign Up</h1>
-                
-                <div>
+        <div className = "container">
+          <form>
+              <h1 className ="text-center mt-3"> Sign Up</h1>               
+                <div className ="form-group">
                 <label>User Name</label>
-                  <input name="username" onChange={this.onChange}/>
+                  <input className = "form-control" name="username" onChange={this.onChange}/>
                 </div>             
                
-                <div>
+                <div className ="form-group">
                 <label>Display  Name</label>
-                  <input name="displayName" onChange= { this.onChange}/>
+                  <input className = "form-control" name="displayName" onChange= { this.onChange}/>
                 </div>
                 
-                <div>
+                <div className ="form-group">
                 <label>Password</label>
-                  <input name="password" type ="password" onChange = {this.onChange}/>
+                  <input className = "form-control" name="password" type ="password" onChange = {this.onChange}/>
                 </div>
                 
-                <div>
+                <div className ="form-group">
                 <label>Password Repeat</label>
-                  <input name="passwordRepeat" type ="password" onChange = {this.onChange}/>
+                  <input className = "form-control" name="passwordRepeat" type ="password" onChange = {this.onChange}/>
                 </div>          
-               
-                <button onClick={this.onClickSignUp}> Sign Up</button>          
-       
-         </form>        
+                <div className = "text-center">
+                <button  className= "btn btn-primary" onClick={this.onClickSignUp}> Sign Up</button>          
+                </div>
+          </form> 
+        </div>       
         );
     }
 }
