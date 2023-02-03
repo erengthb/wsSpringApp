@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hoaxify.ws.shared.GenericResponse;
 
 import error.ApiError;
+import jakarta.validation.Valid;
 
 @RestController
 public class UserController {
@@ -28,7 +29,7 @@ public class UserController {
 	
 	
 	@PostMapping("/api/1.0/users")	
-	public  ResponseEntity<?> createUser(@RequestBody User user ) {
+	public  ResponseEntity<?> createUser(@Valid @RequestBody User user ) {
 		
 		ApiError error = new ApiError(400,"Validation Error","/api/1.0/users");
 		
