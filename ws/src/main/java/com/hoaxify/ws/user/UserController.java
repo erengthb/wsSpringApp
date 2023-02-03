@@ -44,7 +44,7 @@ public class UserController {
 		}					
 	    if(displayName == null || displayName.isEmpty()) {
 					
-			validationErrors.put("displayName", " cannot be null");
+			validationErrors.put("displayName", "Display Name cannot be null");
 			error.setValidationErrors(validationErrors);			
 			
 		}
