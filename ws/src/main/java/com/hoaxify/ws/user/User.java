@@ -1,6 +1,7 @@
 package com.hoaxify.ws.user;
 
 
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -21,6 +22,7 @@ public class User {
 	
  @NotBlank
  @Size(min = 4 , max = 255)
+ @UniqueUsername
  private String username;
  
  @NotBlank

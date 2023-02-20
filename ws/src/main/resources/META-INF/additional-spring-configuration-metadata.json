@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "spirnt.jpa.properties.jakarta.persistance.validation.mode",
+  "type": "java.lang.String",
+  "description": "A description for 'spirnt.jpa.properties.jakarta.persistance.validation.mode'"
+}]}
