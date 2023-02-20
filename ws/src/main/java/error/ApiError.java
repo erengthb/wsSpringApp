@@ -18,7 +18,7 @@ public class ApiError {
 	
 	private Map<String , String> validationErrors;
 	
-	public ApiError(int stats , String essage , String path) {
+	public ApiError(int status , String message , String path) {
 		this.status=status;
 		this.message = message ;
 		this.path= path ;
