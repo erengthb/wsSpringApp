@@ -1,5 +1,7 @@
 package com.hoaxify.ws.user;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,6 +33,8 @@ public class UserController {
 	@PostMapping("/api/1.0/users")	
 	public GenericResponse createUser(@Valid @RequestBody User user ) {
 		
+		
+		
 		userService.save(user);
 	
 		return new GenericResponse("user created");
@@ -57,6 +61,7 @@ public class UserController {
 		return error;
 		
 	}
+	
 	
 
 }

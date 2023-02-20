@@ -29,7 +29,8 @@ public class User {
  
  @NotBlank
  @Pattern(regexp="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$")
- @Size(min = 8 , max = 30)
+ @Size(min = 8 , max = 100)
  private String password;
 	
+ private String createDate;
 }

@@ -1,6 +1,9 @@
 package com.hoaxify.ws.user;
 
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,8 +25,18 @@ public class UserService {
 
 
 	public void save( User user ) {	
+		user.setCreateDate(getCreateDate());
 		user.setPassword(this.passwordEncoder.encode(user.getPassword()));
 		userRepository.save(user);
 		
 	}
+	
+	// bu metodu daha sonra core package sinin içine alacağız
+    public static String getCreateDate () {	
+		Date  now = new Date ();   
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); 
+	    String day = dateFormat.format(now);
+	    return day;
+	}
+	
 }
