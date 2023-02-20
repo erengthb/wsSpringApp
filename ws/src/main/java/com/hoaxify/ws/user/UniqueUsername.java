@@ -15,7 +15,7 @@ import jakarta.validation.Payload;
 		
 		// Annotasyon için message , groups ve payloadı kullanmayı java bean validation tarafından dayatılmaktadır.Kullanım zorunludur
 		
-		String message() default "{username cannot be null}";
+		String message() default "{username must be unique}";
 		
 		Class<?>[] groups() default {};
 		
