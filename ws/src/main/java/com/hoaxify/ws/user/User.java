@@ -1,7 +1,5 @@
 package com.hoaxify.ws.user;
 
-
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -20,7 +18,7 @@ public class User {
  @GeneratedValue
  private Long id;	
 	
- @NotBlank
+ @NotBlank(message = "{hoaxify.constraint.username.UniqueUsername.message}")
  @Size(min = 4 , max = 255)
  @UniqueUsername
  private String username;
@@ -30,9 +28,10 @@ public class User {
  private String displayName;
  
  @NotBlank
- @Pattern(regexp="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$")
+ @Pattern(regexp="^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$", message = "{hoaxify.constraint.password.Pattern.message}")
  @Size(min = 8 , max = 100)
  private String password;
 	
  private String createDate;
+ 
 }

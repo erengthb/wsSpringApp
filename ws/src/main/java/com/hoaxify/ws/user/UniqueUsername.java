@@ -15,7 +15,7 @@ import jakarta.validation.Payload;
 		
 		// Annotasyon için message , groups ve payloadı kullanmayı java bean validation tarafından dayatılmaktadır.Kullanım zorunludur
 		
-		String message() default "{username must be unique}";
+		String message() default "{hoaxify.constraint.username.UniqueUsername.message}";
 		
 		Class<?>[] groups() default {};
 		
