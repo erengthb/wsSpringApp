@@ -18,7 +18,7 @@ public class User {
  @GeneratedValue
  private Long id;	
 	
- @NotBlank(message = "{hoaxify.constraint.username.UniqueUsername.message}")
+ @NotBlank(message = "{hoaxify.constraint.username.NotBlank.message}")
  @Size(min = 4 , max = 255)
  @UniqueUsername
  private String username;
