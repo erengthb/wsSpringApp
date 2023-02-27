@@ -1,5 +1,5 @@
 import React from 'react';
-import { signup, changeLanguage } from '../api/apiCalls';
+import { signup } from '../api/apiCalls';
 import Input from '../components/Input';
 import { withTranslation } from 'react-i18next';
 
@@ -56,11 +56,7 @@ class UserSignupPage extends React.Component {
     this.setState({ pendingApiCall: false });
   };
 
-  onChangeLanguage = language => {
-    const { i18n } = this.props;
-    i18n.changeLanguage(language);
-    changeLanguage(language);
-  };
+ 
 
   render() {
     const { pendingApiCall, errors } = this.state;
@@ -79,20 +75,7 @@ class UserSignupPage extends React.Component {
               {pendingApiCall && <span className="spinner-border spinner-border-sm"></span>} {t('Sign Up')}
             </button>
           </div>
-          <div>
-            <img
-              src="https://www.countryflagicons.com/FLAT/24/TR.png"
-              alt="Turkish Flag"
-              onClick={() => this.onChangeLanguage('tr')}
-              style={{ cursor: 'pointer' }}
-            ></img>
-            <img
-              src="https://www.countryflagicons.com/FLAT/24/GB.png"
-              alt="USA Flag"
-              onClick={() => this.onChangeLanguage('en')}
-              style={{ cursor: 'pointer' }}
-            ></img>
-          </div>
+        
         </form>
       </div>
     );

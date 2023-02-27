@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Input from '../components/Input';
+import { withTranslation} from 'react-i18next';
 
 class LoginPage extends Component {
 
@@ -12,22 +13,23 @@ class LoginPage extends Component {
         const { name , value} = event.target;
         this.setState({
             [name]: value
-        })
-    }
-
-
+        });
+    };
+    
+    
 
 
     render() {
+        const {t} = this.props
         return (
             <div>               
                 <div className = "container">
                    <form>
-                    <h1 className="text-center">Login </h1>
-                    <Input label = "Username"  name = "username" onChange = {this.onChange}></Input>
-                    <Input label = "Passoword" name = "password" onChange = {this.onChange}></Input>
+                    <h1 className="text-center">{t('Login')} </h1>
+                    <Input label = {t('Username')}  name = "username" onChange = {this.onChange}></Input>
+                    <Input label = {t('Password')} name = "password" onChange = {this.onChange}></Input>
                         <div className="text-center">
-                            <button className="btn btn-primary"> Login </button>
+                            <button className="btn btn-primary"> {t('Login')} </button>
                         </div>
                    </form>
                 </div>
@@ -36,4 +38,4 @@ class LoginPage extends Component {
     }
 }
 
-export default LoginPage;
+export default withTranslation()(LoginPage);
