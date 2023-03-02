@@ -3,9 +3,12 @@ package error;
 import java.util.Date;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.Data;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)   // api error objesine null olmayanları dahil eder. null olanlar objeye eklenmez
 public class ApiError {
 
 	private int status ;
