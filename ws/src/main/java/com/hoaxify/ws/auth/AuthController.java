@@ -1,6 +1,8 @@
 package com.hoaxify.ws.auth;
 
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.annotation.JsonView;
+import com.hoaxify.ws.shared.Views;
 import com.hoaxify.ws.user.User;
 import com.hoaxify.ws.user.UserRepository;
 
@@ -28,6 +32,7 @@ public class AuthController {
 	PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 	
 	@PostMapping("/api/1.0/auth")
+	@JsonView(Views.Base.class)
 	ResponseEntity<?> handleAuthentication(@RequestHeader(name="Authorization" , required = false ) String authorization) {
 		
 		if(authorization == null) {	
@@ -62,7 +67,8 @@ public class AuthController {
 			
 		}
 		
-		return ResponseEntity.status(HttpStatus.OK).build();
+		
+		return ResponseEntity.ok(inDB);
 		
 		
 	}
