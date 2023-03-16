@@ -1,6 +1,12 @@
 package com.hoaxify.ws.user;
 
 
+import java.util.Collection;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import com.fasterxml.jackson.annotation.JsonView;
 import com.hoaxify.ws.shared.Views;
 
@@ -16,7 +22,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name="users")
-public class User {
+public class User implements UserDetails {
 
  @Id
  @GeneratedValue
@@ -43,5 +49,34 @@ public class User {
  
  @JsonView(Views.Base.class)
  private String image;
+
+@Override
+public Collection<? extends GrantedAuthority> getAuthorities() {
+	return AuthorityUtils.createAuthorityList("Role_user");
+}
+
+@Override
+public boolean isAccountNonExpired() {
+	// TODO Auto-generated method stub
+	return true;
+}
+
+@Override
+public boolean isAccountNonLocked() {
+	// TODO Auto-generated method stub
+	return true;
+}
+
+@Override
+public boolean isCredentialsNonExpired() {
+	// TODO Auto-generated method stub
+	return true;
+}
+
+@Override
+public boolean isEnabled() {
+	// TODO Auto-generated method stub
+	return true;
+}
  
 }

@@ -3,8 +3,6 @@ package com.hoaxify.ws.user;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
