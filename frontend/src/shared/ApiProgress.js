@@ -12,7 +12,7 @@ export function withApiProgress(WrappedComponent ,apiPath){
     
         static displayName = `ApiProgress(${getDisplayName(WrappedComponent)})`;
     
-        state = {
+        state = { 
             pendingApiCall:false
         }
     
