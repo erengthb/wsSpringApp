@@ -3,19 +3,13 @@ import ApiProgress from "../shared/ApiProgress";
 import UserSignupPage from "../pages/UserSignupPage";
 import LoginPage from "../pages/LoginPage";
 import LanguageSelector from "../components/LanguageSelector";
+import Homepage from "../pages/Homepage";
+import UserPage from "../pages/UserPage";
+
 function App() {
   return (
     <div className="row">
-       <div className="col">
-       <React.StrictMode>        
-            <UserSignupPage/>            
-       </React.StrictMode>          
-       </div> 
-       <div className="col">   
-       <React.StrictMode>        
-            <LoginPage/>        
-       </React.StrictMode>      
-       </div>
+      <UserPage></UserPage>
        <LanguageSelector />
     </div>
   );

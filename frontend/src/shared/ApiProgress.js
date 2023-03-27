@@ -31,9 +31,9 @@ export function withApiProgress(WrappedComponent ,apiPath){
             });
         }
     
-        updateApiCallFor = (url,inPorgress) => {
+        updateApiCallFor = (url,inProgress) => {
             if (url === apiPath) {
-                this.setState({pendingApiCall:inPorgress})
+                this.setState({pendingApiCall:inProgress})
             }  
     
         }
