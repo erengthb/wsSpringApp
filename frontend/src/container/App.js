@@ -7,17 +7,13 @@ function App() {
   return (
     <div className="row">
        <div className="col">
-       <React.StrictMode>
-          <ApiProgress path = "/api/1.0/auth">
-             <LoginPage />
-          </ApiProgress>   
+       <React.StrictMode>        
+            <UserSignupPage/>            
        </React.StrictMode>          
        </div> 
        <div className="col">   
-       <React.StrictMode>
-          <ApiProgress path = "/api/1.0/users">
-             <UserSignupPage />
-          </ApiProgress>   
+       <React.StrictMode>        
+            <LoginPage/>        
        </React.StrictMode>      
        </div>
        <LanguageSelector />
