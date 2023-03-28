@@ -6,15 +6,10 @@ import { signup } from '../api/apiCalls';
 
 class TopBar extends Component {
 
-    state = {
-        isLoggedIn : true ,
-        username   : 'eren',
-    }
-
     render() {
-        const {t} = this.props;
-        const {isLoggedIn,username} = this.state;
-
+       
+        const {t,isLoggedIn,username ,onLogoutSuccess} = this.props;
+       
         let links = (
             <ul className="navbar-nav ml-auto">
                   <Link className='nav-link' to="/login">                 
@@ -34,11 +29,11 @@ class TopBar extends Component {
                         {username}
                         </Link>                       
                     </li> 
-                    <li className='nav-link'> {t('Logout')} </li> 
+                    <li className='nav-link'  onClick={onLogoutSuccess}  style = {{cursor:'pointer'}}> {t('Logout')} </li> 
                 </ul>
             );
         }
-        
+
         return (
             <div className="shadow-sm bg-light mb-2">               
                 <nav className="navbar navbar-light  container navbar-expand">
