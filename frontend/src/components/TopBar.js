@@ -3,13 +3,18 @@ import logo from '../assets/hoaxify.png';
 import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
 import { signup } from '../api/apiCalls';
+import { Authentication } from '../shared/AuthenticationContext';
 
 class TopBar extends Component {
 
+    static contextType = Authentication;
+
     render() {
        
-        const {t,isLoggedIn,username ,onLogoutSuccess} = this.props;
-       
+        const {t} = this.props;
+        const { state , onLogoutSuccess} = this.context; 
+        const { isLoggedIn , username}   = state ;      
+                    
         let links = (
             <ul className="navbar-nav ml-auto">
                   <Link className='nav-link' to="/login">                 
