@@ -51,7 +51,9 @@ class App extends React.Component {
                   
                   <Route path="/signup" component={UserSignupPage} ></Route>
 
-                  <Route path="/user/:username" component={UserPage} ></Route>
+                  <Route path="/user/:username" component={props => {
+                    return <UserPage {...props} username={username} ></UserPage>
+                  }} ></Route>
 
                   <Redirect to = "/"></Redirect>  
 
