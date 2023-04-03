@@ -9,8 +9,7 @@ import { Authentication } from '../shared/AuthenticationContext';
 import ButtonWithProgress from '../components/ButtonWithProgress';
 class LoginPage extends Component {
 
-  static contextType = Authentication;
-
+ // static contextType = Authentication;
 
     state = {
         username:null,
@@ -32,13 +31,12 @@ class LoginPage extends Component {
       event.preventDefault();
      
       const { username,password} = this.state;
-      const { onLoginSuccess} = this.context;
+      const  onLoginSuccess = () =>{}
      
       const creds = {
         username : username,
         password : password
       };
-
 
       const { push } = this.props.history;
 
@@ -46,21 +44,16 @@ class LoginPage extends Component {
         error:null
       })
 
-      try {
-        
-        const response = await login(creds)   
-       
+      try {    
+        const response = await login(creds)     
         push('/') 
-
         const authState = {
           ...response.data,      
           password    
         }
 
         onLoginSuccess(authState)
-    
-      } 
-      
+      }      
       catch (apiError) {    
         this.setState({
             error:apiError.response.data.message
