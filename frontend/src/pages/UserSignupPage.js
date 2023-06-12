@@ -4,6 +4,8 @@ import Input from '../components/Input';
 import { withTranslation } from 'react-i18next';
 import ButtonWithProgress from '../components/ButtonWithProgress';
 import { withApiProgress } from '../shared/ApiProgress';
+import { connect } from 'react-redux';
+import{loginHandler, signUpHandler} from '../redux/authActions'
 
 class UserSignupPage extends React.Component {
   state = {
@@ -37,6 +39,10 @@ class UserSignupPage extends React.Component {
   onClickSignup = async event => {
     event.preventDefault();
 
+
+    const { history, dispatch } = this.props;
+    const { push } = this.props.history;
+
     const { username, displayName, password } = this.state;
 
     const body = {
@@ -44,9 +50,10 @@ class UserSignupPage extends React.Component {
       displayName,
       password
     };
-   
+
     try {
-      const response = await signup(body);
+      await dispatch(signUpHandler(body));
+      push('/');
     } catch (error) {
       if (error.response.data.validationErrors) {
         this.setState({ errors: error.response.data.validationErrors });
@@ -55,12 +62,12 @@ class UserSignupPage extends React.Component {
 
   };
 
- 
+
 
   render() {
     const { errors } = this.state;
     const { username, displayName, password, passwordRepeat } = errors;
-    const { t ,pendingApiCall } = this.props;
+    const { t, pendingApiCall } = this.props;
     return (
       <div className="container">
         <form>
@@ -70,21 +77,22 @@ class UserSignupPage extends React.Component {
           <Input name="password" label={t('Password')} error={password} onChange={this.onChange} type="password" />
           <Input name="passwordRepeat" label={t('Password Repeat')} error={passwordRepeat} onChange={this.onChange} type="password" />
           <div className="text-center">
-            <ButtonWithProgress 
-            onClick={this.onClickSignup} 
-            disabled={pendingApiCall || passwordRepeat !== undefined}
-             pendingApiCall =  {pendingApiCall} 
-             text = {t('Sign Up')}
-           />
+            <ButtonWithProgress
+              onClick={this.onClickSignup}
+              disabled={pendingApiCall || passwordRepeat !== undefined}
+              pendingApiCall={pendingApiCall}
+              text={t('Sign Up')}
+            />
           </div>
-        
+
         </form>
       </div>
     );
   }
 }
 
-const UserSignupPageWithApiProgess = withApiProgress(UserSignupPage,'/api/1.0/users');
-const UserSignupPageWithTranslation = withTranslation()(UserSignupPageWithApiProgess);
+const UserSignupPageWithApiProgessForSignupRequest = withApiProgress(UserSignupPage, '/api/1.0/users');
+const UserSignupPageWithApiProgessForAuthRequest   = withApiProgress(UserSignupPageWithApiProgessForSignupRequest,'api/1.0/auth');
+const UserSignupPageWithTranslation = withTranslation()(UserSignupPageWithApiProgessForAuthRequest);
 
-export default UserSignupPageWithTranslation;
+export default connect()(UserSignupPageWithTranslation);
