@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import logo from '../assets/hoaxify.png';
 import { Link } from 'react-router-dom';
 import { withTranslation } from 'react-i18next';
-import { signup } from '../api/apiCalls';
-//import { Authentication } from '../shared/AuthenticationContext';
 import { connect } from 'react-redux';
 import { logoutSuccess } from '../redux/authActions';
 

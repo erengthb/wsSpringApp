@@ -3,7 +3,6 @@ import { withTranslation} from 'react-i18next';
 import { withApiProgress } from '../shared/ApiProgress';
 import { connect } from 'react-redux';
 import { loginHandler } from '../redux/authActions';
-
 import ButtonWithProgress from '../components/ButtonWithProgress';
 import { useEffect, useState } from 'react';
 
@@ -13,7 +12,7 @@ const  LoginPage = (props) =>  {
     const [password , setPassword] =  useState();
     const [error    , setError   ] =  useState();
 
-    useEffect((username,password) =>{
+    useEffect(() =>{
      setError(undefined);
     } , [username,password]);
     

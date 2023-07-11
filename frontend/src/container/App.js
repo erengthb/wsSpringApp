@@ -1,5 +1,4 @@
 import React from "react";
-import ApiProgress from "../shared/ApiProgress";
 import UserSignupPage from "../pages/UserSignupPage";
 import LoginPage from "../pages/LoginPage";
 import LanguageSelector from "../components/LanguageSelector";
@@ -8,12 +7,8 @@ import UserPage from "../pages/UserPage";
 import {HashRouter as Router,Route,Redirect,Switch} from 'react-router-dom';
 import TopBar from "../components/TopBar";
 import { connect } from "react-redux";
-//import { Authentication } from "../shared/AuthenticationContext";
 
 class App extends React.Component {
-
-  //static contextType = Authentication;
-
   render( ){
 
     const {isLoggedIn} = this.props;

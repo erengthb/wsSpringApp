@@ -4,7 +4,6 @@ import './index.css';
 import './bootstrap-override.scss';
 import reportWebVitals from './reportWebVitals';
 import './i18n';
-// import AuthenticationContext from './shared/AuthenticationContext';
 import { Provider } from 'react-redux';
 import App from './container/App';
 import configureStore from './redux/configureStore';
