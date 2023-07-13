@@ -34,7 +34,7 @@ export const loginHandler = (credentials) => {
 
 }
 
-export const signupHandler = (user) => {
+export const signupHandler = user => {
 
   return async function (dispatch) {
 
