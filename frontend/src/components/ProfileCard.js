@@ -12,12 +12,7 @@ const ProfileCard = (props) => {
         message = "We can edit"  ;      
     }
 
-    return (
-        <div>
-            {message}
-        </div>
-    );
-     
+    return  <div> {message}  </div>;   
 };
 
 const mapStateToProps = store => {
