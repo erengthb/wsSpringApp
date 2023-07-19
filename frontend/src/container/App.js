@@ -10,7 +10,6 @@ import { useSelector } from "react-redux";
 
 const  App = () => {
 
-
   const {isLoggedIn} = useSelector((store) => ({
     isLoggedIn : store.isLoggedIn
   }))
@@ -38,6 +37,5 @@ const  App = () => {
        </div>
      );
 }
-
 
 export default App;
