@@ -45,6 +45,7 @@ public class User implements UserDetails {
  @JsonView(Views.Sensitive.class)
  private String password;
 	
+ @JsonView(Views.Sensitive.class)
  private String createDate;
  
  @JsonView(Views.Base.class)
