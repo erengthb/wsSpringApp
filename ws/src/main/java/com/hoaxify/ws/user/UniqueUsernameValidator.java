@@ -7,7 +7,6 @@ import jakarta.validation.ConstraintValidatorContext;
 
 public class UniqueUsernameValidator implements ConstraintValidator<UniqueUsername,String>{
 
-	// db bağlantısı
 	@Autowired
 	UserRepository userRepository ;
 	
