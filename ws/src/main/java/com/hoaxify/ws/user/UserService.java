@@ -34,8 +34,8 @@ public class UserService {
 		
 	}
 	
-	public Page<User> getUsers(Pageable page) {
-		return	userRepository.findAll(page);  // listenin içinde sayfa sayfa dolaşır
+	public Page<UserProjection> getUsers(Pageable page) {
+		return	userRepository.getAllUsersProjection(page);  // listenin içinde sayfa sayfa dolaşır
 		
 	}
 	
