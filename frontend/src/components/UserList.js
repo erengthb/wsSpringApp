@@ -10,7 +10,7 @@ class UserList extends Component {
   componentDidMount() {
     getUsers().then(response => {
       this.setState({
-        users: response.data
+        users: response.data.content
       });
     });
   }
