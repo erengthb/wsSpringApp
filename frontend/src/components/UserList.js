@@ -1,43 +1,38 @@
-import React, { Component } from 'react';
 import { getUsers } from '../api/apiCalls';
-import { withTranslation } from 'react-i18next';
+import { useTranslation, withTranslation } from 'react-i18next';
 import UserListItem from './UserListItem';
+import { useEffect, useState } from 'react';
 
-class UserList extends Component {
-  state = {
-    page:{
-      content :[],
-      size : 3,
-      number :0
-    }
-  };
+const  UserList = () => {
 
-  loadUsers = page => {
-    getUsers(page).then(response => {
-      this.setState({
-        page: response.data
-      });
-    });   
+  const [page ,setPage] = useState({
+    content: [],
+    size : 3 ,
+    number : 0
+  })
+
+  useEffect(()=>{
+    loadUsers();
+  },[])
+
+  const  loadUsers = page => {
+     getUsers(page).then(response => {
+      setPage(response.data);
+    });    
   }
 
-  componentDidMount() {
-   this.loadUsers();
+  const  onClickNext = () => {
+    const nextPage =page.number + 1;
+    loadUsers(nextPage);
   }
 
-  onClickNext = () => {
-    const nextPage = this.state.page.number + 1;
-    this.loadUsers(nextPage);
+  const onClickPrevious = () => {
+    const previousPage = page.number - 1;
+    loadUsers(previousPage);
   }
 
-  onClickPrevious = () => {
-    const previousPage = this.state.page.number - 1;
-    this.loadUsers(previousPage);
-  }
-
-
-  render() {
-    const { t } = this.props;
-    const { content : users , last , first} = this.state.page;
+    const { t } = useTranslation();
+    const { content : users , last , first} = page;
     return (
       <div className="card">
         <h3 className="card-header text-center">{t('Users')}</h3>
@@ -50,13 +45,13 @@ class UserList extends Component {
         </div>
             <div>
               {first === false && <button className='btn btn-sm btn-light '  
-              onClick = {this.onClickPrevious}>{t('Previous')}</button>}
+              onClick = {onClickPrevious}>{t('Previous')}</button>}
               {last === false && <button className='btn btn-sm btn-light float-right' 
-               onClick = {this.onClickNext}>{t('Next')}</button>}  
+               onClick = {onClickNext}>{t('Next')}</button>}  
             </div>                         
       </div>
     );
-  }
+  
 }
 
-export default withTranslation()(UserList);
+export default UserList;

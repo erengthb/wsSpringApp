@@ -6,7 +6,6 @@ export const useApiProgress = apiPath => {
 
   useEffect(() => {
     let requestInterceptor, responseInterceptor;
-
     const updateApiCallFor = (url, inProgress) => {
       if (url === apiPath) {
         setPendingApiCall(inProgress);
@@ -41,7 +40,8 @@ export const useApiProgress = apiPath => {
     return function unmount() {
       unregisterInterceptors();
     };
-  });
+  },[]);
 
   return pendingApiCall;
+  
 };
