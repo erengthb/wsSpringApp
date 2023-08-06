@@ -1,5 +1,5 @@
 import * as ACTIONS from './Constants';
-import {login, signup} from '../api/apiCalls'
+import {login, signup } from '../api/apiCalls'
 
 export const logoutSuccess = () => {
 

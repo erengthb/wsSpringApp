@@ -32,9 +32,11 @@ public class UserService {
 		
 	}
 	
-	public Page<User> getUsers(Pageable page) {
-		return	userRepository.findAll(page);  // listenin içinde sayfa sayfa dolaşır
-		
+	public Page<User> getUsers(Pageable page, User user) {
+		if(user != null) {
+			return userRepository.findByUsernameNot(user.getUsername(), page);
+		}
+		return userRepository.findAll(page);
 	}
 	
 	// bu metodu daha sonra core package sinin içine alacağız

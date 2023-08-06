@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.hoaxify.ws.shared.CurrentUser;
 import com.hoaxify.ws.shared.GenericResponse;
 import com.hoaxify.ws.user.vm.UserVM;
 
@@ -38,8 +40,8 @@ public class UserController {
 	}
 	
 	@GetMapping("/api/1.0/users")
-	Page<UserVM> getUsers(Pageable page){
-		return	userService.getUsers(page).map(UserVM::new);	
+	Page<UserVM> getUsers(Pageable page, @CurrentUser User user){
+		return userService.getUsers(page, user).map(UserVM::new);
 	}
 	
 	

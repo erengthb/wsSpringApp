@@ -1,5 +1,5 @@
 import { getUsers } from '../api/apiCalls';
-import { useTranslation, withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import UserListItem from './UserListItem';
 import { useEffect, useState } from 'react';
 

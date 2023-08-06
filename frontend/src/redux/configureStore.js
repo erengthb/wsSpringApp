@@ -1,45 +1,43 @@
-import { legacy_createStore as createStore , applyMiddleware ,compose} from 'redux'
+import { createStore, applyMiddleware, compose } from 'redux';
+import thunk from 'redux-thunk';
 import authReducer from './authReducer';
 import SecureLS from 'secure-ls';
-import thunk from 'redux-thunk';
+import { setAuthorizationHeader } from '../api/apiCalls';
 
-
-
-const secureLS = new SecureLS();
+const secureLs = new SecureLS();
 
 const getStateFromStorage = () => {
-  
-  const hoaxAuth = secureLS.get('hoax-auth');
+  const hoaxAuth = secureLs.get('hoax-auth');
 
-          let stateInLocalStorage = {
-            isLoggedIn: false,
-            username: undefined,
-            displayName: undefined,
-            image: undefined,
-            password: undefined
-          };
+  let stateInLocalStorage = {
+    isLoggedIn: false,
+    username: undefined,
+    displayName: undefined,
+    image: undefined,
+    password: undefined
+  };
 
-          if(hoaxAuth){
-            return hoaxAuth;           
-          }
-          return stateInLocalStorage;
-
-}
+  if (hoaxAuth) {
+    return hoaxAuth;
+  }
+  return stateInLocalStorage;
+};
 
 const updateStateInStorage = newState => {
-   secureLS.set('hoax-auth',newState);
-}
-
+  secureLs.set('hoax-auth', newState);
+};
 
 const configureStore = () => {
-   
+  const initialState = getStateFromStorage();
+  setAuthorizationHeader(initialState);
   const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+  const store = createStore(authReducer, initialState, composeEnhancers(applyMiddleware(thunk)));
 
-      const store =  createStore(authReducer , getStateFromStorage() ,composeEnhancers(applyMiddleware(thunk)));
-        store.subscribe(() => {
-           updateStateInStorage(store.getState());
-        });
-    return store;
-}
+  store.subscribe(() => {
+    updateStateInStorage(store.getState());
+    setAuthorizationHeader(store.getState());
+  });
 
+  return store;
+};
 export default configureStore;
