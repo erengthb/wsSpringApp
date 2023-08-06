@@ -5,20 +5,39 @@ import UserListItem from './UserListItem';
 
 class UserList extends Component {
   state = {
-    users: []
+    page:{
+      content :[],
+      size : 3,
+      number :0
+    }
   };
 
-  componentDidMount() {
-    getUsers().then(response => {
+  loadUsers = page => {
+    getUsers(page).then(response => {
       this.setState({
-        users: response.data.content
+        page: response.data
       });
-    });
+    });   
   }
+
+  componentDidMount() {
+   this.loadUsers();
+  }
+
+  onClickNext = () => {
+    const nextPage = this.state.page.number + 1;
+    this.loadUsers(nextPage);
+  }
+
+  onClickPrevious = () => {
+    const previousPage = this.state.page.number - 1;
+    this.loadUsers(previousPage);
+  }
+
 
   render() {
     const { t } = this.props;
-    const { users } = this.state;
+    const { content : users , last , first} = this.state.page;
     return (
       <div className="card">
         <h3 className="card-header text-center">{t('Users')}</h3>
@@ -29,6 +48,12 @@ class UserList extends Component {
             </UserListItem>
           ))}
         </div>
+            <div>
+              {first === false && <button className='btn btn-sm btn-light '  
+              onClick = {this.onClickPrevious}>{t('Previous')}</button>}
+              {last === false && <button className='btn btn-sm btn-light float-right' 
+               onClick = {this.onClickNext}>{t('Next')}</button>}  
+            </div>                         
       </div>
     );
   }
