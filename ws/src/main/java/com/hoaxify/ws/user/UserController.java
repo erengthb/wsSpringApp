@@ -11,8 +11,10 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,24 +26,27 @@ import error.ApiError;
 import jakarta.validation.Valid;
 
 @RestController
+@RequestMapping("/api/1.0")
 public class UserController {
 
 	@Autowired
 	UserService userService ; 
 
-	@PostMapping("/api/1.0/users")	
-	public GenericResponse createUser(@Valid @RequestBody User user ) {
-		
+	@PostMapping("/users")	
+	public GenericResponse createUser(@Valid @RequestBody User user ) {	
 		userService.save(user);
-	
-		return new GenericResponse("user created");
-				
-		
+		return new GenericResponse("user created");					
 	}
 	
-	@GetMapping("/api/1.0/users")
+	@GetMapping("/users")
 	Page<UserVM> getUsers(Pageable page, @CurrentUser User user){
 		return userService.getUsers(page, user).map(UserVM::new);
+	}
+	
+	@GetMapping("/users/{username}")
+	UserVM getUser(@PathVariable String username) {
+     	User user = userService.getByUsername(username);
+     	return new UserVM(user);
 	}
 	
 	

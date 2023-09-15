@@ -9,6 +9,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import error.NotFoundException;
+
 @Service
 public class UserService {
 	
@@ -45,6 +47,15 @@ public class UserService {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); 
 	    String day = dateFormat.format(now);
 	    return day;
+	}
+
+	public User getByUsername(String username) {
+	    User inDb = userRepository.findByUsername(username);
+	    if(inDb==null) {
+	    	throw new NotFoundException();
+	    } else {
+	    	return inDb;
+	    }
 	}
 
 
