@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom/cjs/react-router-dom.min';
 import { useTranslation } from 'react-i18next';
 
 const UserPage = () => {
-    const [user , setUser] = useState();
+    const [user , setUser] = useState({});
     const {username} = useParams();
     const [notFound ,setNotFound] = useState(false);
     const {t}=useTranslation();
@@ -41,7 +41,7 @@ const UserPage = () => {
 
     return (
         <div className="container"> 
-            <ProfileCard >
+            <ProfileCard user={user}>
             </ProfileCard>
         </div>
     );
