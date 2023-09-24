@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ProfileImageWithDefault from './ProfileImageWithDefault';
@@ -8,6 +8,7 @@ import  Input from './Input';
 const ProfileCard = (props) => {
               
     const [inEditMode,setInEditMode] =useState(false);
+    const [updatedDisplayName , setUpdatedDisplayName] = useState();
     const {username:loggedInUsername} = useSelector((store) => ({username : store.username}))
     const routeParams = useParams();
 
@@ -17,9 +18,19 @@ const ProfileCard = (props) => {
     const pathUsername = routeParams.username;
 
     const {t} = useTranslation();
+    const onClickSave = () => {
+        console.log(updatedDisplayName);
+    }
+
+    useEffect( () => {
+        if(!inEditMode){
+            setUpdatedDisplayName(undefined);
+        } else {
+            setUpdatedDisplayName(displayName);
+        }    
+    } ,[inEditMode])
 
     let message = "We cannot edit";
-    
     if (pathUsername===loggedInUsername){
         message = "We can edit"  ;      
     }
@@ -51,12 +62,14 @@ const ProfileCard = (props) => {
            } 
            {inEditMode && (
             <div>
-                <Input label= {t("Change Display Name")}></Input> 
+                <Input label= {t("Change Display Name")} defaultValue={displayName} 
+                        onChange={(event) => {setUpdatedDisplayName(event.target.value)}}>
+                </Input> 
                     <div>
-                         <button className='btn btn-primary d-inline-flex'> 
-                         <i className ="material-icons">save</i>{t('Save')}</button>
+                         <button className='btn btn-primary d-inline-flex' onClick={onClickSave}> 
+                            <i className ="material-icons">save</i>{t('Save')}</button>
                          <button className='btn btn-light d-inline-flex ml-3' onClick={() => setInEditMode(false)}> 
-                         <i className ="material-icons">close</i>{t('Cancel')}</button>
+                            <i className ="material-icons">close</i>{t('Cancel')}</button>
                     </div> 
             </div>
            )}
