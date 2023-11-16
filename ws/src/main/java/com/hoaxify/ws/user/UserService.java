@@ -16,7 +16,6 @@ import error.NotFoundException;
 @Service
 public class UserService {
 	
-	
 	UserRepository userRepository;
 	
 	PasswordEncoder passwordEncoder;
