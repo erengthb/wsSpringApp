@@ -62,6 +62,9 @@ public class UserService {
 	public User updateUser(String username, UserUpdateVM updatedUser) {
 		 User inDB = userRepository.findByUsername(username);
 		 inDB.setDisplayName(updatedUser.getDisplayName());
+		 if(updatedUser.getImage() != null) {
+			 inDB.setImage(updatedUser.getImage());
+		 }
 		 return  userRepository.save(inDB);
 	}
 	

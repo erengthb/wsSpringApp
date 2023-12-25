@@ -40,7 +40,8 @@ const ProfileCard = props => {
 
   const onClickSave = async () => {
     const body = {
-      displayName: updatedDisplayName
+      displayName: updatedDisplayName,
+      image : newImage
     };
     try {
       const response = await updateUser(username, body);
@@ -49,18 +50,17 @@ const ProfileCard = props => {
     } catch (error) {}
   };
 
+
   const onChangeFile = (event) => {
     const file =  event.target.files[0];
-    const fileReader = new FileReader();
-    fileReader.onloadend = () =>{
-      setNewImage(fileReader.result)
-    }
-    fileReader.readAsDataURL(file);
+      const fileReader = new FileReader();
+      fileReader.onloadend = () =>{
+        setNewImage(fileReader.result)
+      }
+      fileReader.readAsDataURL(file);  
   }
 
   const pendingApiCall = useApiProgress('put', '/api/1.0/users/' + username);
-
- 
 
   return (
     <div className="card text-center">
