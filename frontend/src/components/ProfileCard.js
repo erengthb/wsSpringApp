@@ -22,6 +22,8 @@ const ProfileCard = props => {
     setUser(props.user);
   }, [props.user]);
 
+  // merbaha berat
+
   useEffect(() =>{
     setEditable( pathUsername === loggedInUsername)
   } , [pathUsername,loggedInUsername])
