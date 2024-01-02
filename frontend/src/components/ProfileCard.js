@@ -22,8 +22,6 @@ const ProfileCard = props => {
     setUser(props.user);
   }, [props.user]);
 
-  // merbaha berat
-
   useEffect(() =>{
     setEditable( pathUsername === loggedInUsername)
   } , [pathUsername,loggedInUsername])
@@ -72,8 +70,7 @@ const ProfileCard = props => {
           width="200" 
           height="200"
           alt={`${username} profile`}
-          image={image} 
-          tempImage={newImage}
+          image={newImage || image} 
         />
       </div>
       <div className="card-body">
