@@ -14,8 +14,8 @@ const UserSignupPage = (props) => {
     passwordRepeat: null,
   });
   const [errors, setErrors] = useState({});
-  const dispatch = useDispatch();
 
+  const dispatch = useDispatch();
 
   const onChange = (event) => {
     const { name, value } = event.target;
@@ -49,10 +49,12 @@ const UserSignupPage = (props) => {
   };
 
   const { t } = useTranslation();
+
   const { username: usernameError, displayName: displayNameError, password: passwordError } = errors;
-  const pendingApiCallSignup = useApiProgress('post','/api/1.0/users');
-  const pendingApiCallLogin  = useApiProgress('post','/api/1.0/auth');
-  const pendingApiCall = pendingApiCallLogin || pendingApiCallSignup; 
+  const pendingApiCallSignup = useApiProgress('post', '/api/1.0/users');
+  const pendingApiCallLogin = useApiProgress('post', '/api/1.0/auth');
+
+  const pendingApiCall = pendingApiCallSignup || pendingApiCallLogin;
 
   let passwordRepeatError;
   if (form.password !== form.passwordRepeat) {
