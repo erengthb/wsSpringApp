@@ -12,20 +12,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class FileService {
 	
-	public String writeBase64EncodedStringToFile(String image) throws IOException {
-		
-		String fileName = generateRandomName();
-		File target =  new File("picture-storage/"+fileName);
-		OutputStream outputStream = new FileOutputStream(target);
-		
-		byte[] base64encoded = Base64.getDecoder().decode(image);
-		
-		outputStream.write(base64encoded);
-		outputStream.close();
-		
-		
-		return fileName;
-	}
+	//Util
+		public String writeBase64EncodedStringToFile(String image) throws IOException {
+			//Constants
+			String fileName = generateRandomName();
+			File target = new File("picture-storage/"+fileName);
+			OutputStream outputStream = new FileOutputStream(target);
+			byte[] base64Encoded = Base64.getDecoder().decode(image);
+			outputStream.write(base64Encoded);
+			outputStream.close();
+			
+			return fileName;
+			
+		}
 	
 	public String generateRandomName() {
 		return UUID.randomUUID().toString().replaceAll("-", "");

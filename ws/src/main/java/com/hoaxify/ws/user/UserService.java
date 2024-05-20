@@ -1,29 +1,41 @@
 package com.hoaxify.ws.user;
 
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
+import java.util.logging.Logger;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.hoaxify.ws.file.FileService;
 import com.hoaxify.ws.user.vm.UserUpdateVM;
 
 import error.NotFoundException;
 
 @Service
 public class UserService {
+	private static final Logger logger = Logger.getLogger(UserService.class.getName());
+
 	
 	UserRepository userRepository;
 	
 	PasswordEncoder passwordEncoder;
+	
+	FileService fileService;
  
-	public UserService(UserRepository userRepository , PasswordEncoder passwordEncoder) {
-		super();
+	public UserService(UserRepository userRepository , PasswordEncoder passwordEncoder , FileService fileService) {
 		this.userRepository = userRepository;
 		this.passwordEncoder= passwordEncoder;
+		this.fileService = fileService;
 	}
 
 
@@ -63,9 +75,18 @@ public class UserService {
 		User inDB = getByUsername(username);
 		inDB.setDisplayName(updatedUser.getDisplayName());
 		if(updatedUser.getImage() != null) {
-			inDB.setImage(updatedUser.getImage());
+			//inDB.setImage(updatedUser.getImage());
+			try {
+				String storedFileName = fileService.writeBase64EncodedStringToFile(updatedUser.getImage());
+				inDB.setImage(storedFileName);
+			} catch (IOException e) {
+				logger.severe("Kullanıcı resmi kaydedilirken hata oluştu . Hata Mesajı : " + e);
+			}
 		}
 		return userRepository.save(inDB);
 	}
+	
+	
+	
 	
 }

@@ -44,7 +44,6 @@ public class User implements UserDetails {
 	
  private String createDate;
  
- @Lob   // Large Object Annotation
  private String image;
 
 @Override
