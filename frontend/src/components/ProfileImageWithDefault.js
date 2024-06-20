@@ -5,16 +5,19 @@ const ProfileImageWithDefault = props => {
   const { image, tempimage } = props;
 
   let imageSource = defaultPicture;
-  console.log('imagee',image);
   if (image) {
     imageSource = 'images/' + image;
   }
+  console.log('tempImage',tempimage);
+  console.log('imagesource',imageSource);
   return (
     <img
       alt={`Profile`}
-      src={tempimage || imageSource}
+      src={tempimage ? tempimage : imageSource}
       {...props}
-     
+      onError={event => {
+        event.target.src = defaultPicture;
+      }}
     />
   );
 };

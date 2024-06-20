@@ -12,32 +12,23 @@ const ProfileCard = props => {
   const [inEditMode, setInEditMode] = useState(false);
   const [updatedDisplayName, setUpdatedDisplayName] = useState();
   const { username: loggedInUsername } = useSelector(store => ({ username: store.username }));
-  const userImage = useSelector(store => ({ image: store.image }));
   const routeParams = useParams();
   const pathUsername = routeParams.username;
   const [user, setUser] = useState({});
   const [editable, setEditable] = useState(false);
-  const [newImage, setNewImage] = useState(userImage);
+  const [newImage, setNewImage] = useState();
 
   useEffect(() => {
     setUser(props.user);
   }, [props.user]);
+  console.log('newImage',newImage);
 
-  useEffect(()=>{
-    setNewImage(userImage.image)
-  },[])
   useEffect(() => {
     setEditable(pathUsername === loggedInUsername);
   }, [pathUsername, loggedInUsername]);
 
   const { username, displayName, image } = user;
   const { t } = useTranslation();
-
-  useEffect(()=>{
-    if (image!==undefined) {
-      //reduxda image updatelenicek
-    }
-  },[])
 
   useEffect(() => {
     if (!inEditMode) {
@@ -74,14 +65,6 @@ const ProfileCard = props => {
   return (
     <div className="card text-center">
       <div className="card-header">
-        {
-          console.log('aaa1',image)
-      
-        }
-           {
-          console.log('newImage',newImage)
-      
-        }
         <ProfileImageWithDefault
           className="rounded-circle shadow"
           width="200"
