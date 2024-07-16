@@ -1,13 +1,7 @@
 package com.hoaxify.ws.user;
 
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.text.SimpleDateFormat;
-import java.util.Base64;
 import java.util.Date;
 import java.util.logging.Logger;
 
@@ -25,58 +19,55 @@ import error.NotFoundException;
 public class UserService {
 	private static final Logger logger = Logger.getLogger(UserService.class.getName());
 
-	
 	UserRepository userRepository;
-	
+
 	PasswordEncoder passwordEncoder;
-	
+
 	FileService fileService;
- 
-	public UserService(UserRepository userRepository , PasswordEncoder passwordEncoder , FileService fileService) {
+
+	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, FileService fileService) {
 		this.userRepository = userRepository;
-		this.passwordEncoder= passwordEncoder;
+		this.passwordEncoder = passwordEncoder;
 		this.fileService = fileService;
 	}
 
-
-
-	public void save( User user ) {	
+	public void save(User user) {
 		user.setCreateDate(getCreateDate());
 		user.setPassword(this.passwordEncoder.encode(user.getPassword()));
 		userRepository.save(user);
-		
+
 	}
-	
+
 	public Page<User> getUsers(Pageable page, User user) {
-		if(user != null) {
+		if (user != null) {
 			return userRepository.findByUsernameNot(user.getUsername(), page);
 		}
 		return userRepository.findAll(page);
 	}
-	
+
 	// bu metodu daha sonra core package sinin içine alacağız
-    public static String getCreateDate () {	
-		Date  now = new Date ();   
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); 
-	    String day = dateFormat.format(now);
-	    return day;
+	public static String getCreateDate() {
+		Date now = new Date();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		String day = dateFormat.format(now);
+		return day;
 	}
 
 	public User getByUsername(String username) {
-	    User inDB = userRepository.findByUsername(username);
-	    if(inDB==null) {
-	    	throw new NotFoundException();
-	    } else {
-	    	return inDB;
-	    }
+		User inDB = userRepository.findByUsername(username);
+		if (inDB == null) {
+			throw new NotFoundException();
+		} else {
+			return inDB;
+		}
 	}
 
 	public User updateUser(String username, UserUpdateVM updatedUser) {
 		User inDB = getByUsername(username);
 		inDB.setDisplayName(updatedUser.getDisplayName());
-		if(updatedUser.getImage() != null) {
+		if (updatedUser.getImage() != null) {
 			String oldImageName = inDB.getImage();
-			//inDB.setImage(updatedUser.getImage());
+			// inDB.setImage(updatedUser.getImage());
 			try {
 				String storedFileName = fileService.writeBase64EncodedStringToFile(updatedUser.getImage());
 				inDB.setImage(storedFileName);
@@ -87,8 +78,5 @@ public class UserService {
 		}
 		return userRepository.save(inDB);
 	}
-	
-	
-	
-	
+
 }

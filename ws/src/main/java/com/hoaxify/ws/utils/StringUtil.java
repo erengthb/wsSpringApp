@@ -1,4 +1,4 @@
-package com.hoaxify.ws.Utils;
+package com.hoaxify.ws.utils;
 
 
 public class StringUtil {
