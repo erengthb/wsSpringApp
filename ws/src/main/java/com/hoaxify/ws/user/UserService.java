@@ -75,6 +75,7 @@ public class UserService {
 		User inDB = getByUsername(username);
 		inDB.setDisplayName(updatedUser.getDisplayName());
 		if(updatedUser.getImage() != null) {
+			String oldImageName = inDB.getImage();
 			//inDB.setImage(updatedUser.getImage());
 			try {
 				String storedFileName = fileService.writeBase64EncodedStringToFile(updatedUser.getImage());
@@ -82,6 +83,7 @@ public class UserService {
 			} catch (IOException e) {
 				logger.severe("Kullanıcı resmi kaydedilirken hata oluştu . Hata Mesajı : " + e);
 			}
+			fileService.deleteFile(oldImageName);
 		}
 		return userRepository.save(inDB);
 	}
