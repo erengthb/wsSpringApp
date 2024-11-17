@@ -10,9 +10,6 @@ import java.util.Base64;
 import java.util.UUID;
 
 import org.apache.tika.Tika;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.hoaxify.ws.configuration.AppConfiguration;
@@ -21,10 +18,15 @@ import com.hoaxify.ws.utils.StringUtil;
 @Service
 public class FileService {
 
-	@Autowired
 	AppConfiguration appConfiguration;
 
-	private static final Logger log = LoggerFactory.getLogger(FileService.class);
+	Tika tika;
+
+	public FileService(AppConfiguration appConfiguration) {
+		super();
+		this.appConfiguration = appConfiguration;
+		this.tika = new Tika();
+	}
 
 	public String writeBase64EncodedStringToFile(String image) throws IOException {
 
@@ -32,10 +34,6 @@ public class FileService {
 		File target = new File(appConfiguration.getUploadPath() + "/" + fileName);
 		OutputStream outputStream = new FileOutputStream(target);
 		byte[] base64Encoded = Base64.getDecoder().decode(image);
-
-		Tika tika = new Tika();
-		String fileType = tika.detect(base64Encoded);
-		log.info("## fileType : " + fileType);
 
 		outputStream.write(base64Encoded);
 		outputStream.close();
@@ -45,7 +43,7 @@ public class FileService {
 	}
 
 	public void deleteFile(String oldImageName) {
-		if (StringUtil.isEmpty(oldImageName)) {
+		if (StringUtil.isNullOrEmpty(oldImageName)) {
 			return;
 		}
 		try {
@@ -54,5 +52,11 @@ public class FileService {
 			e.printStackTrace();
 		}
 
+	}
+
+	public String detectType(String value) {
+		byte[] base64Encoded = Base64.getDecoder().decode(value);
+		String fileType = tika.detect(base64Encoded);
+		return fileType;
 	}
 }
