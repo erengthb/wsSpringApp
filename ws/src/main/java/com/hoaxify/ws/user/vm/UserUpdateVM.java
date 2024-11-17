@@ -1,6 +1,6 @@
 package com.hoaxify.ws.user.vm;
 
-import com.hoaxify.ws.shared.ProfileImage;
+import com.hoaxify.ws.shared.FileTypeAnnotation;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -13,7 +13,7 @@ public class UserUpdateVM {
 	@Size(min = 4, max = 255)
 	private String displayName;
 
-	@ProfileImage
+	@FileTypeAnnotation(types = { "jpeg", "png", "jpg" })
 	private String image;
 
 }

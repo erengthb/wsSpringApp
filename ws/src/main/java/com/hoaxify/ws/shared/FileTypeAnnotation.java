@@ -11,16 +11,18 @@ import jakarta.validation.Payload;
 
 @Target({ FIELD }) // annotasyonu nerede kullanacağımızı belirttiğimiz yer
 @Retention(RUNTIME)
-@Constraint(validatedBy = { ProfileImageValidator.class }) // Boolean değer dönecek olan validatör classı buraya
-															// veriyoruz
-public @interface ProfileImage {
+@Constraint(validatedBy = { FileTypeValidator.class }) // Boolean değer dönecek olan validatör classı buraya
+														// veriyoruz
+public @interface FileTypeAnnotation {
 
 	// Annotasyon için message , groups ve payloadı kullanmayı java bean validation
 	// tarafından dayatılmaktadır.Kullanım zorunludur
 
-	String message() default "{hoaxify.constraint.ProfileImage.message}";
+	String message() default "{hoaxify.constraint.FileType.message}";
 
 	Class<?>[] groups() default {};
 
 	Class<? extends Payload>[] payload() default {};
+
+	String[] types();
 }

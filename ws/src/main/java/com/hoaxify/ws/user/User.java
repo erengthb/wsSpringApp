@@ -30,7 +30,7 @@ public class User implements UserDetails {
 	
  @NotBlank(message = "{hoaxify.constraint.username.NotBlank.message}")
  @Size(min = 4 , max = 255)
- @UniqueUsername
+ @UniqueUsernameAnnotation
  private String username;
  
  @NotBlank

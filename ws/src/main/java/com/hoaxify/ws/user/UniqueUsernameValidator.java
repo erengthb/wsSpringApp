@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
-public class UniqueUsernameValidator implements ConstraintValidator<UniqueUsername,String>{
+public class UniqueUsernameValidator implements ConstraintValidator<UniqueUsernameAnnotation,String>{
 
 	@Autowired
 	UserRepository userRepository ;

@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hoaxify.ws.shared.CurrentUser;
+import com.hoaxify.ws.shared.CurrentUserAnnotation;
 import com.hoaxify.ws.shared.GenericResponse;
 import com.hoaxify.ws.user.vm.UserUpdateVM;
 import com.hoaxify.ws.user.vm.UserVM;
@@ -43,7 +43,7 @@ public class UserController {
 	
 	
 	@GetMapping("/users")
-	Page<UserVM> getUsers(Pageable page, @CurrentUser User user){
+	Page<UserVM> getUsers(Pageable page, @CurrentUserAnnotation User user){
 		return userService.getUsers(page, user).map(UserVM::new);
 	}
 	
