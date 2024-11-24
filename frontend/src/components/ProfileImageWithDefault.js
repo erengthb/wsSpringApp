@@ -8,6 +8,7 @@ const ProfileImageWithDefault = props => {
   if (image) {
     imageSource = 'images/' + image;
   }
+
   return (
     <img
       alt={`Profile`}

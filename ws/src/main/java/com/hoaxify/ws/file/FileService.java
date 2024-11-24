@@ -55,8 +55,9 @@ public class FileService {
 	}
 
 	public String detectType(String value) {
-		byte[] base64encoded = Base64.getDecoder().decode(value);
-		return tika.detect(base64encoded);
+
+		byte[] base64Encoded = Base64.getDecoder().decode(value);
+		return tika.detect(base64Encoded);
 	}
 
 }
