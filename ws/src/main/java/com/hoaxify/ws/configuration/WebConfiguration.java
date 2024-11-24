@@ -12,28 +12,27 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class WebConfiguration implements WebMvcConfigurer{
-	
+public class WebConfiguration implements WebMvcConfigurer {
+
 	@Autowired
 	AppConfiguration appConfiguration;
-	
+
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/images/**")
-			.addResourceLocations("file:./"+appConfiguration.getUploadPath()+"/")
-			.setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS));
+				.addResourceLocations("file:./" + appConfiguration.getUploadPath() + "/")
+				.setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS));
 	}
-	
+
 	@Bean
-	CommandLineRunner createStorageDirections() {
-		return (args)-> {
+	CommandLineRunner createStorageDirectories() {
+		return (args) -> {
 			File folder = new File(appConfiguration.getUploadPath());
 			boolean folderExist = folder.exists() && folder.isDirectory();
-			if(!folderExist) {
+			if (!folderExist) {
 				folder.mkdir();
 			}
 		};
-		
 	}
 
 }
