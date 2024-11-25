@@ -8,9 +8,9 @@ const ProfileImageWithDefault = props => {
   if (image) {
     imageSource = 'images/' + image;
   }
- 
- 
-  return (      
+
+
+  return (
     <img
       alt={`Profile`}
       src={tempimage ? tempimage : imageSource}

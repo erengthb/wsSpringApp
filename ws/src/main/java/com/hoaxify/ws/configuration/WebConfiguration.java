@@ -25,7 +25,7 @@ public class WebConfiguration implements WebMvcConfigurer {
 	}
 
 	@Bean
-	CommandLineRunner createStorageDirections() {
+	CommandLineRunner createStorageDirectories() {
 		return (args) -> {
 			File folder = new File(appConfiguration.getUploadPath());
 			boolean folderExist = folder.exists() && folder.isDirectory();
@@ -33,7 +33,6 @@ public class WebConfiguration implements WebMvcConfigurer {
 				folder.mkdir();
 			}
 		};
-
 	}
 
 }
