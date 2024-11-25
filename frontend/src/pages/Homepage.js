@@ -10,10 +10,10 @@ const Homepage = () => {
     return (
         <div className="container"> 
                 <div  className='row'>
-                    <div className='col'>
+                    <div className='col-8'>
                        {isLoggedIn && <HoaxSubmit></HoaxSubmit>}
                  </div>
-                     <div className='col'>
+                     <div className='col-4'>
                          <UserList></UserList>
                      </div>
              </div>
