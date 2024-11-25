@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useSelector  , useDispatch} from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import ProfileImageWithDefault from './ProfileImageWithDefault';
 import { useTranslation } from 'react-i18next';
 import Input from './Input';
@@ -18,7 +18,7 @@ const ProfileCard = props => {
   const [user, setUser] = useState({});
   const [editable, setEditable] = useState(false);
   const [newImage, setNewImage] = useState();
-  const[validationErrors, setValidationErrors] = useState({});
+  const [validationErrors, setValidationErrors] = useState({});
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -31,15 +31,15 @@ const ProfileCard = props => {
 
   useEffect(() => {
     setValidationErrors(previousValidationErrors => ({
-        ...previousValidationErrors,
-        displayName:undefined  
+      ...previousValidationErrors,
+      displayName: undefined
     }));
   }, [updatedDisplayName]);
 
   useEffect(() => {
     setValidationErrors(previousValidationErrors => ({
-        ...previousValidationErrors,
-        image:undefined  
+      ...previousValidationErrors,
+      image: undefined
     }));
   }, [newImage]);
 
@@ -56,10 +56,11 @@ const ProfileCard = props => {
   }, [inEditMode, displayName]);
 
   const onClickSave = async () => {
-    let image ;
-    if(newImage) {
-      image =  newImage.split(',')[1]
+    let image;
+    if (newImage) {
+      image = newImage.split(',')[1];
     }
+
     const body = {
       displayName: updatedDisplayName,
       image
@@ -70,12 +71,12 @@ const ProfileCard = props => {
       setUser(response.data);
       dispatch(updateSuccess(response.data));
     } catch (error) {
-      setValidationErrors(error.response.data.validationErrors)
+      setValidationErrors(error.response.data.validationErrors);
     }
   };
 
   const onChangeFile = event => {
-    if(event.target.files.length<1) {
+    if (event.target.files.length < 1) {
       return;
     }
     const file = event.target.files[0];
@@ -88,7 +89,7 @@ const ProfileCard = props => {
 
   const pendingApiCall = useApiProgress('put', '/api/1.0/users/' + username);
 
-  const {displayName : displayNameError, image: imageError } = validationErrors;
+  const { displayName: displayNameError, image: imageError } = validationErrors;
   return (
     <div className="card text-center">
       <div className="card-header">
@@ -123,9 +124,9 @@ const ProfileCard = props => {
               onChange={event => {
                 setUpdatedDisplayName(event.target.value);
               }}
-              error = {displayNameError}
+              error={displayNameError}
             />
-            <Input type="file" onChange={onChangeFile} error ={imageError} />
+            <Input type="file" onChange={onChangeFile} error={imageError} />
             <div>
               <ButtonWithProgress
                 className="btn btn-primary d-inline-flex"

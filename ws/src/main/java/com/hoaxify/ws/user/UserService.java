@@ -1,9 +1,6 @@
 package com.hoaxify.ws.user;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.logging.Logger;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +14,6 @@ import error.NotFoundException;
 
 @Service
 public class UserService {
-	private static final Logger logger = Logger.getLogger(UserService.class.getName());
 
 	UserRepository userRepository;
 
@@ -32,10 +28,8 @@ public class UserService {
 	}
 
 	public void save(User user) {
-		user.setCreateDate(getCreateDate());
 		user.setPassword(this.passwordEncoder.encode(user.getPassword()));
 		userRepository.save(user);
-
 	}
 
 	public Page<User> getUsers(Pageable page, User user) {
@@ -45,21 +39,12 @@ public class UserService {
 		return userRepository.findAll(page);
 	}
 
-	// bu metodu daha sonra core package sinin içine alacağız
-	public static String getCreateDate() {
-		Date now = new Date();
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		String day = dateFormat.format(now);
-		return day;
-	}
-
 	public User getByUsername(String username) {
 		User inDB = userRepository.findByUsername(username);
 		if (inDB == null) {
 			throw new NotFoundException();
-		} else {
-			return inDB;
 		}
+		return inDB;
 	}
 
 	public User updateUser(String username, UserUpdateVM updatedUser) {
@@ -67,12 +52,11 @@ public class UserService {
 		inDB.setDisplayName(updatedUser.getDisplayName());
 		if (updatedUser.getImage() != null) {
 			String oldImageName = inDB.getImage();
-			// inDB.setImage(updatedUser.getImage());
 			try {
 				String storedFileName = fileService.writeBase64EncodedStringToFile(updatedUser.getImage());
 				inDB.setImage(storedFileName);
 			} catch (IOException e) {
-				logger.severe("Kullanıcı resmi kaydedilirken hata oluştu . Hata Mesajı : " + e);
+				e.printStackTrace();
 			}
 			fileService.deleteFile(oldImageName);
 		}

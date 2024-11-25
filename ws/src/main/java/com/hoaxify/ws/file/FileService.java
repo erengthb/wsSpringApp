@@ -13,7 +13,6 @@ import org.apache.tika.Tika;
 import org.springframework.stereotype.Service;
 
 import com.hoaxify.ws.configuration.AppConfiguration;
-import com.hoaxify.ws.utils.StringUtil;
 
 @Service
 public class FileService {
@@ -29,21 +28,23 @@ public class FileService {
 	}
 
 	public String writeBase64EncodedStringToFile(String image) throws IOException {
-
-		String fileName = UUID.randomUUID().toString().replace("-", "");
+		String fileName = generateRandomName();
 		File target = new File(appConfiguration.getUploadPath() + "/" + fileName);
 		OutputStream outputStream = new FileOutputStream(target);
-		byte[] base64Encoded = Base64.getDecoder().decode(image);
 
-		outputStream.write(base64Encoded);
+		byte[] base64encoded = Base64.getDecoder().decode(image);
+
+		outputStream.write(base64encoded);
 		outputStream.close();
-
 		return fileName;
+	}
 
+	public String generateRandomName() {
+		return UUID.randomUUID().toString().replaceAll("-", "");
 	}
 
 	public void deleteFile(String oldImageName) {
-		if (StringUtil.isNullOrEmpty(oldImageName)) {
+		if (oldImageName == null) {
 			return;
 		}
 		try {
@@ -51,11 +52,12 @@ public class FileService {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public String detectType(String value) {
+
 		byte[] base64Encoded = Base64.getDecoder().decode(value);
 		return tika.detect(base64Encoded);
 	}
+
 }
