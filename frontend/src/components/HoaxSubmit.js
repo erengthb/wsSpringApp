@@ -6,6 +6,7 @@ import { postHoax } from '../api/apiCalls';
 
 const HoaxSubmit = () => {
 
+    const user = useSelector((store) => ({userName:store.username})); 
     const image = useSelector((store) => ({image:store.image}))
     const [focused, setFocused ]= useState(false);
     const [hoax,setHoax] = useState('');
@@ -19,7 +20,8 @@ const HoaxSubmit = () => {
 
     const onClickHoaxify = async () => {
         const body = {
-            content : hoax
+            content : hoax,
+            hoaxUser: user.userName
         }
         try{
             await postHoax(body)
