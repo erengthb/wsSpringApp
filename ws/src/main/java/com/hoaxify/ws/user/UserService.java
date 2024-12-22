@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.hoaxify.ws.file.FileService;
 import com.hoaxify.ws.user.vm.UserUpdateVM;
+import com.hoaxify.ws.utils.DateUtil;
 
 import error.NotFoundException;
 
@@ -29,6 +30,7 @@ public class UserService {
 
 	public void save(User user) {
 		user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+		user.setCreateDate(DateUtil.getCurrentDateString());
 		userRepository.save(user);
 	}
 
