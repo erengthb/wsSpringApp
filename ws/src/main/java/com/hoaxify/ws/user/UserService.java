@@ -7,11 +7,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.hoaxify.ws.error.NotFoundException;
 import com.hoaxify.ws.file.FileService;
 import com.hoaxify.ws.user.vm.UserUpdateVM;
 import com.hoaxify.ws.utils.DateUtil;
 
-import error.NotFoundException;
+
 
 @Service
 public class UserService {
