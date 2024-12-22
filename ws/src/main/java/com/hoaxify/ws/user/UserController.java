@@ -20,12 +20,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hoaxify.ws.error.ApiError;
 import com.hoaxify.ws.shared.CurrentUserAnnotation;
 import com.hoaxify.ws.shared.GenericResponse;
 import com.hoaxify.ws.user.vm.UserUpdateVM;
 import com.hoaxify.ws.user.vm.UserVM;
 
-import error.ApiError;
+
 import jakarta.validation.Valid;
 
 @RestController
@@ -61,28 +62,5 @@ public class UserController {
 		return new UserVM(user);
 
 	}
-	
-	
-	
-	// hata mesajlarını api errora dönüştürür
-	
-	@ExceptionHandler(MethodArgumentNotValidException.class)
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	public ApiError handleValidationException(MethodArgumentNotValidException exception) {
-		
-		ApiError error = new ApiError(400,"Validation Error","/api/1.0/users");
-		
-		Map<String , String > validationErrors = new HashMap<>();
-		
-		for( FieldError fieldError  : exception.getBindingResult().getFieldErrors()) {
-			validationErrors.put(fieldError.getField(), fieldError.getDefaultMessage());		
-		}
-		
-		error.setValidationErrors(validationErrors);
-		
-		return error;
-		
-	}
-	
 
 }

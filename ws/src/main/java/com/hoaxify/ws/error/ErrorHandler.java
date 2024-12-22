@@ -1,4 +1,4 @@
-package error;
+package com.hoaxify.ws.error;
 
 import java.util.HashMap;
 import java.util.List;
@@ -11,8 +11,10 @@ import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 
+@RestController
 public class ErrorHandler implements ErrorController {
 
 	@Autowired
@@ -38,6 +40,8 @@ public class ErrorHandler implements ErrorController {
 			}
 			error.setValidationErrors(validationErrors);
 		}
+		
+		
 
 		return error;
 

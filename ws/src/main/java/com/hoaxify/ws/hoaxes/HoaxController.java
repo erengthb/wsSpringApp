@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hoaxify.ws.shared.GenericResponse;
 
+import jakarta.validation.Valid;
+
 
 @RestController
 @RequestMapping("/api/1.0")
@@ -17,7 +19,7 @@ public class HoaxController {
 	HoaxService hoaxService ; 
 
 	@PostMapping("/hoaxes")	
-	public GenericResponse createHoax(@RequestBody Hoax hoax ) {	
+	public GenericResponse createHoax(@Valid @RequestBody Hoax hoax ) {	
 		hoaxService.save(hoax);
 		return new GenericResponse("hoax created");					
 	}
