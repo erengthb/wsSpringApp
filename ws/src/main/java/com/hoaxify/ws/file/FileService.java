@@ -40,7 +40,7 @@ public class FileService {
 	}
 
 	public String generateRandomName() {
-		return UUID.randomUUID().toString().replaceAll("-", "");
+		return UUID.randomUUID().toString().replace("-", "");
 	}
 
 	public void deleteFile(String oldImageName) {

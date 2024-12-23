@@ -5,13 +5,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-
 import lombok.Data;
 
 @Data
 @Entity
 @Table(name = "hoaxes")
 public class Hoax {
+
 	@Id
 	@GeneratedValue
 	private Long id;
@@ -20,9 +20,9 @@ public class Hoax {
 	private String content;
 
 	private String hoaxUser;
-	
+
 	private String createDate;
 
+	private String createTime;
 
-	
 }
