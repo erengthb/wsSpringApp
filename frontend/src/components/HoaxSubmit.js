@@ -9,19 +9,20 @@ const HoaxSubmit = () => {
     const image = useSelector((store) => ({ image: store.image }));
     const [focused, setFocused] = useState(false);
     const [hoax, setHoax] = useState('');
-    const [error, setError] = useState();
+    const [errors, setErrors] = useState({});
     const { t } = useTranslation();
 
     useEffect(() => {
         if (!focused) {
             setHoax('');
-            setError(undefined);
+            setErrors({});
         }
     }, [focused]);
 
     useEffect(() => {
-        setError(undefined); // Yeni bir değişiklik yapılırsa önceki hatayı temizle
-    }, [hoax]);
+        setErrors({});
+    },[hoax]);
+
 
     const onClickHoaxify = async () => {
         const body = {
@@ -33,14 +34,17 @@ const HoaxSubmit = () => {
             setHoax(''); // Hoax alanını temizle
             setFocused(false); // Odaklanmayı kaldır
         } catch (error) {
-            // Validation hatalarını kontrol et ve ilk hatayı al
-            const validationErrors = error.response?.data?.validationErrors;
-            if (validationErrors && validationErrors.content) {
-                setError(validationErrors.content);
-            } 
+            if (error.response.data.validationErrors) {
+                setErrors(error.response.data.validationErrors);
+              }
         }
         
     };
+
+    let textAreaClass = 'form-control';
+    if(errors.content){
+        textAreaClass += ' is-invalid';
+    }
 
     return (
         <div className="card p-1 flex-row">
@@ -52,13 +56,13 @@ const HoaxSubmit = () => {
             ></ProfileImageWithDefault>
             <div className="flex-fill">
                 <textarea
-                    className={`form-control ${error ? 'is-invalid' : ''}`}
+                    className={textAreaClass}
                     rows={focused ? '3' : '1'}
                     onFocus={() => setFocused(true)}
                     onChange={(event) => setHoax(event.target.value)}
                     value={hoax}
                 ></textarea>
-                {error && <div className="invalid-feedback">{error}</div>}
+                 <div className="invalid-feedback">{errors.content}</div>
                 {focused && (
                     <div className="text-right mt-2">
                         <button className="btn btn-primary" onClick={onClickHoaxify}>
