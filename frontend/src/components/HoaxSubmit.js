@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux';
 import ProfileImageWithDefault from './ProfileImageWithDefault';
 import { useTranslation } from 'react-i18next';
 import { postHoax } from '../api/apiCalls';
+import ButtonWithProgress from '../components/ButtonWithProgress';
+import { useApiProgress } from '../shared/ApiProgress';
 
 const HoaxSubmit = () => {
     const user = useSelector((store) => ({ userName: store.username }));
@@ -11,6 +13,8 @@ const HoaxSubmit = () => {
     const [hoax, setHoax] = useState('');
     const [errors, setErrors] = useState({});
     const { t } = useTranslation();
+
+    const pendingApiCall = useApiProgress('post', '/api/1.0/hoaxes');
 
     useEffect(() => {
         if (!focused) {
@@ -65,12 +69,17 @@ const HoaxSubmit = () => {
                  <div className="invalid-feedback">{errors.content}</div>
                 {focused && (
                     <div className="text-right mt-2">
-                        <button className="btn btn-primary" onClick={onClickHoaxify}>
-                            Hoaxify
-                        </button>
+                         <ButtonWithProgress 
+                         className="btn btn-primary" 
+                         onClick={onClickHoaxify}
+                         disabled={pendingApiCall}
+                         pendingApiCall={pendingApiCall}
+                         text = 'Hoaxify'
+                        />
                         <button
                             className="btn btn-light d-inline-flex ml-1"
                             onClick={() => setFocused(false)}
+                            disabled={pendingApiCall}
                         >
                             <i className="material-icons">close</i>
                             {t('Cancel')}
