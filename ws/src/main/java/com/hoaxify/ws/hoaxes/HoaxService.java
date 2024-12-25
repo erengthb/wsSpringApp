@@ -20,6 +20,7 @@ public class HoaxService {
 	public Hoax save(Hoax hoax) {
 		hoax.setCreateDate(DateUtil.getCurrentDateString());
 		hoax.setCreateTime(DateUtil.getCurrentTimeWithMillis());
+		hoax.setHoaxUser(hoax.getHoaxUser());
 		return hoaxRepository.save(hoax);
 	}
 
