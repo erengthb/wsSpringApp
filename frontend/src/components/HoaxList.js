@@ -8,7 +8,7 @@ const HoaxList = () => {
     const loadHoaxes = async () => {
       try {
         const response = await getHoaxes();
-        setHoaxPage(response.data);
+        setHoaxPage(response.data) ;
       } catch (error) {}
     };
     loadHoaxes();
