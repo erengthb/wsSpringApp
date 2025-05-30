@@ -1,32 +1,34 @@
 package com.hoaxify.ws.hoaxes;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.hoaxify.ws.utils.DateUtil;
+import com.hoaxify.ws.user.User;
 
 @Service
 public class HoaxService {
+	
+	HoaxRepository hoaxRepository;
 
-	private final HoaxRepository hoaxRepository;
-
-	@Autowired
 	public HoaxService(HoaxRepository hoaxRepository) {
+		super();
 		this.hoaxRepository = hoaxRepository;
 	}
 
-	public Hoax save(Hoax hoax) {
-		hoax.setCreateDate(DateUtil.getCurrentDateString());
-		hoax.setCreateTime(DateUtil.getCurrentTimeWithMillis());
-		hoax.setHoaxUser(hoax.getHoaxUser());
-		return hoaxRepository.save(hoax);
+	public void save(Hoax hoax, User user) {
+		hoax.setTimestamp(new Date());
+		hoax.setUser(user);
+		hoaxRepository.save(hoax);
 	}
 
 	public Page<Hoax> getHoaxes(Pageable page) {
 		return hoaxRepository.findAll(page);
-
 	}
+	
+	
 
 }
