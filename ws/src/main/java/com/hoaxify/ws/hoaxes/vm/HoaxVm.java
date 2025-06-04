@@ -1,9 +1,5 @@
 package com.hoaxify.ws.hoaxes.vm;
-
-import java.util.Date;
-
 import com.hoaxify.ws.hoaxes.Hoax;
-import com.hoaxify.ws.user.User;
 import com.hoaxify.ws.user.vm.UserVM;
 
 import lombok.Data;
