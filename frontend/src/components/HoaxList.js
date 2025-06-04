@@ -24,7 +24,9 @@ const HoaxList = () => {
         ...response.data,
         content: [...previousHoaxPage.content, ...response.data.content]
       })) ;
-    } catch (error) {}
+    } catch (error) {
+      console.error('Hoax data error:', error);
+    }
   };
 
 
