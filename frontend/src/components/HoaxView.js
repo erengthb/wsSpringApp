@@ -20,7 +20,7 @@ const HoaxView = (props) => {
         <ProfileImageWithDefault image={image} width="32" height="32" className="rounded-circle m-1" />
         <div className ="flex-fill m-auto pl-2">
             <Link to={`/user/${username}`} className="text-decoration-none text-dark">
-             <h6 className ="d-inline"> {displayName}@{username}</h6>
+             <h6 className ="d-inline"> {displayName}@{username}</h6>                                             
              <span>  --  </span>
              <span>{formatted}</span>
             </Link>
