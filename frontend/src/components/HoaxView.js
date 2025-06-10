@@ -1,11 +1,17 @@
 import React from 'react'
 import ProfileImageWithDefault from './ProfileImageWithDefault';
 import { Link } from 'react-router-dom/cjs/react-router-dom.min';
+import {format} from 'timeago.js';
+import { useTranslation } from 'react-i18next';
 
 const HoaxView = (props) => {
   const { hoax } = props;
-  const{user,content} = hoax;
-  const{username,displayName,image} = user;
+  const{user , content , timestamp} = hoax;
+  const{username , displayName , image} = user;
+
+
+  const {i18n} = useTranslation();
+  const formatted  = format(timestamp ,i18n.language);
 
   return (
     <div>
@@ -14,7 +20,9 @@ const HoaxView = (props) => {
         <ProfileImageWithDefault image={image} width="32" height="32" className="rounded-circle m-1" />
         <div className ="flex-fill m-auto pl-2">
             <Link to={`/user/${username}`} className="text-decoration-none text-dark">
-             <h6>{displayName}@{username}</h6>
+             <h6 className ="d-inline"> {displayName}@{username}</h6>
+             <span>  --  </span>
+             <span>{formatted}</span>
             </Link>
         </div>
         
