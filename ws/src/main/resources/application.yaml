@@ -31,7 +31,14 @@ hoaxify:
 
 app:
   log-cleanup:
-    cron: "0 0 15 * * *"
+   cron: "0 0 2 * * *"
+
+logging:
+  level:
+    org.springframework.web: INFO
+    com.hoaxify: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 
 ---
 
@@ -41,8 +48,3 @@ spring:
       on-profile: production
 hoaxify:
   upload-path: storage-production
-
-logging:
-  level:
-    org.springframework.web: INFO
-    com.hoaxify: DEBUG
