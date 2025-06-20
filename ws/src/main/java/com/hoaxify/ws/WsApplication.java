@@ -5,6 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import com.hoaxify.ws.hoaxes.Hoax;
 import com.hoaxify.ws.hoaxes.HoaxService;
@@ -12,6 +13,7 @@ import com.hoaxify.ws.user.User;
 import com.hoaxify.ws.user.UserService;
 
 @SpringBootApplication
+@EnableScheduling
 public class WsApplication {
 
 	public static void main(String[] args) {

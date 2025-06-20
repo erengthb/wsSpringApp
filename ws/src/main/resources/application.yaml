@@ -1,7 +1,7 @@
 spring:
   jpa:
     hibernate:
-      ddl-auto: update     
+      ddl-auto: update    
     properties:
       javax:
         persistence:
@@ -29,6 +29,10 @@ spring:
 hoaxify:
   upload-path: storage-dev
 
+app:
+  log-cleanup:
+    cron: "0 0 15 * * *"
+
 ---
 
 spring:
@@ -37,3 +41,8 @@ spring:
       on-profile: production
 hoaxify:
   upload-path: storage-production
+
+logging:
+  level:
+    org.springframework.web: INFO
+    com.hoaxify: DEBUG
