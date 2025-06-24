@@ -48,22 +48,21 @@ spring:
 hoaxify:
   upload-path: storage-dev
 
-
 # === UAT PROFİL ===
 ---
 spring:
+  config:
+    activate:
+      on-profile: uat
   datasource:
     url: ${DATABASE_URL}
     driver-class-name: org.postgresql.Driver
-    username: 
-    password: 
   jpa:
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-
 
 hoaxify:
   upload-path: storage-uat
@@ -71,11 +70,12 @@ hoaxify:
 # === PRODUCTION PROFİL ===
 ---
 spring:
+  config:
+    activate:
+      on-profile: production
   datasource:
     url: ${DATABASE_URL}
     driver-class-name: org.postgresql.Driver
-    username: 
-    password: 
   jpa:
     hibernate:
       ddl-auto: update
@@ -83,9 +83,5 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
-
 hoaxify:
   upload-path: storage-production
-
-
-
