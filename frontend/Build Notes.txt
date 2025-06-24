@@ -1,0 +1,14 @@
+Çalıştırma Komutları
+Lokal geliştirme için:
+
+bash
+Kopyala
+Düzenle
+npm start
+Üretim build için:
+
+bash
+Kopyala
+Düzenle
+npm run build
+React otomatik olarak uygun .env dosyasını seçer.

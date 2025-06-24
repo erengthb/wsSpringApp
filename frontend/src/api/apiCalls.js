@@ -1,5 +1,9 @@
 import axios from 'axios';
 
+// Backend base URL'yi ortam değişkeninden alıyoruz
+axios.defaults.baseURL = process.env.REACT_APP_API_URL;
+
+
 export const signup = body => {
   return axios.post('/api/1.0/users', body);
 };
