@@ -14,8 +14,9 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("https://ws-spring-app-git-uat-erengthbs-projects.vercel.app", // UAT
-                        "https://ws-spring-app.vercel.app") // PROD
+                        .allowedOrigins(
+                        "https://ws-spring-app.vercel.app", // PROD
+                        "https://ws-spring-app-git-uat-erengthbs-projects.vercel.app") // UAT
                         .allowedMethods("*")
                         .allowedHeaders("*")
                         .allowCredentials(true);
