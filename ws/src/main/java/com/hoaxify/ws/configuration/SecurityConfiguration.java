@@ -17,8 +17,10 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration {
 
-	@Bean
+@Bean
 public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+    http.cors(); // Bu satır CorsConfigurationSource bean'ini kullanacak
 
     http.csrf().disable();
     http.headers().frameOptions().disable();
