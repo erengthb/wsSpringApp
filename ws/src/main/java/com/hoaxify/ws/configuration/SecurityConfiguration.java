@@ -20,6 +20,8 @@ public class SecurityConfiguration {
 	@Bean
 public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
+    http.cors();
+
     http.csrf().disable();
     http.headers().frameOptions().disable();
 

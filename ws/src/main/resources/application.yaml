@@ -51,11 +51,11 @@ hoaxify:
 # === PRODUCTION PROFİL ===
 ---
 spring:
+  config:
+    activate:
+      on-profile: production
   datasource:
-    url: ${DATABASE_URL}
     driver-class-name: org.postgresql.Driver
-    username: # Opsiyonel, URL içinde var
-    password: # Opsiyonel, URL içinde var
   jpa:
     hibernate:
       ddl-auto: update
@@ -63,6 +63,6 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
-
 hoaxify:
   upload-path: storage-production
+
