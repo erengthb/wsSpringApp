@@ -2,7 +2,7 @@
 spring:
   jpa:
     hibernate:
-      ddl-auto: update    
+      ddl-auto: update
     properties:
       javax:
         persistence:
@@ -41,7 +41,7 @@ spring:
     url: jdbc:h2:file:C:/Users/GTUSR0728/test;IFEXISTS=FALSE
     driver-class-name: org.h2.Driver
     username: sa
-    password: 
+    password:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
 
@@ -55,7 +55,6 @@ spring:
     activate:
       on-profile: uat
   datasource:
-    url: ${DATABASE_URL}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -74,7 +73,6 @@ spring:
     activate:
       on-profile: production
   datasource:
-    url: ${DATABASE_URL}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
