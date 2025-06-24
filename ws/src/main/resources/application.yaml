@@ -1,3 +1,4 @@
+# === ORTAK AYARLAR ===
 spring:
   jpa:
     hibernate:
@@ -7,12 +8,31 @@ spring:
         persistence:
           validation:
             mode: none
-    database-platform: org.hibernate.dialect.H2Dialect
   data:
     web:
       pageable:
         default-page-size: 10
         max-page-size: 100
+  profiles:
+    active: dev
+
+app:
+  log-cleanup:
+    cron: "0 0 2 * * *"
+
+logging:
+  level:
+    org.springframework.web: INFO
+    com.hoaxify: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+# === DEV PROFİL ===
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
   h2:
     console:
       enabled: true
@@ -22,29 +42,27 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password: 
-
-  profiles:
-    active: dev    # <-- Aktif profil "dev" olsun
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
 
 hoaxify:
   upload-path: storage-dev
 
-app:
-  log-cleanup:
-   cron: "0 0 2 * * *"
-
-logging:
-  level:
-    org.springframework.web: INFO
-    com.hoaxify: DEBUG
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-
+# === PRODUCTION PROFİL ===
 ---
-
 spring:
-  config:
-    activate:
-      on-profile: production
+  datasource:
+    url: ${DATABASE_URL}
+    driver-class-name: org.postgresql.Driver
+    username: # Opsiyonel, URL içinde var
+    password: # Opsiyonel, URL içinde var
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+
 hoaxify:
   upload-path: storage-production
