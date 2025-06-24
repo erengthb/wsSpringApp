@@ -53,7 +53,7 @@ hoaxify:
 ---
 spring:
   datasource:
-    url: postgresql://postgres:UoVpTQNzotdsHfyDmWfFKmwUUokVSPsp@postgres.railway.internal:5432/railway
+    url: ${DATABASE_URL}
     driver-class-name: org.postgresql.Driver
     username: 
     password: 
@@ -72,7 +72,7 @@ hoaxify:
 ---
 spring:
   datasource:
-    url: postgresql://postgres:HEDSPjZFUptTBtnbXajdXFFvEKGeAYzM@postgres.railway.internal:5432/railway
+    url: ${DATABASE_URL}
     driver-class-name: org.postgresql.Driver
     username: 
     password: 
