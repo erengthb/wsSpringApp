@@ -28,7 +28,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests()
         .requestMatchers(new AntPathRequestMatcher("/api/1.0/auth", HttpMethod.POST.name())).authenticated()
         .requestMatchers(new AntPathRequestMatcher("/api/1.0/users/{username}", HttpMethod.PUT.name())).authenticated()
-        .requestMatchers(new AntPathRequestMatcher("/api/1.0/hoaxes", HttpMethod.PUT.name())).permitAll()
+        .requestMatchers(new AntPathRequestMatcher("/api/1.0/hoaxes", HttpMethod.PUT.name())).authenticated()
         .anyRequest().permitAll();
 
     http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
