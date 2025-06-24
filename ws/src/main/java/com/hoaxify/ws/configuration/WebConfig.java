@@ -17,7 +17,7 @@ public class WebConfig {
                         .allowedOrigins(
                             "http://localhost:3000",
                             "https://ws-spring-app.vercel.app", // Production
-                            "https://ws-spring-pknymj774-erengthbs-projects.vercel.app")   // UAT
+                            "https://ws-spring-app-git-uat-erengthbs-projects.vercel.app")   // UAT
                         .allowedMethods("*")
                         .allowedHeaders("*")
                         .allowCredentials(true);
