@@ -6,20 +6,18 @@ const ProfileImageWithDefault = props => {
 
   let imageSource = defaultPicture;
   if (image) {
-    imageSource = 'images/' + image;
+    imageSource = process.env.REACT_APP_API_URL + '/images/' + image;
   }
-
 
   return (
     <img
-      alt={`Profile`}
+      alt="Profile"
       src={tempimage ? tempimage : imageSource}
       {...props}
       onError={event => {
-        console.error('Image load failed:',  event.target.src);
+        console.error('Image load failed:', event.target.src);
         event.target.src = defaultPicture;
       }}
-      
     />
   );
 };
