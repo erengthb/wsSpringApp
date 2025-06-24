@@ -16,7 +16,8 @@ public class WebConfig {
                 registry.addMapping("/**")
                         .allowedOrigins(
                             "http://localhost:3000",
-                            "https://ws-spring-app.vercel.app")     
+                            "https://ws-spring-app.vercel.app", // Production
+                            "https://ws-spring-pknymj774-erengthbs-projects.vercel.app")  // UAt
                         .allowedMethods("*")
                         .allowedHeaders("*")
                         .allowCredentials(true);
