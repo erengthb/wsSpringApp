@@ -1,5 +1,8 @@
 package com.hoaxify.ws.configuration;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -11,37 +14,54 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration {
 
-	@Bean
-public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        return http
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .csrf(csrf -> csrf.disable())
+            .headers(headers -> headers.frameOptions(frame -> frame.disable()))
+            .httpBasic(httpBasic -> httpBasic.authenticationEntryPoint(new AuthEntryPoint()))
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers(new AntPathRequestMatcher("/api/1.0/auth", "POST")).authenticated()
+                .requestMatchers(new AntPathRequestMatcher("/api/1.0/users/{username}", "PUT")).authenticated()
+                .requestMatchers(new AntPathRequestMatcher("/api/1.0/hoaxes", "PUT")).permitAll()
+                .anyRequest().permitAll()
+            )
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .build();
+    }
+    
 
-    http.cors();
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
 
-    http.csrf().disable();
-    http.headers().frameOptions().disable();
+        configuration.setAllowedOrigins(List.of(
+            "http://localhost:3000",
+            "https://ws-spring-app.vercel.app",
+            "https://ws-spring-app-git-uat-erengthbs-projects.vercel.app"
+        ));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowCredentials(true);
 
-    http.httpBasic().authenticationEntryPoint(new AuthEntryPoint());
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
 
-    http.authorizeHttpRequests()
-        .requestMatchers(new AntPathRequestMatcher("/api/1.0/auth", HttpMethod.POST.name())).authenticated()
-        .requestMatchers(new AntPathRequestMatcher("/api/1.0/users/{username}", HttpMethod.PUT.name())).authenticated()
-        .requestMatchers(new AntPathRequestMatcher("/api/1.0/hoaxes", HttpMethod.PUT.name())).permitAll()
-        .anyRequest().permitAll();
+        return source;
+    }
 
-    http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-    return http.build();
-}
-
-
-
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 }

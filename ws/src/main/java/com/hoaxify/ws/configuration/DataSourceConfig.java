@@ -2,44 +2,43 @@ package com.hoaxify.ws.configuration;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-
 import javax.sql.DataSource;
 
 @Configuration
-@Profile("production")  // Sadece production profilde aktif olur
+@Profile({"uat", "production"})
 public class DataSourceConfig {
 
     @Bean
-    public DataSource dataSource() throws URISyntaxException {
+    public DataSource dataSource() {
         String databaseUrl = System.getenv("DATABASE_URL");
         if (databaseUrl == null) {
-            throw new RuntimeException("DATABASE_URL environment variable is not set.");
+            throw new RuntimeException("DATABASE_URL environment variable is not set!");
         }
 
-        URI dbUri = new URI(databaseUrl);
+        // Railway URL örneği: postgres://username:password@host:port/dbname
+        String cleanedUrl = databaseUrl.replace("postgres://", "");
+        String[] userInfoAndHost = cleanedUrl.split("@");
+        String[] userAndPass = userInfoAndHost[0].split(":");
+        String[] hostAndDb = userInfoAndHost[1].split("/", 2);
+        String[] hostAndPort = hostAndDb[0].split(":");
 
-        String username = null;
-        String password = null;
+        String username = userAndPass[0];
+        String password = userAndPass[1];
+        String host = hostAndPort[0];
+        String port = hostAndPort[1];
+        String dbName = hostAndDb[1];
 
-        if (dbUri.getUserInfo() != null) {
-            String[] userInfo = dbUri.getUserInfo().split(":");
-            username = userInfo[0];
-            password = userInfo.length > 1 ? userInfo[1] : null;
-        }
-
-        String jdbcUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
+        String jdbcUrl = "jdbc:postgresql://" + host + ":" + port + "/" + dbName + "?sslmode=require";
 
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(jdbcUrl);
-        if (username != null) config.setUsername(username);
-        if (password != null) config.setPassword(password);
-        config.addDataSourceProperty("sslmode", "require"); // Railway için SSL genellikle gerekir
+        config.setUsername(username);
+        config.setPassword(password);
 
         return new HikariDataSource(config);
     }

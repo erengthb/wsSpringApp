@@ -2,7 +2,7 @@
 spring:
   jpa:
     hibernate:
-      ddl-auto: update    
+      ddl-auto: update
     properties:
       javax:
         persistence:
@@ -18,7 +18,7 @@ spring:
 
 app:
   log-cleanup:
-    cron: "0 0 2 * * *"
+    cron: "0 20 15 * * *"
 
 logging:
   level:
@@ -41,12 +41,33 @@ spring:
     url: jdbc:h2:file:C:/Users/GTUSR0728/test;IFEXISTS=FALSE
     driver-class-name: org.h2.Driver
     username: sa
-    password: 
+    password:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
 
 hoaxify:
   upload-path: storage-dev
+
+# === UAT PROFİL ===
+---
+spring:
+  config:
+    activate:
+      on-profile: uat
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${DATABASE_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+hoaxify:
+  upload-path: storage-uat
 
 # === PRODUCTION PROFİL ===
 ---
@@ -56,6 +77,9 @@ spring:
       on-profile: production
   datasource:
     driver-class-name: org.postgresql.Driver
+    url: ${DATABASE_URL}
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
@@ -65,4 +89,3 @@ spring:
 
 hoaxify:
   upload-path: storage-production
-

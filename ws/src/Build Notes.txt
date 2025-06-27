@@ -1,1 +1,2 @@
-./mvnw clean package 
+// DEPLOY COMMAND 
+./mvnw clean package -DskipTests
