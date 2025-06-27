@@ -18,7 +18,7 @@ spring:
 
 app:
   log-cleanup:
-    cron: "0 0 2 * * *"
+    cron: "0 20 15 * * *"
 
 logging:
   level:
