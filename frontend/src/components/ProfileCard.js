@@ -9,10 +9,10 @@ import { useApiProgress } from '../shared/ApiProgress';
 import ButtonWithProgress from './ButtonWithProgress';
 import { updateSuccess } from '../redux/authActions';
 
-const ProfileCard = props => {
+const ProfileCard = (props) => {
   const [inEditMode, setInEditMode] = useState(false);
   const [updatedDisplayName, setUpdatedDisplayName] = useState();
-  const { username: loggedInUsername } = useSelector(store => ({ username: store.username }));
+  const { username: loggedInUsername } = useSelector((store) => ({ username: store.username }));
   const routeParams = useParams();
   const pathUsername = routeParams.username;
   const [user, setUser] = useState({});
@@ -30,20 +30,20 @@ const ProfileCard = props => {
   }, [pathUsername, loggedInUsername]);
 
   useEffect(() => {
-    setValidationErrors(previousValidationErrors => ({
+    setValidationErrors((previousValidationErrors) => ({
       ...previousValidationErrors,
-      displayName: undefined
+      displayName: undefined,
     }));
   }, [updatedDisplayName]);
 
   useEffect(() => {
-    setValidationErrors(previousValidationErrors => ({
+    setValidationErrors((previousValidationErrors) => ({
       ...previousValidationErrors,
-      image: undefined
+      image: undefined,
     }));
   }, [newImage]);
 
-  const { username, displayName, image } = user;
+  const { username, displayName, image, followersCount, followingCount } = user;
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -56,14 +56,14 @@ const ProfileCard = props => {
   }, [inEditMode, displayName]);
 
   const onClickSave = async () => {
-    let image;
+    let imageData;
     if (newImage) {
-      image = newImage.split(',')[1];
+      imageData = newImage.split(',')[1];
     }
 
     const body = {
       displayName: updatedDisplayName,
-      image
+      image: imageData,
     };
     try {
       const response = await updateUser(username, body);
@@ -75,7 +75,7 @@ const ProfileCard = props => {
     }
   };
 
-  const onChangeFile = event => {
+  const onChangeFile = (event) => {
     if (event.target.files.length < 1) {
       return;
     }
@@ -90,6 +90,7 @@ const ProfileCard = props => {
   const pendingApiCall = useApiProgress('put', '/api/1.0/users/' + username);
 
   const { displayName: displayNameError, image: imageError } = validationErrors;
+
   return (
     <div className="card text-center">
       <div className="card-header">
@@ -106,8 +107,19 @@ const ProfileCard = props => {
         {!inEditMode && (
           <>
             <h3>
-              {displayName}@{username}
+              {displayName} @{username}
             </h3>
+
+            {/* Takipçi ve takip edilen sayıları */}
+            <div className="mb-3">
+              <span className="mr-3">
+                <strong>{followersCount || 0}</strong> {t('followers')}
+              </span>
+              <span>
+                <strong>{followingCount || 0}</strong> {t('following')}
+              </span>
+            </div>
+
             {editable && (
               <button className="btn btn-success d-inline-flex" onClick={() => setInEditMode(true)}>
                 <i className="material-icons">edit</i>
@@ -121,7 +133,7 @@ const ProfileCard = props => {
             <Input
               label={t('Change Display Name')}
               defaultValue={displayName}
-              onChange={event => {
+              onChange={(event) => {
                 setUpdatedDisplayName(event.target.value);
               }}
               error={displayNameError}
@@ -140,7 +152,11 @@ const ProfileCard = props => {
                   </>
                 }
               />
-              <button className="btn btn-light d-inline-flex ml-1" onClick={() => setInEditMode(false)} disabled={pendingApiCall}>
+              <button
+                className="btn btn-light d-inline-flex ml-1"
+                onClick={() => setInEditMode(false)}
+                disabled={pendingApiCall}
+              >
                 <i className="material-icons">close</i>
                 {t('Cancel')}
               </button>

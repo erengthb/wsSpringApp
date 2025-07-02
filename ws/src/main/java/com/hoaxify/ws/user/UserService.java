@@ -1,15 +1,18 @@
 package com.hoaxify.ws.user;
 
 import java.io.IOException;
+import java.util.Set;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.hoaxify.ws.error.NotFoundException;
 import com.hoaxify.ws.file.FileService;
 import com.hoaxify.ws.user.vm.UserUpdateVM;
+import com.hoaxify.ws.user.vm.UserVM;
 import com.hoaxify.ws.utils.DateUtil;
 
 
@@ -65,5 +68,69 @@ public class UserService {
 		}
 		return userRepository.save(inDB);
 	}
+
+	public UserVM getUserVMByUsername(String username) {
+        User user = getByUsername(username);
+        int followersCount = userRepository.getFollowersCount(user.getId());
+        int followingCount = userRepository.getFollowingCount(user.getId());
+        return new UserVM(user, followersCount, followingCount);
+    }
+
+    @Transactional
+    public void followUser(Long followerId, Long followedId) {
+        if (followerId.equals(followedId)) {
+            throw new IllegalArgumentException("User cannot follow themselves");
+        }
+        User follower = userRepository.findById(followerId)
+                .orElseThrow(() -> new RuntimeException("Follower not found"));
+        User followed = userRepository.findById(followedId)
+                .orElseThrow(() -> new RuntimeException("Followed user not found"));
+
+        if (!follower.getFollowing().contains(followed)) {
+            follower.getFollowing().add(followed);
+            userRepository.save(follower);
+        }
+    }
+
+    @Transactional
+    public void unfollowUser(Long followerId, Long followedId) {
+        User follower = userRepository.findById(followerId)
+                .orElseThrow(() -> new RuntimeException("Follower not found"));
+        User followed = userRepository.findById(followedId)
+                .orElseThrow(() -> new RuntimeException("Followed user not found"));
+
+        if (follower.getFollowing().contains(followed)) {
+            follower.getFollowing().remove(followed);
+            userRepository.save(follower);
+        }
+    }
+
+    public boolean isFollowing(Long followerId, Long followedId) {
+        User follower = userRepository.findById(followerId)
+                .orElseThrow(() -> new RuntimeException("Follower not found"));
+        User followed = userRepository.findById(followedId)
+                .orElseThrow(() -> new RuntimeException("Followed user not found"));
+        return follower.getFollowing().contains(followed);
+    }
+
+    public Set<User> getFollowers(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return user.getFollowers();
+    }
+
+    public Set<User> getFollowing(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return user.getFollowing();
+    }
+
+	public int getFollowersCount(Long userId) {
+        return userRepository.getFollowersCount(userId);
+    }
+
+    public int getFollowingCount(Long userId) {
+        return userRepository.getFollowingCount(userId);
+    }
 
 }
