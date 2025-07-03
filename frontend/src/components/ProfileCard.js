@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import ProfileImageWithDefault from './ProfileImageWithDefault';
 import { useTranslation } from 'react-i18next';
 import Input from './Input';
-import { updateUser } from '../api/apiCalls';
+import { updateUser, followUser, unfollowUser, getUser } from '../api/apiCalls';
 import { useApiProgress } from '../shared/ApiProgress';
 import ButtonWithProgress from './ButtonWithProgress';
 import { updateSuccess } from '../redux/authActions';
@@ -20,41 +20,75 @@ const ProfileCard = (props) => {
   const [newImage, setNewImage] = useState();
   const [validationErrors, setValidationErrors] = useState({});
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
-  useEffect(() => {
-    setUser(props.user);
-  }, [props.user]);
+  // Takip durumu ve takipçi sayıları
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followersCount, setFollowersCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
 
+  // Takip / Takipten çık API çağrılarının durumu
+  const [pendingFollowCall, setPendingFollowCall] = useState(false);
+
+  // Editable mi?
   useEffect(() => {
     setEditable(pathUsername === loggedInUsername);
   }, [pathUsername, loggedInUsername]);
 
+  // props.user değiştiğinde user state'i güncelleniyor (sende zaten var)
   useEffect(() => {
-    setValidationErrors((previousValidationErrors) => ({
-      ...previousValidationErrors,
-      displayName: undefined,
-    }));
-  }, [updatedDisplayName]);
+    if (props.user) {
+      setUser(props.user);
+      setIsFollowing(props.user.isFollowing || false);
+      setFollowersCount(props.user.followersCount || 0);
+      setFollowingCount(props.user.followingCount || 0);
+    }
+  }, [props.user]);
 
+  // Eğer pathUsername varsa ve props.user yoksa (veya pathUsername değiştiyse)
+  // kullanıcı bilgisini backend'den çek
   useEffect(() => {
-    setValidationErrors((previousValidationErrors) => ({
-      ...previousValidationErrors,
-      image: undefined,
-    }));
-  }, [newImage]);
+    if (!pathUsername) return;
+    if (props.user && props.user.username === pathUsername) return; // Zaten elimizde var, tekrar çekme
 
-  const { username, displayName, image, followersCount, followingCount } = user;
-  const { t } = useTranslation();
+    const loadUser = async () => {
+      try {
+        const response = await getUser(pathUsername);
+        setUser(response.data);
+        setIsFollowing(response.data.isFollowing || false);
+        setFollowersCount(response.data.followersCount || 0);
+        setFollowingCount(response.data.followingCount || 0);
+      } catch (error) {
+        setUser({});
+        setIsFollowing(false);
+        setFollowersCount(0);
+        setFollowingCount(0);
+      }
+    };
 
+    loadUser();
+  }, [pathUsername, props.user]);
+
+  // Edit moduna geçişte displayName ve image resetle
   useEffect(() => {
     if (!inEditMode) {
       setUpdatedDisplayName(undefined);
       setNewImage(undefined);
     } else {
-      setUpdatedDisplayName(displayName);
+      setUpdatedDisplayName(user.displayName);
     }
-  }, [inEditMode, displayName]);
+  }, [inEditMode, user.displayName]);
 
+  // DisplayName ve image alanlarındaki validation errorları temizle
+  useEffect(() => {
+    setValidationErrors((prev) => ({ ...prev, displayName: undefined }));
+  }, [updatedDisplayName]);
+
+  useEffect(() => {
+    setValidationErrors((prev) => ({ ...prev, image: undefined }));
+  }, [newImage]);
+
+  // Save butonu
   const onClickSave = async () => {
     let imageData;
     if (newImage) {
@@ -66,7 +100,7 @@ const ProfileCard = (props) => {
       image: imageData,
     };
     try {
-      const response = await updateUser(username, body);
+      const response = await updateUser(user.username, body);
       setInEditMode(false);
       setUser(response.data);
       dispatch(updateSuccess(response.data));
@@ -87,9 +121,38 @@ const ProfileCard = (props) => {
     fileReader.readAsDataURL(file);
   };
 
-  const pendingApiCall = useApiProgress('put', '/api/1.0/users/' + username);
+  // Takip etme fonksiyonu
+  const onClickFollow = async () => {
+    setPendingFollowCall(true);
+    try {
+      await followUser(user.username);
+      setIsFollowing(true);
+      setFollowersCount((count) => count + 1);
+    } catch (error) {
+      // Hata yönetimi isteğe bağlı
+    }
+    setPendingFollowCall(false);
+  };
+
+  // Takipten çıkma fonksiyonu
+  const onClickUnfollow = async () => {
+    setPendingFollowCall(true);
+    try {
+      await unfollowUser(user.username);
+      setIsFollowing(false);
+      setFollowersCount((count) => count - 1);
+    } catch (error) {
+      // Hata yönetimi isteğe bağlı
+    }
+    setPendingFollowCall(false);
+  };
+
+  // Put request için progress hook
+  const pendingApiCall = useApiProgress('put', '/api/1.0/users/' + user.username);
 
   const { displayName: displayNameError, image: imageError } = validationErrors;
+
+  const isOwnProfile = user.username === loggedInUsername;
 
   return (
     <div className="card text-center">
@@ -98,8 +161,8 @@ const ProfileCard = (props) => {
           className="rounded-circle shadow"
           width="200"
           height="200"
-          alt={`${username} profile`}
-          image={image}
+          alt={`${user.username} profile`}
+          image={user.image}
           tempimage={newImage}
         />
       </div>
@@ -107,21 +170,47 @@ const ProfileCard = (props) => {
         {!inEditMode && (
           <>
             <h3>
-              {displayName} @{username}
+              {user.displayName} @{user.username}
             </h3>
 
             {/* Takipçi ve takip edilen sayıları */}
             <div className="mb-3">
               <span className="mr-3">
-                <strong>{followersCount || 0}</strong> {t('followers')}
+                <strong>{followersCount}</strong> {t('followers')}
               </span>
               <span>
-                <strong>{followingCount || 0}</strong> {t('following')}
+                <strong>{followingCount}</strong> {t('following')}
               </span>
             </div>
 
+            {/* Takip et / takipten çık butonu, kendi profilinde gösterme */}
+            {!isOwnProfile && (
+              <>
+                {isFollowing ? (
+                  <button
+                    className="btn btn-danger"
+                    onClick={onClickUnfollow}
+                    disabled={pendingFollowCall}
+                  >
+                    {pendingFollowCall && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                    {t('Unfollow')}
+                  </button>
+                ) : (
+                  <button
+                    className="btn btn-primary"
+                    onClick={onClickFollow}
+                    disabled={pendingFollowCall}
+                  >
+                    {pendingFollowCall && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                    {t('Follow')}
+                  </button>
+                )}
+              </>
+            )}
+
+            {/* Düzenleme butonu */}
             {editable && (
-              <button className="btn btn-success d-inline-flex" onClick={() => setInEditMode(true)}>
+              <button className="btn btn-success d-inline-flex ml-2" onClick={() => setInEditMode(true)}>
                 <i className="material-icons">edit</i>
                 {t('Edit')}
               </button>
@@ -132,7 +221,7 @@ const ProfileCard = (props) => {
           <div>
             <Input
               label={t('Change Display Name')}
-              defaultValue={displayName}
+              defaultValue={user.displayName}
               onChange={(event) => {
                 setUpdatedDisplayName(event.target.value);
               }}

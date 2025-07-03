@@ -1,7 +1,6 @@
 package com.hoaxify.ws.user;
 
 import java.io.IOException;
-import java.util.Set;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,19 +11,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.hoaxify.ws.error.NotFoundException;
 import com.hoaxify.ws.file.FileService;
 import com.hoaxify.ws.user.vm.UserUpdateVM;
-import com.hoaxify.ws.user.vm.UserVM;
 import com.hoaxify.ws.utils.DateUtil;
-
-
 
 @Service
 public class UserService {
 
-	UserRepository userRepository;
-
-	PasswordEncoder passwordEncoder;
-
-	FileService fileService;
+	private final UserRepository userRepository;
+	private final PasswordEncoder passwordEncoder;
+	private final FileService fileService;
 
 	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, FileService fileService) {
 		this.userRepository = userRepository;
@@ -45,13 +39,17 @@ public class UserService {
 		return userRepository.findAll(page);
 	}
 
+	@Transactional
 	public User getByUsername(String username) {
-		User inDB = userRepository.findByUsername(username);
-		if (inDB == null) {
-			throw new NotFoundException();
-		}
-		return inDB;
-	}
+    User user = userRepository.findByUsername(username);
+    if (user == null) {
+        throw new NotFoundException();
+    }
+    user.getFollowers().size();  // Lazy yüklemeyi tetikle
+    user.getFollowing().size();
+    return user;
+}
+
 
 	public User updateUser(String username, UserUpdateVM updatedUser) {
 		User inDB = getByUsername(username);
@@ -69,68 +67,35 @@ public class UserService {
 		return userRepository.save(inDB);
 	}
 
-	public UserVM getUserVMByUsername(String username) {
-        User user = getByUsername(username);
-        int followersCount = userRepository.getFollowersCount(user.getId());
-        int followingCount = userRepository.getFollowingCount(user.getId());
-        return new UserVM(user, followersCount, followingCount);
+	@Transactional
+public void follow(String followerUsername, String toFollowUsername) {
+    if (followerUsername.equals(toFollowUsername)) {
+        throw new IllegalArgumentException("You cannot follow yourself.");
     }
 
-    @Transactional
-    public void followUser(Long followerId, Long followedId) {
-        if (followerId.equals(followedId)) {
-            throw new IllegalArgumentException("User cannot follow themselves");
-        }
-        User follower = userRepository.findById(followerId)
-                .orElseThrow(() -> new RuntimeException("Follower not found"));
-        User followed = userRepository.findById(followedId)
-                .orElseThrow(() -> new RuntimeException("Followed user not found"));
+    User follower = getByUsername(followerUsername); // full user with followers/following loaded
+    User toFollow = getByUsername(toFollowUsername);
 
-        if (!follower.getFollowing().contains(followed)) {
-            follower.getFollowing().add(followed);
-            userRepository.save(follower);
-        }
+    if (!follower.getFollowing().contains(toFollow)) {
+        follower.getFollowing().add(toFollow);
+        userRepository.save(follower);
     }
+}
 
-    @Transactional
-    public void unfollowUser(Long followerId, Long followedId) {
-        User follower = userRepository.findById(followerId)
-                .orElseThrow(() -> new RuntimeException("Follower not found"));
-        User followed = userRepository.findById(followedId)
-                .orElseThrow(() -> new RuntimeException("Followed user not found"));
+@Transactional
+public void unfollow(String followerUsername, String toUnfollowUsername) {
+    User follower = getByUsername(followerUsername);
+    User toUnfollow = getByUsername(toUnfollowUsername);
 
-        if (follower.getFollowing().contains(followed)) {
-            follower.getFollowing().remove(followed);
-            userRepository.save(follower);
-        }
+    if (follower.getFollowing().contains(toUnfollow)) {
+        follower.getFollowing().remove(toUnfollow);
+        userRepository.save(follower);
     }
+}
 
-    public boolean isFollowing(Long followerId, Long followedId) {
-        User follower = userRepository.findById(followerId)
-                .orElseThrow(() -> new RuntimeException("Follower not found"));
-        User followed = userRepository.findById(followedId)
-                .orElseThrow(() -> new RuntimeException("Followed user not found"));
-        return follower.getFollowing().contains(followed);
-    }
 
-    public Set<User> getFollowers(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        return user.getFollowers();
-    }
-
-    public Set<User> getFollowing(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        return user.getFollowing();
-    }
-
-	public int getFollowersCount(Long userId) {
-        return userRepository.getFollowersCount(userId);
-    }
-
-    public int getFollowingCount(Long userId) {
-        return userRepository.getFollowingCount(userId);
-    }
+	public boolean isFollowing(String followerUsername, String targetUsername) {
+		return userRepository.isFollowing(followerUsername, targetUsername);
+	}
 
 }

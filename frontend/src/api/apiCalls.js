@@ -61,11 +61,15 @@ export const verifyCaptcha = (captchaId, captchaInput) => {
   });
 };
 
+export const followUser = (username) => {
+  return axios.post(`/api/1.0/users/${username}/follow`);
+};
 
-// Takip sistemi API çağrıları
+export const unfollowUser = (username) => {
+  return axios.post(`/api/1.0/users/${username}/unfollow`);
+};
 
-export const followUser = (username) => axios.post(`/api/1.0/users/${username}/follow`);
+export const isFollowing = (username) => {
+  return axios.get(`/api/1.0/users/${username}`);
+};
 
-export const unfollowUser = (username) => axios.post(`/api/1.0/users/${username}/unfollow`);
-
-export const isFollowing = (username) => axios.get(`/api/1.0/users/${username}/is-following`);
