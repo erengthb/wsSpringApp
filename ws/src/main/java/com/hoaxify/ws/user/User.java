@@ -39,16 +39,17 @@ public class User implements UserDetails {
 
 	private String image;
 
-	@ManyToMany
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(
-	    name = "user_followers",
-	    joinColumns = @JoinColumn(name = "follower_id"), // burada follower_id
-	    inverseJoinColumns = @JoinColumn(name = "following_id")
+		name = "user_followers",
+		joinColumns = @JoinColumn(name = "follower_id"),
+		inverseJoinColumns = @JoinColumn(name = "following_id")
 	)
 	private Set<User> following = new HashSet<>();
 	
-	@ManyToMany(mappedBy = "following")
+	@ManyToMany(mappedBy = "following", fetch = FetchType.LAZY)
 	private Set<User> followers = new HashSet<>();
+	
 
 
 

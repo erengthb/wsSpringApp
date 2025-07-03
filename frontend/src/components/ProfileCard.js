@@ -13,6 +13,7 @@ const ProfileCard = (props) => {
   const [inEditMode, setInEditMode] = useState(false);
   const [updatedDisplayName, setUpdatedDisplayName] = useState();
   const { username: loggedInUsername } = useSelector((store) => ({ username: store.username }));
+  const isLoggedIn = Boolean(loggedInUsername);
   const routeParams = useParams();
   const pathUsername = routeParams.username;
   const [user, setUser] = useState({});
@@ -22,20 +23,15 @@ const ProfileCard = (props) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
-  // Takip durumu ve takipçi sayıları
   const [isFollowing, setIsFollowing] = useState(false);
   const [followersCount, setFollowersCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
-
-  // Takip / Takipten çık API çağrılarının durumu
   const [pendingFollowCall, setPendingFollowCall] = useState(false);
 
-  // Editable mi?
   useEffect(() => {
     setEditable(pathUsername === loggedInUsername);
   }, [pathUsername, loggedInUsername]);
 
-  // props.user değiştiğinde user state'i güncelleniyor (sende zaten var)
   useEffect(() => {
     if (props.user) {
       setUser(props.user);
@@ -45,11 +41,9 @@ const ProfileCard = (props) => {
     }
   }, [props.user]);
 
-  // Eğer pathUsername varsa ve props.user yoksa (veya pathUsername değiştiyse)
-  // kullanıcı bilgisini backend'den çek
   useEffect(() => {
     if (!pathUsername) return;
-    if (props.user && props.user.username === pathUsername) return; // Zaten elimizde var, tekrar çekme
+    if (props.user && props.user.username === pathUsername) return;
 
     const loadUser = async () => {
       try {
@@ -69,7 +63,6 @@ const ProfileCard = (props) => {
     loadUser();
   }, [pathUsername, props.user]);
 
-  // Edit moduna geçişte displayName ve image resetle
   useEffect(() => {
     if (!inEditMode) {
       setUpdatedDisplayName(undefined);
@@ -79,7 +72,6 @@ const ProfileCard = (props) => {
     }
   }, [inEditMode, user.displayName]);
 
-  // DisplayName ve image alanlarındaki validation errorları temizle
   useEffect(() => {
     setValidationErrors((prev) => ({ ...prev, displayName: undefined }));
   }, [updatedDisplayName]);
@@ -88,7 +80,6 @@ const ProfileCard = (props) => {
     setValidationErrors((prev) => ({ ...prev, image: undefined }));
   }, [newImage]);
 
-  // Save butonu
   const onClickSave = async () => {
     let imageData;
     if (newImage) {
@@ -121,38 +112,29 @@ const ProfileCard = (props) => {
     fileReader.readAsDataURL(file);
   };
 
-  // Takip etme fonksiyonu
   const onClickFollow = async () => {
     setPendingFollowCall(true);
     try {
       await followUser(user.username);
       setIsFollowing(true);
       setFollowersCount((count) => count + 1);
-    } catch (error) {
-      // Hata yönetimi isteğe bağlı
-    }
+    } catch (error) {}
     setPendingFollowCall(false);
   };
 
-  // Takipten çıkma fonksiyonu
   const onClickUnfollow = async () => {
     setPendingFollowCall(true);
     try {
       await unfollowUser(user.username);
       setIsFollowing(false);
       setFollowersCount((count) => count - 1);
-    } catch (error) {
-      // Hata yönetimi isteğe bağlı
-    }
+    } catch (error) {}
     setPendingFollowCall(false);
   };
 
-  // Put request için progress hook
   const pendingApiCall = useApiProgress('put', '/api/1.0/users/' + user.username);
-
   const { displayName: displayNameError, image: imageError } = validationErrors;
-
-  const isOwnProfile = user.username === loggedInUsername;
+  const isOwnProfile = isLoggedIn && user.username === loggedInUsername;
 
   return (
     <div className="card text-center">
@@ -172,8 +154,6 @@ const ProfileCard = (props) => {
             <h3>
               {user.displayName} @{user.username}
             </h3>
-
-            {/* Takipçi ve takip edilen sayıları */}
             <div className="mb-3">
               <span className="mr-3">
                 <strong>{followersCount}</strong> {t('followers')}
@@ -183,8 +163,8 @@ const ProfileCard = (props) => {
               </span>
             </div>
 
-            {/* Takip et / takipten çık butonu, kendi profilinde gösterme */}
-            {!isOwnProfile && (
+            {/* Takip butonu sadece login olduysa ve kendi profili değilse görünür */}
+            {isLoggedIn && !isOwnProfile && (
               <>
                 {isFollowing ? (
                   <button
@@ -208,7 +188,6 @@ const ProfileCard = (props) => {
               </>
             )}
 
-            {/* Düzenleme butonu */}
             {editable && (
               <button className="btn btn-success d-inline-flex ml-2" onClick={() => setInEditMode(true)}>
                 <i className="material-icons">edit</i>

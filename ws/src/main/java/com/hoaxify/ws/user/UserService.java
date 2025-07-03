@@ -45,8 +45,6 @@ public class UserService {
     if (user == null) {
         throw new NotFoundException();
     }
-    user.getFollowers().size();  // Lazy yüklemeyi tetikle
-    user.getFollowing().size();
     return user;
 }
 

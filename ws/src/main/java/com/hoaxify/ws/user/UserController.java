@@ -40,7 +40,10 @@ public class UserController {
 		if (loggedInUser != null && !loggedInUser.getUsername().equals(username)) {
 			isFollowing = userService.isFollowing(loggedInUser.getUsername(), username);
 		}
-		return new UserVM(targetUser, isFollowing);
+		int followersCount = targetUser.getFollowers().size();
+		int followingCount = targetUser.getFollowing().size();
+		return new UserVM(targetUser, isFollowing, followersCount, followingCount);
+
 	}
 
 	@PostMapping("/users/{username}/follow")
