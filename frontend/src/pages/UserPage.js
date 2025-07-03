@@ -20,6 +20,7 @@ const UserPage = () => {
     setNotFound(false);
   }, [user]);
 
+  
   useEffect(() => {
     const loadUser = async () => {
       try {
