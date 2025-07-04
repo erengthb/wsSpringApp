@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import com.hoaxify.ws.shared.CurrentUserAnnotation;
 import com.hoaxify.ws.shared.GenericResponse;
+import com.hoaxify.ws.user.vm.UserUpdateVM;
 import com.hoaxify.ws.user.vm.UserVM;
 
 import jakarta.validation.Valid;
@@ -30,6 +32,15 @@ public class UserController {
     public Page<UserVM> getUsers(Pageable page, @CurrentUserAnnotation User user) {
         return userService.getUsers(page, user).map(UserVM::new);
     }
+
+	@PutMapping("/users/{username}")
+	@PreAuthorize("#username == principal.username")
+	UserVM updateUser(@Valid @RequestBody UserUpdateVM updatedUser, @PathVariable String username) {
+		User user = userService.updateUser(username, updatedUser);
+		return new UserVM(user);
+
+	}
+
 
     @GetMapping("/users/{username}")
     public UserVM getUser(@PathVariable String username, @CurrentUserAnnotation User loggedInUser) {
