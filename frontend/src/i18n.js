@@ -33,6 +33,10 @@ i18n.use(initReactI18next).init({
         'Reload CAPTCHA': 'Reload CAPTCHA',
         'Enter CAPTCHA text': 'Enter CAPTCHA text',
         'Verify CAPTCHA': 'Verify CAPTCHA',
+        'Followers': 'Followers',
+        'Following': 'Following',
+        'Follow': 'Follow',
+        'Unfollow': 'Unfollow',
       }
     },
     tr: {
@@ -64,6 +68,10 @@ i18n.use(initReactI18next).init({
         'Reload CAPTCHA': 'CAPTCHA’yı yenile',
         'Enter CAPTCHA text': 'CAPTCHA metnini giriniz',
         'Verify CAPTCHA': 'CAPTCHA\'yı Doğrula',
+        'Followers': 'Takipçi',
+        'Following': 'Takip Edilen',
+        'Follow': 'Takip Et',
+        'Unfollow': 'Takibi Bırak',             
       }
     }
   },

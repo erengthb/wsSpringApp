@@ -23,28 +23,24 @@ const ProfileCard = (props) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
-  // Burada backend response'daki "following" alanı takip durumu için kullanılıyor!
   const [isFollowing, setIsFollowing] = useState(false);
   const [followersCount, setFollowersCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
   const [pendingFollowCall, setPendingFollowCall] = useState(false);
 
-  // Kullanıcı kendi profiline mi bakıyor kontrolü
   useEffect(() => {
     setEditable(pathUsername === loggedInUsername);
   }, [pathUsername, loggedInUsername]);
 
-  // Eğer props.user varsa oradan verileri al
   useEffect(() => {
     if (props.user) {
       setUser(props.user);
-      setIsFollowing(props.user.following || false);  // Burada 'following' backend'den gelen boolean
+      setIsFollowing(props.user.following || false);
       setFollowersCount(props.user.followersCount || 0);
       setFollowingCount(props.user.followingCount || 0);
     }
   }, [props.user]);
 
-  // Eğer URL'deki kullanıcı farklıysa API'den yükle
   useEffect(() => {
     if (!pathUsername) return;
     if (props.user && props.user.username === pathUsername) return;
@@ -53,7 +49,7 @@ const ProfileCard = (props) => {
       try {
         const response = await getUser(pathUsername);
         setUser(response.data);
-        setIsFollowing(response.data.following || false);  // Backend 'following' alanı baz alınır
+        setIsFollowing(response.data.following || false);
         setFollowersCount(response.data.followersCount || 0);
         setFollowingCount(response.data.followingCount || 0);
       } catch (error) {
@@ -97,17 +93,22 @@ const ProfileCard = (props) => {
     try {
       const response = await updateUser(user.username, body);
       setInEditMode(false);
-      setUser(response.data);
-      dispatch(updateSuccess(response.data));
+
+      // Veriyi tazele
+      const refreshed = await getUser(user.username);
+      setUser(refreshed.data);
+      setIsFollowing(refreshed.data.following || false);
+      setFollowersCount(refreshed.data.followersCount || 0);
+      setFollowingCount(refreshed.data.followingCount || 0);
+
+      dispatch(updateSuccess(refreshed.data));
     } catch (error) {
-      setValidationErrors(error.response.data.validationErrors);
+      setValidationErrors(error.response?.data?.validationErrors || {});
     }
   };
 
   const onChangeFile = (event) => {
-    if (event.target.files.length < 1) {
-      return;
-    }
+    if (event.target.files.length < 1) return;
     const file = event.target.files[0];
     const fileReader = new FileReader();
     fileReader.onloadend = () => {
@@ -116,7 +117,6 @@ const ProfileCard = (props) => {
     fileReader.readAsDataURL(file);
   };
 
-  // Takip Et butonu tıklanınca
   const onClickFollow = async () => {
     setPendingFollowCall(true);
     try {
@@ -127,7 +127,6 @@ const ProfileCard = (props) => {
     setPendingFollowCall(false);
   };
 
-  // Takipten Çık butonu tıklanınca
   const onClickUnfollow = async () => {
     setPendingFollowCall(true);
     try {
@@ -139,7 +138,7 @@ const ProfileCard = (props) => {
   };
 
   const pendingApiCall = useApiProgress('put', '/api/1.0/users/' + user.username);
-  const { displayName: displayNameError, image: imageError } = validationErrors;
+  const { displayName: displayNameError, image: imageError } = validationErrors || {};
   const isOwnProfile = isLoggedIn && user.username === loggedInUsername;
 
   return (
@@ -162,14 +161,13 @@ const ProfileCard = (props) => {
             </h3>
             <div className="mb-3">
               <span className="mr-3">
-                <strong>{followersCount}</strong> {t('followers')}
+                <strong>{followersCount}</strong> {t('Followers')}
               </span>
               <span>
-                <strong>{followingCount}</strong> {t('following')}
+                <strong>{followingCount}</strong> {t('Following')}
               </span>
             </div>
 
-            {/* Takip butonu sadece login olmuş ve kendi profili değilse görünür */}
             {isLoggedIn && !isOwnProfile && (
               <>
                 {isFollowing ? (
