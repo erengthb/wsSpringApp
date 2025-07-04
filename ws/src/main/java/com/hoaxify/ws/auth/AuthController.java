@@ -17,9 +17,8 @@ public class AuthController {
 
 	@PostMapping("/api/1.0/auth")
 	UserVM handleAuthentication(@CurrentUserAnnotation User user) {
+    return new UserVM(user); // followersCount ve followingCount kullanılmaz
+}
 
-		return new UserVM(user);
-
-	}
 
 }

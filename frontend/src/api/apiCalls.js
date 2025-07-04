@@ -49,3 +49,27 @@ export const getHoaxes = (username, page = 0) => {
 export const getOldHoaxes = id => {
   return axios.get('/api/1.0/hoaxes/' + id );
 }
+
+export const requestCaptcha = () => {
+  return axios.post('/api/1.0/captcha/request');
+};
+
+export const verifyCaptcha = (captchaId, captchaInput) => {
+  return axios.post('/api/1.0/captcha/verify', {
+    captchaId,
+    captchaInput
+  });
+};
+
+export const followUser = (username) => {
+  return axios.post(`/api/1.0/users/${username}/follow`);
+};
+
+export const unfollowUser = (username) => {
+  return axios.post(`/api/1.0/users/${username}/unfollow`);
+};
+
+export const getUserForFollowAndUnfollow = (username) => {
+  return axios.get(`/api/1.0/users/${username}`);
+};
+

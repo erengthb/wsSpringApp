@@ -25,7 +25,18 @@ i18n.use(initReactI18next).init({
         Cancel: 'Cancel',
         'My Profile': 'My Profile',
         'There are no hoaxes': 'There are no hoaxes',
-        'Load old hoaxes': 'Load old hoaxes'
+        'Load old hoaxes': 'Load old hoaxes',
+         CAPTCHA: 'CAPTCHA',
+        'Failed to load CAPTCHA': 'Failed to load CAPTCHA',
+        'Invalid CAPTCHA input': 'Invalid CAPTCHA input',
+        'CAPTCHA verified': 'CAPTCHA verified',
+        'Reload CAPTCHA': 'Reload CAPTCHA',
+        'Enter CAPTCHA text': 'Enter CAPTCHA text',
+        'Verify CAPTCHA': 'Verify CAPTCHA',
+        'Followers': 'Followers',
+        'Following': 'Following',
+        'Follow': 'Follow',
+        'Unfollow': 'Unfollow',
       }
     },
     tr: {
@@ -49,7 +60,18 @@ i18n.use(initReactI18next).init({
         Cancel: 'İptal Et',
         'My Profile': 'Hesabım',
         'There are no hoaxes': 'Hoax bulunamadı',
-        'Load old hoaxes': 'Eski Hoaxları Yükle'
+        'Load old hoaxes': 'Eski Hoaxları Yükle',
+        CAPTCHA: 'CAPTCHA',
+        'Failed to load CAPTCHA': 'CAPTCHA yüklenemedi',
+        'Invalid CAPTCHA input': 'Geçersiz CAPTCHA girdisi',
+        'CAPTCHA verified': 'CAPTCHA doğrulandı',
+        'Reload CAPTCHA': 'CAPTCHA’yı yenile',
+        'Enter CAPTCHA text': 'CAPTCHA metnini giriniz',
+        'Verify CAPTCHA': 'CAPTCHA\'yı Doğrula',
+        'Followers': 'Takipçi',
+        'Following': 'Takip Edilen',
+        'Follow': 'Takip Et',
+        'Unfollow': 'Takibi Bırak',             
       }
     }
   },

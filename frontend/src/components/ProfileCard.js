@@ -4,15 +4,16 @@ import { useSelector, useDispatch } from 'react-redux';
 import ProfileImageWithDefault from './ProfileImageWithDefault';
 import { useTranslation } from 'react-i18next';
 import Input from './Input';
-import { updateUser } from '../api/apiCalls';
+import { updateUser, followUser, unfollowUser, getUser } from '../api/apiCalls';
 import { useApiProgress } from '../shared/ApiProgress';
 import ButtonWithProgress from './ButtonWithProgress';
 import { updateSuccess } from '../redux/authActions';
 
-const ProfileCard = props => {
+const ProfileCard = (props) => {
   const [inEditMode, setInEditMode] = useState(false);
   const [updatedDisplayName, setUpdatedDisplayName] = useState();
-  const { username: loggedInUsername } = useSelector(store => ({ username: store.username }));
+  const { username: loggedInUsername } = useSelector((store) => ({ username: store.username }));
+  const isLoggedIn = Boolean(loggedInUsername);
   const routeParams = useParams();
   const pathUsername = routeParams.username;
   const [user, setUser] = useState({});
@@ -20,65 +21,94 @@ const ProfileCard = props => {
   const [newImage, setNewImage] = useState();
   const [validationErrors, setValidationErrors] = useState({});
   const dispatch = useDispatch();
+  const { t } = useTranslation();
 
-  useEffect(() => {
-    setUser(props.user);
-  }, [props.user]);
+  const [isFollowing, setIsFollowing] = useState(false);
+  const [followersCount, setFollowersCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
+  const [pendingFollowCall, setPendingFollowCall] = useState(false);
 
   useEffect(() => {
     setEditable(pathUsername === loggedInUsername);
   }, [pathUsername, loggedInUsername]);
 
   useEffect(() => {
-    setValidationErrors(previousValidationErrors => ({
-      ...previousValidationErrors,
-      displayName: undefined
-    }));
-  }, [updatedDisplayName]);
+    if (props.user) {
+      setUser(props.user);
+      setIsFollowing(props.user.following || false);
+      setFollowersCount(props.user.followersCount || 0);
+      setFollowingCount(props.user.followingCount || 0);
+    }
+  }, [props.user]);
 
   useEffect(() => {
-    setValidationErrors(previousValidationErrors => ({
-      ...previousValidationErrors,
-      image: undefined
-    }));
-  }, [newImage]);
+    if (!pathUsername) return;
+    if (props.user && props.user.username === pathUsername) return;
 
-  const { username, displayName, image } = user;
-  const { t } = useTranslation();
+    const loadUser = async () => {
+      try {
+        const response = await getUser(pathUsername);
+        setUser(response.data);
+        setIsFollowing(response.data.following || false);
+        setFollowersCount(response.data.followersCount || 0);
+        setFollowingCount(response.data.followingCount || 0);
+      } catch (error) {
+        setUser({});
+        setIsFollowing(false);
+        setFollowersCount(0);
+        setFollowingCount(0);
+      }
+    };
+
+    loadUser();
+  }, [pathUsername, props.user]);
 
   useEffect(() => {
     if (!inEditMode) {
       setUpdatedDisplayName(undefined);
       setNewImage(undefined);
     } else {
-      setUpdatedDisplayName(displayName);
+      setUpdatedDisplayName(user.displayName);
     }
-  }, [inEditMode, displayName]);
+  }, [inEditMode, user.displayName]);
+
+  useEffect(() => {
+    setValidationErrors((prev) => ({ ...prev, displayName: undefined }));
+  }, [updatedDisplayName]);
+
+  useEffect(() => {
+    setValidationErrors((prev) => ({ ...prev, image: undefined }));
+  }, [newImage]);
 
   const onClickSave = async () => {
-    let image;
+    let imageData;
     if (newImage) {
-      image = newImage.split(',')[1];
+      imageData = newImage.split(',')[1];
     }
 
     const body = {
       displayName: updatedDisplayName,
-      image
+      image: imageData,
     };
     try {
-      const response = await updateUser(username, body);
+      const response = await updateUser(user.username, body);
       setInEditMode(false);
-      setUser(response.data);
-      dispatch(updateSuccess(response.data));
+
+      // Veriyi tazele
+      const refreshed = await getUser(user.username);
+      setUser(refreshed.data);
+      setIsFollowing(refreshed.data.following || false);
+      setFollowersCount(refreshed.data.followersCount || 0);
+      setFollowingCount(refreshed.data.followingCount || 0);
+
+      dispatch(updateSuccess(refreshed.data));
     } catch (error) {
-      setValidationErrors(error.response.data.validationErrors);
+      setValidationErrors(error.response?.data?.validationErrors || {});
     }
   };
 
-  const onChangeFile = event => {
-    if (event.target.files.length < 1) {
-      return;
-    }
+  const onChangeFile = (event) => {
+    if (event.target.files.length < 1) return;
     const file = event.target.files[0];
     const fileReader = new FileReader();
     fileReader.onloadend = () => {
@@ -87,9 +117,30 @@ const ProfileCard = props => {
     fileReader.readAsDataURL(file);
   };
 
-  const pendingApiCall = useApiProgress('put', '/api/1.0/users/' + username);
+  const onClickFollow = async () => {
+    setPendingFollowCall(true);
+    try {
+      await followUser(user.username);
+      setIsFollowing(true);
+      setFollowersCount((count) => count + 1);
+    } catch (error) {}
+    setPendingFollowCall(false);
+  };
 
-  const { displayName: displayNameError, image: imageError } = validationErrors;
+  const onClickUnfollow = async () => {
+    setPendingFollowCall(true);
+    try {
+      await unfollowUser(user.username);
+      setIsFollowing(false);
+      setFollowersCount((count) => count - 1);
+    } catch (error) {}
+    setPendingFollowCall(false);
+  };
+
+  const pendingApiCall = useApiProgress('put', '/api/1.0/users/' + user.username);
+  const { displayName: displayNameError, image: imageError } = validationErrors || {};
+  const isOwnProfile = isLoggedIn && user.username === loggedInUsername;
+
   return (
     <div className="card text-center">
       <div className="card-header">
@@ -97,8 +148,8 @@ const ProfileCard = props => {
           className="rounded-circle shadow"
           width="200"
           height="200"
-          alt={`${username} profile`}
-          image={image}
+          alt={`${user.username} profile`}
+          image={user.image}
           tempimage={newImage}
         />
       </div>
@@ -106,10 +157,50 @@ const ProfileCard = props => {
         {!inEditMode && (
           <>
             <h3>
-              {displayName}@{username}
+              {user.displayName} @{user.username}
             </h3>
+            <div className="mb-3">
+              <span className="mr-3">
+                <strong>{followersCount}</strong> {t('Followers')}
+              </span>
+              <span>
+                <strong>{followingCount}</strong> {t('Following')}
+              </span>
+            </div>
+
+            {isLoggedIn && !isOwnProfile && (
+              <>
+                {isFollowing ? (
+                  <button
+                    className="btn btn-danger"
+                    onClick={onClickUnfollow}
+                    disabled={pendingFollowCall}
+                  >
+                    {pendingFollowCall && (
+                      <span className="spinner-border spinner-border-sm mr-1"></span>
+                    )}
+                    {t('Unfollow')}
+                  </button>
+                ) : (
+                  <button
+                    className="btn btn-primary"
+                    onClick={onClickFollow}
+                    disabled={pendingFollowCall}
+                  >
+                    {pendingFollowCall && (
+                      <span className="spinner-border spinner-border-sm mr-1"></span>
+                    )}
+                    {t('Follow')}
+                  </button>
+                )}
+              </>
+            )}
+
             {editable && (
-              <button className="btn btn-success d-inline-flex" onClick={() => setInEditMode(true)}>
+              <button
+                className="btn btn-success d-inline-flex ml-2"
+                onClick={() => setInEditMode(true)}
+              >
                 <i className="material-icons">edit</i>
                 {t('Edit')}
               </button>
@@ -120,8 +211,8 @@ const ProfileCard = props => {
           <div>
             <Input
               label={t('Change Display Name')}
-              defaultValue={displayName}
-              onChange={event => {
+              defaultValue={user.displayName}
+              onChange={(event) => {
                 setUpdatedDisplayName(event.target.value);
               }}
               error={displayNameError}
@@ -140,7 +231,11 @@ const ProfileCard = props => {
                   </>
                 }
               />
-              <button className="btn btn-light d-inline-flex ml-1" onClick={() => setInEditMode(false)} disabled={pendingApiCall}>
+              <button
+                className="btn btn-light d-inline-flex ml-1"
+                onClick={() => setInEditMode(false)}
+                disabled={pendingApiCall}
+              >
                 <i className="material-icons">close</i>
                 {t('Cancel')}
               </button>

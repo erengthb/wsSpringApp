@@ -5,8 +5,9 @@ bash
 Kopyala
 Düzenle
 npm start
-Üretim build için:
 
+
+Üretim build için:
 bash
 Kopyala
 Düzenle

@@ -8,11 +8,10 @@ import Spinner from '../components/Spinner';
 import HoaxList from '../components/HoaxList';
 
 const UserPage = () => {
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState(null);
   const [notFound, setNotFound] = useState(false);
 
   const { username } = useParams();
-
   const { t } = useTranslation();
 
   const pendingApiCall = useApiProgress('get', '/api/1.0/users/' + username, true);
@@ -48,7 +47,7 @@ const UserPage = () => {
     );
   }
 
-  if (pendingApiCall || user.username !== username) {
+  if (pendingApiCall || !user || user.username !== username) {
     return <Spinner />;
   }
 
@@ -59,7 +58,7 @@ const UserPage = () => {
           <ProfileCard user={user} />
         </div>
         <div className="col">
-          <HoaxList/>
+          <HoaxList />
         </div>
       </div>
     </div>
