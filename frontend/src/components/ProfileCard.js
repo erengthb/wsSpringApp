@@ -23,24 +23,28 @@ const ProfileCard = (props) => {
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
+  // Burada backend response'daki "following" alanı takip durumu için kullanılıyor!
   const [isFollowing, setIsFollowing] = useState(false);
   const [followersCount, setFollowersCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
   const [pendingFollowCall, setPendingFollowCall] = useState(false);
 
+  // Kullanıcı kendi profiline mi bakıyor kontrolü
   useEffect(() => {
     setEditable(pathUsername === loggedInUsername);
   }, [pathUsername, loggedInUsername]);
 
+  // Eğer props.user varsa oradan verileri al
   useEffect(() => {
     if (props.user) {
       setUser(props.user);
-      setIsFollowing(props.user.isFollowing || false);
+      setIsFollowing(props.user.following || false);  // Burada 'following' backend'den gelen boolean
       setFollowersCount(props.user.followersCount || 0);
       setFollowingCount(props.user.followingCount || 0);
     }
   }, [props.user]);
 
+  // Eğer URL'deki kullanıcı farklıysa API'den yükle
   useEffect(() => {
     if (!pathUsername) return;
     if (props.user && props.user.username === pathUsername) return;
@@ -49,7 +53,7 @@ const ProfileCard = (props) => {
       try {
         const response = await getUser(pathUsername);
         setUser(response.data);
-        setIsFollowing(response.data.isFollowing || false);
+        setIsFollowing(response.data.following || false);  // Backend 'following' alanı baz alınır
         setFollowersCount(response.data.followersCount || 0);
         setFollowingCount(response.data.followingCount || 0);
       } catch (error) {
@@ -112,6 +116,7 @@ const ProfileCard = (props) => {
     fileReader.readAsDataURL(file);
   };
 
+  // Takip Et butonu tıklanınca
   const onClickFollow = async () => {
     setPendingFollowCall(true);
     try {
@@ -122,6 +127,7 @@ const ProfileCard = (props) => {
     setPendingFollowCall(false);
   };
 
+  // Takipten Çık butonu tıklanınca
   const onClickUnfollow = async () => {
     setPendingFollowCall(true);
     try {
@@ -163,7 +169,7 @@ const ProfileCard = (props) => {
               </span>
             </div>
 
-            {/* Takip butonu sadece login olduysa ve kendi profili değilse görünür */}
+            {/* Takip butonu sadece login olmuş ve kendi profili değilse görünür */}
             {isLoggedIn && !isOwnProfile && (
               <>
                 {isFollowing ? (
@@ -172,7 +178,9 @@ const ProfileCard = (props) => {
                     onClick={onClickUnfollow}
                     disabled={pendingFollowCall}
                   >
-                    {pendingFollowCall && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                    {pendingFollowCall && (
+                      <span className="spinner-border spinner-border-sm mr-1"></span>
+                    )}
                     {t('Unfollow')}
                   </button>
                 ) : (
@@ -181,7 +189,9 @@ const ProfileCard = (props) => {
                     onClick={onClickFollow}
                     disabled={pendingFollowCall}
                   >
-                    {pendingFollowCall && <span className="spinner-border spinner-border-sm mr-1"></span>}
+                    {pendingFollowCall && (
+                      <span className="spinner-border spinner-border-sm mr-1"></span>
+                    )}
                     {t('Follow')}
                   </button>
                 )}
@@ -189,7 +199,10 @@ const ProfileCard = (props) => {
             )}
 
             {editable && (
-              <button className="btn btn-success d-inline-flex ml-2" onClick={() => setInEditMode(true)}>
+              <button
+                className="btn btn-success d-inline-flex ml-2"
+                onClick={() => setInEditMode(true)}
+              >
                 <i className="material-icons">edit</i>
                 {t('Edit')}
               </button>

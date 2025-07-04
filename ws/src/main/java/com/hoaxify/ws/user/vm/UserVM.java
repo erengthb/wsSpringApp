@@ -19,7 +19,7 @@ public class UserVM {
         this.username = user.getUsername();
         this.displayName = user.getDisplayName();
         this.image = user.getImage();
-        this.followersCount = null; // Default olarak null
+        this.followersCount = null;
         this.followingCount = null;
         this.isFollowing = false;
     }

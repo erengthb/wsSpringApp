@@ -69,7 +69,7 @@ export const unfollowUser = (username) => {
   return axios.post(`/api/1.0/users/${username}/unfollow`);
 };
 
-export const isFollowing = (username) => {
+export const getUserForFollowAndUnfollow = (username) => {
   return axios.get(`/api/1.0/users/${username}`);
 };
 

@@ -16,84 +16,81 @@ import com.hoaxify.ws.utils.DateUtil;
 @Service
 public class UserService {
 
-	private final UserRepository userRepository;
-	private final PasswordEncoder passwordEncoder;
-	private final FileService fileService;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final FileService fileService;
 
-	public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, FileService fileService) {
-		this.userRepository = userRepository;
-		this.passwordEncoder = passwordEncoder;
-		this.fileService = fileService;
-	}
-
-	public void save(User user) {
-		user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-		user.setCreateDate(DateUtil.getCurrentDateString());
-		userRepository.save(user);
-	}
-
-	public Page<User> getUsers(Pageable page, User user) {
-		if (user != null) {
-			return userRepository.findByUsernameNot(user.getUsername(), page);
-		}
-		return userRepository.findAll(page);
-	}
-
-	@Transactional
-	public User getByUsername(String username) {
-    User user = userRepository.findByUsername(username);
-    if (user == null) {
-        throw new NotFoundException();
-    }
-    return user;
-}
-
-
-	public User updateUser(String username, UserUpdateVM updatedUser) {
-		User inDB = getByUsername(username);
-		inDB.setDisplayName(updatedUser.getDisplayName());
-		if (updatedUser.getImage() != null) {
-			String oldImageName = inDB.getImage();
-			try {
-				String storedFileName = fileService.writeBase64EncodedStringToFile(updatedUser.getImage());
-				inDB.setImage(storedFileName);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			fileService.deleteFile(oldImageName);
-		}
-		return userRepository.save(inDB);
-	}
-
-	@Transactional
-public void follow(String followerUsername, String toFollowUsername) {
-    if (followerUsername.equals(toFollowUsername)) {
-        throw new IllegalArgumentException("You cannot follow yourself.");
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, FileService fileService) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.fileService = fileService;
     }
 
-    User follower = getByUsername(followerUsername); // full user with followers/following loaded
-    User toFollow = getByUsername(toFollowUsername);
-
-    if (!follower.getFollowing().contains(toFollow)) {
-        follower.getFollowing().add(toFollow);
-        userRepository.save(follower);
+    public void save(User user) {
+        user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+        user.setCreateDate(DateUtil.getCurrentDateString());
+        userRepository.save(user);
     }
-}
 
-@Transactional
-public void unfollow(String followerUsername, String toUnfollowUsername) {
-    User follower = getByUsername(followerUsername);
-    User toUnfollow = getByUsername(toUnfollowUsername);
-
-    if (follower.getFollowing().contains(toUnfollow)) {
-        follower.getFollowing().remove(toUnfollow);
-        userRepository.save(follower);
+    public Page<User> getUsers(Pageable page, User user) {
+        if (user != null) {
+            return userRepository.findByUsernameNot(user.getUsername(), page);
+        }
+        return userRepository.findAll(page);
     }
-}
 
+    @Transactional
+    public User getByUsername(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new NotFoundException();
+        }
+        return user;
+    }
 
-	public boolean isFollowing(String followerUsername, String targetUsername) {
-		return userRepository.isFollowing(followerUsername, targetUsername);
-	}
+    public User updateUser(String username, UserUpdateVM updatedUser) {
+        User inDB = getByUsername(username);
+        inDB.setDisplayName(updatedUser.getDisplayName());
+        if (updatedUser.getImage() != null) {
+            String oldImageName = inDB.getImage();
+            try {
+                String storedFileName = fileService.writeBase64EncodedStringToFile(updatedUser.getImage());
+                inDB.setImage(storedFileName);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            fileService.deleteFile(oldImageName);
+        }
+        return userRepository.save(inDB);
+    }
 
+    @Transactional
+    public void follow(String followerUsername, String toFollowUsername) {
+        if (followerUsername.equals(toFollowUsername)) {
+            throw new IllegalArgumentException("You cannot follow yourself.");
+        }
+
+        User follower = getByUsername(followerUsername);
+        User toFollow = getByUsername(toFollowUsername);
+
+        if (!follower.getFollowing().contains(toFollow)) {
+            follower.getFollowing().add(toFollow);
+            userRepository.save(follower);
+        }
+    }
+
+    @Transactional
+    public void unfollow(String followerUsername, String toUnfollowUsername) {
+        User follower = getByUsername(followerUsername);
+        User toUnfollow = getByUsername(toUnfollowUsername);
+
+        if (follower.getFollowing().contains(toUnfollow)) {
+            follower.getFollowing().remove(toUnfollow);
+            userRepository.save(follower);
+        }
+    }
+
+    public boolean isFollowing(String followerUsername, String targetUsername) {
+        return userRepository.isFollowing(followerUsername, targetUsername);
+    }
 }
