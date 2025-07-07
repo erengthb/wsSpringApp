@@ -73,3 +73,12 @@ export const getUserForFollowAndUnfollow = (username) => {
   return axios.get(`/api/1.0/users/${username}`);
 };
 
+export const getUserFollowers = (username) => {
+  return axios.get(`/api/1.0/users/${username}/followers`);
+};
+
+export const getUserFollowing = (username) => {
+  return axios.get(`/api/1.0/users/${username}/following`);
+};
+
+

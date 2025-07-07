@@ -1,0 +1,108 @@
+/* UserListModal.css */
+
+.modal-backdrop {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(3px);
+    z-index: 999;
+    animation: fadeIn 0.3s ease forwards;
+  }
+  .modal-wrapper {
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%) scale(0.8);
+    background: white;
+    width: 90%;
+    max-width: 400px;
+    max-height: 70vh;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    animation: scaleIn 0.3s ease forwards;
+    overflow: hidden;
+  }
+  .modal-content {
+    padding: 1rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  .close-button {
+    font-size: 1.5rem;
+    line-height: 1;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #555;
+    transition: color 0.2s ease;
+  }
+  .close-button:hover {
+    color: #000;
+  }
+  .loading-text,
+  .no-users-text {
+    text-align: center;
+    margin-top: 1rem;
+    color: #666;
+    flex-shrink: 0;
+  }
+  .user-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow-y: auto;
+    flex-grow: 1;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+  }
+  .user-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .user-item:last-child {
+    border-bottom: none;
+  }
+  .user-text {
+    margin-left: 12px;
+    font-size: 1rem;
+    color: #333;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  @keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+  }
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .modal-wrapper {
+      max-width: 95%;
+      max-height: 80vh;
+    }
+    .user-text {
+      font-size: 0.9rem;
+    }
+  }
+  

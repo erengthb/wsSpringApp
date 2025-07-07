@@ -4,10 +4,16 @@ import { useSelector, useDispatch } from 'react-redux';
 import ProfileImageWithDefault from './ProfileImageWithDefault';
 import { useTranslation } from 'react-i18next';
 import Input from './Input';
-import { updateUser, followUser, unfollowUser, getUser } from '../api/apiCalls';
+import {
+  updateUser,
+  followUser,
+  unfollowUser,
+  getUser
+} from '../api/apiCalls';
 import { useApiProgress } from '../shared/ApiProgress';
 import ButtonWithProgress from './ButtonWithProgress';
 import { updateSuccess } from '../redux/authActions';
+import UserListModal from './UserListModal'; // Yeni modal component
 
 const ProfileCard = (props) => {
   const [inEditMode, setInEditMode] = useState(false);
@@ -27,6 +33,10 @@ const ProfileCard = (props) => {
   const [followersCount, setFollowersCount] = useState(0);
   const [followingCount, setFollowingCount] = useState(0);
   const [pendingFollowCall, setPendingFollowCall] = useState(false);
+
+  // Modal kontrolü için state
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalType, setModalType] = useState(null); // 'followers' veya 'following'
 
   useEffect(() => {
     setEditable(pathUsername === loggedInUsername);
@@ -137,6 +147,16 @@ const ProfileCard = (props) => {
     setPendingFollowCall(false);
   };
 
+  const openModal = (type) => {
+    setModalType(type);
+    setModalVisible(true);
+  };
+
+  const closeModal = () => {
+    setModalVisible(false);
+    setModalType(null);
+  };
+
   const pendingApiCall = useApiProgress('put', '/api/1.0/users/' + user.username);
   const { displayName: displayNameError, image: imageError } = validationErrors || {};
   const isOwnProfile = isLoggedIn && user.username === loggedInUsername;
@@ -160,10 +180,19 @@ const ProfileCard = (props) => {
               {user.displayName} @{user.username}
             </h3>
             <div className="mb-3">
-              <span className="mr-3">
+              <span
+                className="mr-3"
+                style={{ cursor: 'pointer' }}
+                onClick={() => openModal('followers')}
+                data-testid="followers"
+              >
                 <strong>{followersCount}</strong> {t('Followers')}
               </span>
-              <span>
+              <span
+                style={{ cursor: 'pointer' }}
+                onClick={() => openModal('following')}
+                data-testid="following"
+              >
                 <strong>{followingCount}</strong> {t('Following')}
               </span>
             </div>
@@ -243,6 +272,10 @@ const ProfileCard = (props) => {
           </div>
         )}
       </div>
+
+      {modalVisible && (
+        <UserListModal username={user.username} type={modalType} onClose={closeModal} />
+      )}
     </div>
   );
 };

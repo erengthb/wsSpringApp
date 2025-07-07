@@ -1,5 +1,7 @@
 package com.hoaxify.ws.user;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -65,4 +67,15 @@ public class UserController {
         userService.unfollow(loggedInUser.getUsername(), username);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("/users/{username}/followers")
+    public List<UserVM> getFollowers(@PathVariable String username, Pageable page) {
+        return userService.getFollowers(username, page);
+    }
+    
+    @GetMapping("/users/{username}/following")
+    public List<UserVM> getFollowing(@PathVariable String username, Pageable page) {
+        return userService.getFollowing(username, page);
+    }
+
 }

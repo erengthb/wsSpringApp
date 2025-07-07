@@ -1,6 +1,8 @@
 package com.hoaxify.ws.user;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.hoaxify.ws.error.NotFoundException;
 import com.hoaxify.ws.file.FileService;
 import com.hoaxify.ws.user.vm.UserUpdateVM;
+import com.hoaxify.ws.user.vm.UserVM;
 import com.hoaxify.ws.utils.DateUtil;
 
 @Service
@@ -92,5 +95,37 @@ public class UserService {
 
     public boolean isFollowing(String followerUsername, String targetUsername) {
         return userRepository.isFollowing(followerUsername, targetUsername);
+    }
+
+    public List<UserVM> getFollowers(String username, Pageable page) {
+        User user = getByUsername(username);
+        List<User> followers = user.getFollowers().stream().collect(Collectors.toList());
+        int pageSize = page.getPageSize();
+        int pageNumber = page.getPageNumber();
+    
+        int start = pageNumber * pageSize;
+        int end = Math.min(start + pageSize, followers.size());
+    
+        if (start > end) {
+            return List.of();
+        }
+    
+        return followers.subList(start, end).stream().map(UserVM::new).collect(Collectors.toList());
+    }
+    
+    public List<UserVM> getFollowing(String username, Pageable page) {
+        User user = getByUsername(username);
+        List<User> following = user.getFollowing().stream().collect(Collectors.toList());
+        int pageSize = page.getPageSize();
+        int pageNumber = page.getPageNumber();
+    
+        int start = pageNumber * pageSize;
+        int end = Math.min(start + pageSize, following.size());
+    
+        if (start > end) {
+            return List.of();
+        }
+    
+        return following.subList(start, end).stream().map(UserVM::new).collect(Collectors.toList());
     }
 }
