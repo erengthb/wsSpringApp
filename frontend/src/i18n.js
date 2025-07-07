@@ -37,6 +37,11 @@ i18n.use(initReactI18next).init({
         'Following': 'Following',
         'Follow': 'Follow',
         'Unfollow': 'Unfollow',
+        Followers: 'Followers',
+        Following: 'Following',
+        'Close modal': 'Close modal',
+        'Loading...': 'Loading...',
+        'No users found.': 'No users found.',
       }
     },
     tr: {
@@ -71,7 +76,12 @@ i18n.use(initReactI18next).init({
         'Followers': 'Takipçi',
         'Following': 'Takip Edilen',
         'Follow': 'Takip Et',
-        'Unfollow': 'Takibi Bırak',             
+        'Unfollow': 'Takibi Bırak',      
+        Followers: 'Takipçi',
+        Following: 'Takip Edilen',
+        'Close modal': 'Modali Kapat',
+        'Loading...': 'Yükleniyor...',
+        'No users found.': 'Kullanıcı bulunamadı.',       
       }
     }
   },

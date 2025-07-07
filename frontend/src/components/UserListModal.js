@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { getUserFollowers, getUserFollowing } from '../api/apiCalls'; // Yeni api fonksiyonlar
+import { getUserFollowers, getUserFollowing } from '../api/apiCalls';
 import ProfileImageWithDefault from './ProfileImageWithDefault';
 import '../css/UserListModal.css';
+import { useTranslation } from 'react-i18next';
 
 const UserListModal = ({ username, type, onClose }) => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
     if (!username) return;
@@ -34,19 +36,30 @@ const UserListModal = ({ username, type, onClose }) => {
   return (
     <>
       <div className="modal-backdrop" onClick={onClose} />
-      <div className="modal-wrapper" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+      <div
+        className="modal-wrapper"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+      >
         <div className="modal-content" onClick={(e) => e.stopPropagation()}>
           <div className="modal-header">
-            <h5 id="modal-title">{type === 'followers' ? 'Followers' : 'Following'}</h5>
-            <button onClick={onClose} className="close-button" aria-label="Close modal">
+            <h5 id="modal-title">
+              {type === 'followers' ? t('Followers') : t('Following')}
+            </h5>
+            <button
+              onClick={onClose}
+              className="close-button"
+              aria-label={t('Close modal')}
+            >
               &times;
             </button>
           </div>
 
-          {loading && <div className="loading-text">Loading...</div>}
+          {loading && <div className="loading-text">{t('Loading...')}</div>}
 
           {!loading && users.length === 0 && (
-            <div className="no-users-text">No users found.</div>
+            <div className="no-users-text">{t('No users found.')}</div>
           )}
 
           <ul className="user-list">
@@ -59,12 +72,14 @@ const UserListModal = ({ username, type, onClose }) => {
                   width="50"
                   height="50"
                 />
-                <span className="user-text">{user.displayName} (@{user.username})</span>
+                <span className="user-text">
+                  {user.displayName} (@{user.username})
+                </span>
               </li>
             ))}
           </ul>
         </div>
-      </div>     
+      </div>
     </>
   );
 };

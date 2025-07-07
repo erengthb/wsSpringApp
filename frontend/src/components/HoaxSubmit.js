@@ -1,3 +1,4 @@
+// src/components/HoaxSubmit.js
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import ProfileImageWithDefault from './ProfileImageWithDefault';
@@ -6,7 +7,7 @@ import { postHoax } from '../api/apiCalls';
 import { useApiProgress } from '../shared/ApiProgress';
 import ButtonWithProgress from './ButtonWithProgress';
 
-const HoaxSubmit = () => {
+const HoaxSubmit = ({ onSuccess }) => {
   const { image } = useSelector(store => ({ image: store.image }));
   const [focused, setFocused] = useState(false);
   const [hoax, setHoax] = useState('');
@@ -27,24 +28,20 @@ const HoaxSubmit = () => {
   const pendingApiCall = useApiProgress('post', '/api/1.0/hoaxes');
 
   const onClickHoaxify = async () => {
-    const body = {
-      content: hoax
-    };
-
+    const body = { content: hoax };
     try {
       await postHoax(body);
       setFocused(false);
+      if (onSuccess) onSuccess(); // ⬅️ İşte burası önemli
     } catch (error) {
-      if (error.response.data.validationErrors) {
+      if (error.response?.data?.validationErrors) {
         setErrors(error.response.data.validationErrors);
       }
     }
   };
 
   let textAreaClass = 'form-control';
-  if (errors.content) {
-    textAreaClass += ' is-invalid';
-  }
+  if (errors.content) textAreaClass += ' is-invalid';
 
   return (
     <div className="card p-1 flex-row">
@@ -54,7 +51,7 @@ const HoaxSubmit = () => {
           className={textAreaClass}
           rows={focused ? '3' : '1'}
           onFocus={() => setFocused(true)}
-          onChange={event => setHoax(event.target.value)}
+          onChange={e => setHoax(e.target.value)}
           value={hoax}
         />
         <div className="invalid-feedback">{errors.content}</div>
