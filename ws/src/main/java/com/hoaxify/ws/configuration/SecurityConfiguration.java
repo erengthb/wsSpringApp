@@ -33,7 +33,7 @@ public class SecurityConfiguration {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(new AntPathRequestMatcher("/api/1.0/auth", "POST")).authenticated()
                 .requestMatchers(new AntPathRequestMatcher("/api/1.0/users/{username}", "PUT")).authenticated()
-                .requestMatchers(new AntPathRequestMatcher("/api/1.0/hoaxes", "PUT")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/1.0/hoaxes", "PUT")).authenticated()
                 .anyRequest().permitAll()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
