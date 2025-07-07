@@ -3,6 +3,7 @@ import { getUserFollowers, getUserFollowing } from '../api/apiCalls';
 import ProfileImageWithDefault from './ProfileImageWithDefault';
 import '../css/UserListModal.css';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 const UserListModal = ({ username, type, onClose }) => {
   const [users, setUsers] = useState([]);
@@ -65,16 +66,22 @@ const UserListModal = ({ username, type, onClose }) => {
           <ul className="user-list">
             {users.map((user) => (
               <li key={user.username} className="user-item">
-                <ProfileImageWithDefault
-                  image={user.image}
-                  alt={`${user.username} profile`}
-                  className="rounded-circle"
-                  width="50"
-                  height="50"
-                />
-                <span className="user-text">
-                  {user.displayName} (@{user.username})
-                </span>
+                <Link
+                  to={`/user/${user.username}`}
+                  className="user-link"
+                  onClick={onClose} // Modal kapansın tıklayınca
+                >
+                  <ProfileImageWithDefault
+                    image={user.image}
+                    alt={`${user.username} profile`}
+                    className="rounded-circle"
+                    width="50"
+                    height="50"
+                  />
+                  <span className="user-text">
+                    {user.displayName} (@{user.username})
+                  </span>
+                </Link>
               </li>
             ))}
           </ul>
