@@ -42,6 +42,10 @@ i18n.use(initReactI18next).init({
         'Close modal': 'Close modal',
         'Loading...': 'Loading...',
         'No users found.': 'No users found.',
+        "Login": "Login",
+        "Notifications": "Notifications",
+        "No notifications": "No notifications",
+        "notification_user_started_following_you": "{{username}} started at following you."
       }
     },
     tr: {
@@ -81,7 +85,11 @@ i18n.use(initReactI18next).init({
         Following: 'Takip Edilen',
         'Close modal': 'Modali Kapat',
         'Loading...': 'Yükleniyor...',
-        'No users found.': 'Kullanıcı bulunamadı.',       
+        'No users found.': 'Kullanıcı bulunamadı.',    
+        "Notifications": "Bildirimler",
+        "No notifications": "Bildirim yok",
+        "notification_user_started_following_you": "{{username}} seni takip etmeye başladı."
+   
       }
     }
   },

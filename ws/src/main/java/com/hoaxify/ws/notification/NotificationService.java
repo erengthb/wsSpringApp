@@ -17,28 +17,29 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
 
-    public void createNotification(User targetUser, User triggeredBy, NotificationType type) {
-        if (targetUser.getUsername().equals(triggeredBy.getUsername())) return; // Kendi kendini tetikleme
+    // Bildirim oluşturma (sadece FOLLOW tipi destekleniyor)
+    public void createFollowNotification(User targetUser, User triggeredBy) {
+        if (targetUser.getUsername().equals(triggeredBy.getUsername())) return; // Kendi kendini takip etme
 
         Notification notification = Notification.builder()
                 .targetUser(targetUser)
                 .triggeredBy(triggeredBy)
-                .type(type)
+                .type(NotificationType.FOLLOW)
                 .createdAt(LocalDateTime.now())
                 .build();
 
         notificationRepository.save(notification);
     }
 
-    public List<NotificationVM> getNotificationsForUser(String username) {
+    // Kullanıcıya gelen FOLLOW tipi bildirimleri getir
+    public List<NotificationVM> getFollowNotificationsForUser(String username) {
         User user = userRepository.findByUsername(username);
-    
-        List<Notification> notifications = notificationRepository
-            .findByTargetUserOrTriggeredByOrderByCreatedAtDesc(user, user);
-    
+
+        List<Notification> notifications = notificationRepository.findByTargetUserAndTypeOrderByCreatedAtDesc(user, NotificationType.FOLLOW);
+
         return notifications.stream()
-            .map(NotificationVM::new)
-            .collect(Collectors.toList());
+                .map(NotificationVM::new)
+                .collect(Collectors.toList());
     }
-    
 }
+

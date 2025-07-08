@@ -12,17 +12,14 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/1.0/notifications")
+@RequiredArgsConstructor
 public class NotificationController {
 
     private final NotificationService notificationService;
 
-    public NotificationController(NotificationService notificationService) {
-        this.notificationService = notificationService;
-    }
-
     @GetMapping
-    public List<NotificationVM> getUserNotifications(@CurrentUserAnnotation User loggedInUser) {
-        return notificationService.getNotificationsForUser(loggedInUser.getUsername());
+    public List<NotificationVM> getUserFollowNotifications(@CurrentUserAnnotation User loggedInUser) {
+        return notificationService.getFollowNotificationsForUser(loggedInUser.getUsername());
     }
 }
 

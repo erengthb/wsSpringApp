@@ -22,3 +22,4 @@ public class NotificationVM {
         this.triggeredBy = new UserVM(notification.getTriggeredBy());
     }
 }
+

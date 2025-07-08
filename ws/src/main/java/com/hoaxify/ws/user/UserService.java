@@ -84,7 +84,7 @@ public class UserService {
         if (!follower.getFollowing().contains(toFollow)) {
             follower.getFollowing().add(toFollow);
             userRepository.save(follower);
-            notificationService.createNotification(toFollow,follower, NotificationType.FOLLOW);
+            notificationService.createFollowNotification(toFollow,follower);
         }
     }
 
@@ -96,7 +96,6 @@ public class UserService {
         if (follower.getFollowing().contains(toUnfollow)) {
             follower.getFollowing().remove(toUnfollow);
             userRepository.save(follower);
-            notificationService.createNotification(follower, toUnfollow, NotificationType.UNFOLLOW);
 
         }
     }
