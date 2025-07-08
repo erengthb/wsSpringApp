@@ -81,4 +81,9 @@ export const getUserFollowing = (username) => {
   return axios.get(`/api/1.0/users/${username}/following`);
 };
 
+export const getNotifications = () => {
+  return axios.get('/api/1.0/notifications');
+};
+
+
 

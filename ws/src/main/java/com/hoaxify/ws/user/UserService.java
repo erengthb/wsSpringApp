@@ -12,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.hoaxify.ws.error.NotFoundException;
 import com.hoaxify.ws.file.FileService;
+import com.hoaxify.ws.notification.NotificationService;
+import com.hoaxify.ws.notification.NotificationType;
 import com.hoaxify.ws.user.vm.UserUpdateVM;
 import com.hoaxify.ws.user.vm.UserVM;
 import com.hoaxify.ws.utils.DateUtil;
@@ -22,11 +24,14 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final FileService fileService;
+    private final NotificationService notificationService;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, FileService fileService) {
+
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, FileService fileService,NotificationService notificationService ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.fileService = fileService;
+        this.notificationService = notificationService;
     }
 
     public void save(User user) {
@@ -79,6 +84,7 @@ public class UserService {
         if (!follower.getFollowing().contains(toFollow)) {
             follower.getFollowing().add(toFollow);
             userRepository.save(follower);
+            notificationService.createNotification(toFollow,follower, NotificationType.FOLLOW);
         }
     }
 
@@ -90,6 +96,8 @@ public class UserService {
         if (follower.getFollowing().contains(toUnfollow)) {
             follower.getFollowing().remove(toUnfollow);
             userRepository.save(follower);
+            notificationService.createNotification(follower, toUnfollow, NotificationType.UNFOLLOW);
+
         }
     }
 
