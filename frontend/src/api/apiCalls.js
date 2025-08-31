@@ -85,5 +85,36 @@ export const getNotifications = () => {
   return axios.get('/api/1.0/notifications');
 };
 
+// ✅ STOCK işlemleri
+export const addStock = (stockData) => {
+  return axios.post('/api/1.0/stocks', stockData);
+};
+
+export const getUserStocks = (username, page = 0, size = 10) => {
+  return axios.get(`/api/1.0/users/${username}/stocks`, {
+    params: { page, size },
+  });
+};
+
+
+export const updateStockQuantity = (stockId, newQuantity) => {
+  return axios.patch(`/api/1.0/stocks/${stockId}`, { quantity: newQuantity });
+};
+
+export const deleteStock = (stockId) => {
+  return axios.delete(`/api/1.0/stocks/${stockId}`);
+};
+
+export const searchUserStocks = (username, query, page = 0, size = 10) => {
+  return axios.get(`/api/1.0/users/${username}/stocks/search`, {
+    params: {
+      q: query,
+      page,
+      size,
+    },
+  });
+};
+
+
 
 

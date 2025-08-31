@@ -60,7 +60,7 @@ const TopBar = () => {
     if (notification.type === 'FOLLOW') {
       return (
         <span>
-          <strong>@{notification.triggeredBy.username}</strong> {t('started_following_you')}
+          <strong>@{notification.triggeredBy.username}</strong> {t('Started follow you')}
         </span>
       );
     }
@@ -101,6 +101,14 @@ const TopBar = () => {
               onClick={() => setMenuVisible(false)}
             >
               <i className="material-icons text-info mr-2">person</i> {t('My Profile')}
+            </Link>
+
+            <Link
+              className="dropdown-item d-flex p-2"
+              to="/stock"
+              onClick={() => setMenuVisible(false)}
+            >
+              <i className="material-icons text-primary mr-2">inventory_2</i> {t('Stock Tracking')}
             </Link>
 
             <span

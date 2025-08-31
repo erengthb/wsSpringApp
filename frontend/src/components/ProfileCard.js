@@ -4,92 +4,92 @@ import { useSelector, useDispatch } from 'react-redux';
 import ProfileImageWithDefault from './ProfileImageWithDefault';
 import { useTranslation } from 'react-i18next';
 import Input from './Input';
-import {
-  updateUser,
-  followUser,
-  unfollowUser,
-  getUser
-} from '../api/apiCalls';
+import { updateUser, followUser, unfollowUser, getUser } from '../api/apiCalls';
 import { useApiProgress } from '../shared/ApiProgress';
 import ButtonWithProgress from './ButtonWithProgress';
 import { updateSuccess } from '../redux/authActions';
-import UserListModal from './UserListModal'; // Yeni modal component
+import UserListModal from './UserListModal';
 
 const ProfileCard = (props) => {
-  const [inEditMode, setInEditMode] = useState(false);
-  const [updatedDisplayName, setUpdatedDisplayName] = useState();
   const { username: loggedInUsername } = useSelector((store) => ({ username: store.username }));
   const isLoggedIn = Boolean(loggedInUsername);
   const routeParams = useParams();
   const pathUsername = routeParams.username;
-  const [user, setUser] = useState({});
-  const [editable, setEditable] = useState(false);
-  const [newImage, setNewImage] = useState();
-  const [validationErrors, setValidationErrors] = useState({});
   const dispatch = useDispatch();
   const { t } = useTranslation();
 
-  const [isFollowing, setIsFollowing] = useState(false);
-  const [followersCount, setFollowersCount] = useState(0);
-  const [followingCount, setFollowingCount] = useState(0);
+  const [user, setUser] = useState(props.user || {});
+  const [editable, setEditable] = useState(false);
+  const [inEditMode, setInEditMode] = useState(false);
+  const [updatedDisplayName, setUpdatedDisplayName] = useState();
+  const [updatedPhoneNumber, setUpdatedPhoneNumber] = useState();
+  const [updatedEmail, setUpdatedEmail] = useState();
+  const [newImage, setNewImage] = useState();
+  const [validationErrors, setValidationErrors] = useState({});
+
+  const [isFollowing, setIsFollowing] = useState(user.following || false);
+  const [followersCount, setFollowersCount] = useState(user.followersCount || 0);
+  const [followingCount, setFollowingCount] = useState(user.followingCount || 0);
   const [pendingFollowCall, setPendingFollowCall] = useState(false);
 
-  // Modal kontrolü için state
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalType, setModalType] = useState(null); // 'followers' veya 'following'
+  const [modalType, setModalType] = useState(null);
 
+  // Editable kontrol
   useEffect(() => {
     setEditable(pathUsername === loggedInUsername);
   }, [pathUsername, loggedInUsername]);
 
+  // Kullanıcıyı yükle (props.user varsa onu kullan, yoksa backend’den çek)
   useEffect(() => {
-    if (props.user) {
+    if (props.user && props.user.username === pathUsername) {
       setUser(props.user);
       setIsFollowing(props.user.following || false);
       setFollowersCount(props.user.followersCount || 0);
       setFollowingCount(props.user.followingCount || 0);
+    } else if (pathUsername) {
+      const loadUser = async () => {
+        try {
+          const response = await getUser(pathUsername);
+          setUser(response.data);
+          setIsFollowing(response.data.following || false);
+          setFollowersCount(response.data.followersCount || 0);
+          setFollowingCount(response.data.followingCount || 0);
+        } catch (error) {
+          setUser({});
+          setIsFollowing(false);
+          setFollowersCount(0);
+          setFollowingCount(0);
+        }
+      };
+      loadUser();
     }
-  }, [props.user]);
-
-  useEffect(() => {
-    if (!pathUsername) return;
-    if (props.user && props.user.username === pathUsername) return;
-
-    const loadUser = async () => {
-      try {
-        const response = await getUser(pathUsername);
-        setUser(response.data);
-        setIsFollowing(response.data.following || false);
-        setFollowersCount(response.data.followersCount || 0);
-        setFollowingCount(response.data.followingCount || 0);
-      } catch (error) {
-        setUser({});
-        setIsFollowing(false);
-        setFollowersCount(0);
-        setFollowingCount(0);
-      }
-    };
-
-    loadUser();
   }, [pathUsername, props.user]);
 
+  // Edit mode state ayarları
   useEffect(() => {
     if (!inEditMode) {
       setUpdatedDisplayName(undefined);
+      setUpdatedPhoneNumber(undefined);
+      setUpdatedEmail(undefined);
       setNewImage(undefined);
     } else {
       setUpdatedDisplayName(user.displayName);
+      setUpdatedPhoneNumber(user.phoneNumber || '');
+      setUpdatedEmail(user.email || '');
     }
-  }, [inEditMode, user.displayName]);
+  }, [inEditMode, user]);
 
-  useEffect(() => {
-    setValidationErrors((prev) => ({ ...prev, displayName: undefined }));
-  }, [updatedDisplayName]);
+  useEffect(() => setValidationErrors((prev) => ({ ...prev, displayName: undefined })), [updatedDisplayName]);
+  useEffect(() => setValidationErrors((prev) => ({ ...prev, image: undefined })), [newImage]);
+  useEffect(() => setValidationErrors((prev) => ({ ...prev, phoneNumber: undefined })), [updatedPhoneNumber]);
+  useEffect(() => setValidationErrors((prev) => ({ ...prev, email: undefined })), [updatedEmail]);
 
-  useEffect(() => {
-    setValidationErrors((prev) => ({ ...prev, image: undefined }));
-  }, [newImage]);
+  const pendingApiCall = useApiProgress('put', '/api/1.0/users/' + user.username);
+  const { displayName: displayNameError, image: imageError, phoneNumber: phoneError, email: emailError } = validationErrors || {};
+  const isOwnProfile = isLoggedIn && user.username === loggedInUsername;
 
+  // Save handler
   const onClickSave = async () => {
     let imageData;
     if (newImage) {
@@ -98,19 +98,19 @@ const ProfileCard = (props) => {
 
     const body = {
       displayName: updatedDisplayName,
-      image: imageData,
+      phoneNumber: updatedPhoneNumber,
+      email: updatedEmail,
+      image: imageData
     };
-    try {
-      const response = await updateUser(user.username, body);
-      setInEditMode(false);
 
-      // Veriyi tazele
+    try {
+      await updateUser(user.username, body);
+      setInEditMode(false);
       const refreshed = await getUser(user.username);
       setUser(refreshed.data);
       setIsFollowing(refreshed.data.following || false);
       setFollowersCount(refreshed.data.followersCount || 0);
       setFollowingCount(refreshed.data.followingCount || 0);
-
       dispatch(updateSuccess(refreshed.data));
     } catch (error) {
       setValidationErrors(error.response?.data?.validationErrors || {});
@@ -118,13 +118,10 @@ const ProfileCard = (props) => {
   };
 
   const onChangeFile = (event) => {
-    if (event.target.files.length < 1) return;
-    const file = event.target.files[0];
+    if (!event.target.files[0]) return;
     const fileReader = new FileReader();
-    fileReader.onloadend = () => {
-      setNewImage(fileReader.result);
-    };
-    fileReader.readAsDataURL(file);
+    fileReader.onloadend = () => setNewImage(fileReader.result);
+    fileReader.readAsDataURL(event.target.files[0]);
   };
 
   const onClickFollow = async () => {
@@ -132,8 +129,8 @@ const ProfileCard = (props) => {
     try {
       await followUser(user.username);
       setIsFollowing(true);
-      setFollowersCount((count) => count + 1);
-    } catch (error) {}
+      setFollowersCount((c) => c + 1);
+    } catch {}
     setPendingFollowCall(false);
   };
 
@@ -142,8 +139,8 @@ const ProfileCard = (props) => {
     try {
       await unfollowUser(user.username);
       setIsFollowing(false);
-      setFollowersCount((count) => count - 1);
-    } catch (error) {}
+      setFollowersCount((c) => c - 1);
+    } catch {}
     setPendingFollowCall(false);
   };
 
@@ -151,15 +148,10 @@ const ProfileCard = (props) => {
     setModalType(type);
     setModalVisible(true);
   };
-
   const closeModal = () => {
     setModalVisible(false);
     setModalType(null);
   };
-
-  const pendingApiCall = useApiProgress('put', '/api/1.0/users/' + user.username);
-  const { displayName: displayNameError, image: imageError } = validationErrors || {};
-  const isOwnProfile = isLoggedIn && user.username === loggedInUsername;
 
   return (
     <div className="card text-center">
@@ -174,51 +166,36 @@ const ProfileCard = (props) => {
         />
       </div>
       <div className="card-body">
-        {!inEditMode && (
+        {!inEditMode ? (
           <>
-            <h3>
-              {user.displayName} @{user.username}
-            </h3>
+            <h3>{user.displayName} @{user.username}</h3>
             <div className="mb-3">
-              <span
-                className="mr-3"
-                style={{ cursor: 'pointer' }}
-                onClick={() => openModal('followers')}
-                data-testid="followers"
-              >
+              <span className="mr-3" style={{ cursor: 'pointer' }} onClick={() => openModal('followers')}>
                 <strong>{followersCount}</strong> {t('Followers')}
               </span>
-              <span
-                style={{ cursor: 'pointer' }}
-                onClick={() => openModal('following')}
-                data-testid="following"
-              >
+              <span style={{ cursor: 'pointer' }} onClick={() => openModal('following')}>
                 <strong>{followingCount}</strong> {t('Following')}
               </span>
+              <div className="mt-2 text-left">
+                <div>
+                  <strong>{t('Phone Number')}:</strong> {user.phoneNumber?.trim() || t('Not Provided')}
+                </div>
+                <div>
+                  <strong>{t('Email')}:</strong> {user.email?.trim() || t('Not Provided')}
+                </div>
+              </div>
             </div>
 
             {isLoggedIn && !isOwnProfile && (
               <>
                 {isFollowing ? (
-                  <button
-                    className="btn btn-danger"
-                    onClick={onClickUnfollow}
-                    disabled={pendingFollowCall}
-                  >
-                    {pendingFollowCall && (
-                      <span className="spinner-border spinner-border-sm mr-1"></span>
-                    )}
+                  <button className="btn btn-danger" onClick={onClickUnfollow} disabled={pendingFollowCall}>
+                    {pendingFollowCall && <span className="spinner-border spinner-border-sm mr-1"></span>}
                     {t('Unfollow')}
                   </button>
                 ) : (
-                  <button
-                    className="btn btn-primary"
-                    onClick={onClickFollow}
-                    disabled={pendingFollowCall}
-                  >
-                    {pendingFollowCall && (
-                      <span className="spinner-border spinner-border-sm mr-1"></span>
-                    )}
+                  <button className="btn btn-primary" onClick={onClickFollow} disabled={pendingFollowCall}>
+                    {pendingFollowCall && <span className="spinner-border spinner-border-sm mr-1"></span>}
                     {t('Follow')}
                   </button>
                 )}
@@ -226,25 +203,30 @@ const ProfileCard = (props) => {
             )}
 
             {editable && (
-              <button
-                className="btn btn-success d-inline-flex ml-2"
-                onClick={() => setInEditMode(true)}
-              >
-                <i className="material-icons">edit</i>
-                {t('Edit')}
+              <button className="btn btn-success d-inline-flex ml-2" onClick={() => setInEditMode(true)}>
+                <i className="material-icons">edit</i> {t('Edit')}
               </button>
             )}
           </>
-        )}
-        {inEditMode && (
+        ) : (
           <div>
             <Input
               label={t('Change Display Name')}
               defaultValue={user.displayName}
-              onChange={(event) => {
-                setUpdatedDisplayName(event.target.value);
-              }}
+              onChange={(e) => setUpdatedDisplayName(e.target.value)}
               error={displayNameError}
+            />
+            <Input
+              label={t('Phone Number')}
+              value={updatedPhoneNumber}
+              onChange={(e) => setUpdatedPhoneNumber(e.target.value)}
+              error={phoneError}
+            />
+            <Input
+              label={t('Email')}
+              value={updatedEmail}
+              onChange={(e) => setUpdatedEmail(e.target.value)}
+              error={emailError}
             />
             <Input type="file" onChange={onChangeFile} error={imageError} />
             <div>
@@ -253,29 +235,17 @@ const ProfileCard = (props) => {
                 onClick={onClickSave}
                 disabled={pendingApiCall}
                 pendingApiCall={pendingApiCall}
-                text={
-                  <>
-                    <i className="material-icons">save</i>
-                    {t('Save')}
-                  </>
-                }
+                text={<><i className="material-icons">save</i> {t('Save')}</>}
               />
-              <button
-                className="btn btn-light d-inline-flex ml-1"
-                onClick={() => setInEditMode(false)}
-                disabled={pendingApiCall}
-              >
-                <i className="material-icons">close</i>
-                {t('Cancel')}
+              <button className="btn btn-light d-inline-flex ml-1" onClick={() => setInEditMode(false)} disabled={pendingApiCall}>
+                <i className="material-icons">close</i> {t('Cancel')}
               </button>
             </div>
           </div>
         )}
       </div>
 
-      {modalVisible && (
-        <UserListModal username={user.username} type={modalType} onClose={closeModal} />
-      )}
+      {modalVisible && <UserListModal username={user.username} type={modalType} onClose={closeModal} />}
     </div>
   );
 };
