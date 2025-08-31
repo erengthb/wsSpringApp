@@ -50,7 +50,7 @@ public class SecurityConfiguration {
             "https://ws-spring-app.vercel.app",
             "https://ws-spring-app-git-uat-erengthbs-projects.vercel.app"
         ));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 

@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+
 import lombok.Data;
 
 @Data
@@ -36,8 +37,18 @@ public class User implements UserDetails {
     private String password;
 
     private String createDate;
-
     private String image;
+
+    // Yeni alanlar
+    @Size(max = 20)
+    private String phoneNumber;
+
+    @Email
+    @Size(max = 255)
+    private String email;
+
+    @Size(max = 50)
+    private String taxId;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(

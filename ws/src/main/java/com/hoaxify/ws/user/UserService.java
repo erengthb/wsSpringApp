@@ -58,7 +58,11 @@ public class UserService {
 
     public User updateUser(String username, UserUpdateVM updatedUser) {
         User inDB = getByUsername(username);
+    
         inDB.setDisplayName(updatedUser.getDisplayName());
+        inDB.setPhoneNumber(updatedUser.getPhoneNumber());
+        inDB.setEmail(updatedUser.getEmail());
+    
         if (updatedUser.getImage() != null) {
             String oldImageName = inDB.getImage();
             try {
@@ -69,9 +73,10 @@ public class UserService {
             }
             fileService.deleteFile(oldImageName);
         }
+    
         return userRepository.save(inDB);
     }
-
+    
     @Transactional
     public void follow(String followerUsername, String toFollowUsername) {
         if (followerUsername.equals(toFollowUsername)) {

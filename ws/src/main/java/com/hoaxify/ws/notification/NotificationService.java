@@ -19,7 +19,7 @@ public class NotificationService {
 
     // Bildirim oluşturma (sadece FOLLOW tipi destekleniyor)
     public void createFollowNotification(User targetUser, User triggeredBy) {
-        if (targetUser.getUsername().equals(triggeredBy.getUsername())) return; // Kendi kendini takip etme
+        if (targetUser.getUsername().equals(triggeredBy.getUsername())) return; 
 
         Notification notification = Notification.builder()
                 .targetUser(targetUser)
