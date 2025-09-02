@@ -24,6 +24,7 @@ const ProfileCard = (props) => {
   const [updatedDisplayName, setUpdatedDisplayName] = useState();
   const [updatedPhoneNumber, setUpdatedPhoneNumber] = useState();
   const [updatedEmail, setUpdatedEmail] = useState();
+  const [updatedAddress, setUpdatedAddress] = useState();
   const [newImage, setNewImage] = useState();
   const [validationErrors, setValidationErrors] = useState({});
 
@@ -77,6 +78,7 @@ const ProfileCard = (props) => {
       setUpdatedDisplayName(user.displayName);
       setUpdatedPhoneNumber(user.phoneNumber || '');
       setUpdatedEmail(user.email || '');
+      setUpdatedAddress(user.address || '');
     }
   }, [inEditMode, user]);
 
@@ -84,9 +86,10 @@ const ProfileCard = (props) => {
   useEffect(() => setValidationErrors((prev) => ({ ...prev, image: undefined })), [newImage]);
   useEffect(() => setValidationErrors((prev) => ({ ...prev, phoneNumber: undefined })), [updatedPhoneNumber]);
   useEffect(() => setValidationErrors((prev) => ({ ...prev, email: undefined })), [updatedEmail]);
+  useEffect(() => setValidationErrors((prev) => ({ ...prev, address: undefined })), [updatedAddress]);
 
   const pendingApiCall = useApiProgress('put', '/api/1.0/users/' + user.username);
-  const { displayName: displayNameError, image: imageError, phoneNumber: phoneError, email: emailError } = validationErrors || {};
+  const { displayName: displayNameError, image: imageError, phoneNumber: phoneError, email: emailError, address: addressError } = validationErrors || {};
   const isOwnProfile = isLoggedIn && user.username === loggedInUsername;
 
   // Save handler
@@ -100,6 +103,7 @@ const ProfileCard = (props) => {
       displayName: updatedDisplayName,
       phoneNumber: updatedPhoneNumber,
       email: updatedEmail,
+      address: updatedAddress,
       image: imageData
     };
 
@@ -177,12 +181,26 @@ const ProfileCard = (props) => {
                 <strong>{followingCount}</strong> {t('Following')}
               </span>
               <div className="mt-2 text-left">
-                <div>
-                  <strong>{t('Phone Number')}:</strong> {user.phoneNumber?.trim() || t('Not Provided')}
-                </div>
-                <div>
-                  <strong>{t('Email')}:</strong> {user.email?.trim() || t('Not Provided')}
-                </div>
+                {user.phoneNumber && (
+                  <div>
+                    <strong>{t('Phone Number')}:</strong> {user.phoneNumber.trim()}
+                  </div>
+                )}
+                {user.email && (
+                  <div>
+                    <strong>{t('Email')}:</strong> {user.email.trim()}
+                  </div>
+                )}
+                {user.address && (
+                  <div>
+                    <strong>{t('Address')}:</strong> {user.address.trim()}
+                  </div>
+                )}
+                {!user.phoneNumber && !user.email && !user.address && (
+                  <div className="text-muted">
+                    <em>{t('No contact information provided')}</em>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -227,6 +245,12 @@ const ProfileCard = (props) => {
               value={updatedEmail}
               onChange={(e) => setUpdatedEmail(e.target.value)}
               error={emailError}
+            />
+            <Input
+              label={t('Address')}
+              value={updatedAddress}
+              onChange={(e) => setUpdatedAddress(e.target.value)}
+              error={addressError}
             />
             <Input type="file" onChange={onChangeFile} error={imageError} />
             <div>

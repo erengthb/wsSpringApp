@@ -62,6 +62,7 @@ public class UserService {
         inDB.setDisplayName(updatedUser.getDisplayName());
         inDB.setPhoneNumber(updatedUser.getPhoneNumber());
         inDB.setEmail(updatedUser.getEmail());
+        inDB.setAddress(updatedUser.getAddress());
     
         if (updatedUser.getImage() != null) {
             String oldImageName = inDB.getImage();

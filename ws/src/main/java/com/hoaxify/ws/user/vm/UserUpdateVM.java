@@ -1,9 +1,12 @@
 package com.hoaxify.ws.user.vm;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 
+@Data
 public class UserUpdateVM {
 
     @NotNull
@@ -18,32 +21,8 @@ public class UserUpdateVM {
     @Email
     private String email;
 
-    // Getters & Setters
-    public String getDisplayName() {
-        return displayName;
-    }
-    public void setDisplayName(String displayName) {
-        this.displayName = displayName;
-    }
+    @Column(length = 255)
+    private String address;
 
-    public String getImage() {
-        return image;
-    }
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
+ 
 }

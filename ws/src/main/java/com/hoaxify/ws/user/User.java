@@ -8,6 +8,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
@@ -40,15 +42,23 @@ public class User implements UserDetails {
     private String image;
 
     // Yeni alanlar
+    @JsonProperty
     @Size(max = 20)
     private String phoneNumber;
 
+    @JsonProperty
     @Email
     @Size(max = 255)
     private String email;
 
+    @JsonProperty
     @Size(max = 50)
     private String taxId;
+
+    @JsonProperty
+    @Column(length = 255)
+    private String address;
+
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
