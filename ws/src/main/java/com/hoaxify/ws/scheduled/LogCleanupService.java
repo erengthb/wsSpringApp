@@ -19,8 +19,7 @@ public class LogCleanupService {
     @Scheduled(cron = "${app.log-cleanup.cron}", zone = "Europe/Istanbul")
     public void cleanupOldLogs() {
         LocalDateTime threshold = LocalDateTime.now().minusMinutes(1);
-        System.out.println("Log cleanup started at " + LocalDateTime.now());
         logRecordRepository.deleteByTimestampBefore(threshold);
-        System.out.println("Log cleanup finished at " + LocalDateTime.now());
+        System.out.println("Log cleanup at " + LocalDateTime.now());
     }
 }

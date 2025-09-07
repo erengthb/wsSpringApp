@@ -33,3 +33,8 @@ build/
 .vscode/
 /devdb.mv.db
 /devdb.trace.db
+/testdb.mv.db
+/testdb.trace.db
+
+ws/data/*.db
+ws/data/*.trace.db

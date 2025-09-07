@@ -13,6 +13,9 @@ const UserSignupPage = (props) => {
     displayName: null,
     password: null,
     passwordRepeat: null,
+    phoneNumber: null,
+    email: null,
+    taxId: null,
   });
 
   const [captchaId, setCaptchaId] = useState('');
@@ -66,12 +69,15 @@ const UserSignupPage = (props) => {
 
   const onClickSignup = async (e) => {
     e.preventDefault();
-    const { username, displayName, password } = form;
+    const { username, displayName, password, phoneNumber, email, taxId } = form;
 
     const body = {
       username,
       displayName,
       password,
+      phoneNumber,
+      email,
+      taxId,
       captchaId,
       captchaInput
     };
@@ -86,7 +92,16 @@ const UserSignupPage = (props) => {
     }
   };
 
-  const { username: usernameError, displayName: displayNameError, password: passwordError } = errors;
+  // Hatalı destructuring düzeltilmiş
+  const { 
+    username: usernameError, 
+    displayName: displayNameError, 
+    password: passwordError, 
+    phoneNumber: phoneError, 
+    email: emailError, 
+    taxId: taxError 
+  } = errors || {};
+
   const pendingApiCallSignup = useApiProgress('post', '/api/1.0/users');
   const pendingApiCallLogin = useApiProgress('post', '/api/1.0/auth');
   const pendingApiCall = pendingApiCallSignup || pendingApiCallLogin;
@@ -104,6 +119,9 @@ const UserSignupPage = (props) => {
         <Input name="displayName" label={t('Display Name')} error={displayNameError} onChange={onChange} />
         <Input name="password" label={t('Password')} error={passwordError} onChange={onChange} type="password" />
         <Input name="passwordRepeat" label={t('Password Repeat')} error={passwordRepeatError} onChange={onChange} type="password" />
+        <Input name="phoneNumber" label={t('Phone Number')} error={phoneError} onChange={onChange} />
+        <Input name="email" label={t('Email')} error={emailError} onChange={onChange} />
+        <Input name="taxId" label={t('Tax ID')} error={taxError} onChange={onChange} />
 
         <div className="form-group">
           <label>{t('CAPTCHA')}:</label>
@@ -120,13 +138,13 @@ const UserSignupPage = (props) => {
             disabled={isCaptchaVerified}
             placeholder={t('Enter CAPTCHA text')}
           />
-         <button
-           className="btn btn-secondary mt-2"
+          <button
+            className="btn btn-secondary mt-2"
             onClick={onVerifyCaptcha}
             type="button"
-           disabled={isCaptchaVerified || !captchaInput}
+            disabled={isCaptchaVerified || !captchaInput}
           >
-           {t('Verify CAPTCHA')}
+            {t('Verify CAPTCHA')}
           </button>
           {captchaError && <div className="text-danger mt-2">{captchaError}</div>}
           {isCaptchaVerified && <div className="text-success mt-2">{t('CAPTCHA verified')}</div>}

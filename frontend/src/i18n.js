@@ -1,6 +1,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import {register} from 'timeago.js';
+import { register } from 'timeago.js';
 
 i18n.use(initReactI18next).init({
   resources: {
@@ -10,6 +10,9 @@ i18n.use(initReactI18next).init({
         'Password mismatch': 'Password mismatch',
         Username: 'Username',
         'Display Name': 'Display Name',
+        'Phone Number': 'Phone Number',
+        Email: 'Email',
+        Address: 'Address',
         Password: 'Password',
         'Password Repeat': 'Password Repeat',
         Login: 'Login',
@@ -19,6 +22,8 @@ i18n.use(initReactI18next).init({
         Previous: '< previous',
         'Load Failure': 'Load Failure',
         'User not found': 'User not found',
+        'Not Provided': 'Not Provided',
+        'No contact information provided': 'No contact information provided',
         Edit: 'Edit',
         'Change Display Name': 'Change Display Name',
         Save: 'Save',
@@ -26,17 +31,49 @@ i18n.use(initReactI18next).init({
         'My Profile': 'My Profile',
         'There are no hoaxes': 'There are no hoaxes',
         'Load old hoaxes': 'Load old hoaxes',
-         CAPTCHA: 'CAPTCHA',
+        CAPTCHA: 'CAPTCHA',
         'Failed to load CAPTCHA': 'Failed to load CAPTCHA',
         'Invalid CAPTCHA input': 'Invalid CAPTCHA input',
         'CAPTCHA verified': 'CAPTCHA verified',
         'Reload CAPTCHA': 'Reload CAPTCHA',
         'Enter CAPTCHA text': 'Enter CAPTCHA text',
         'Verify CAPTCHA': 'Verify CAPTCHA',
-        'Followers': 'Followers',
-        'Following': 'Following',
+          // ✅ Follow / Unfollow
+        Followers: 'Followers',
+        Following: 'Following',
         'Follow': 'Follow',
         'Unfollow': 'Unfollow',
+        'Close modal': 'Close modal',
+        'Loading...': 'Loading...',
+        'No users found.': 'No users found.',
+        Notifications: 'Notifications',
+        'No notifications': 'No notifications',
+        'Started follow you': 'Started follow you',
+        // ✅ Stock
+        'Stock Tracking' : 'Stock Tracking',
+        'Add Stock': 'Add Stock',
+        'Product Name': 'Product Name',
+        'Product Image':'Product Image',
+        Description: 'Description',
+        Quantity: 'Quantity',
+        Image: 'Image',
+        'Actions': 'Actions',
+        'Submit': 'Submit',
+        'No stocks found.': 'No stocks found.',
+        'Stock added successfully.': 'Stock added successfully.',
+        'Failed to add stock.': 'Failed to add stock.',
+        'Stock quantity updated.': 'Stock quantity updated.',
+        'Stock Page': 'Stock Page',
+        'Stock List' : 'Stock List',
+        'Image uploaded successfully':'Image uploaded successfully',
+        'Only PNG , JPG, JPEG or WEBP images are allowed.': 'Only PNG , JPG, JPEG or WEBP images are allowed.',
+        'Add Stock':'Add Stock',
+        'Delete Record':'Delete Record',
+        'Close':'Close',
+        'Are you sure you want to delete this stock ?' : 'Are you sure you want to delete this stock ?',
+         // ✅ Search
+        "Search" : "Search",
+        'Search for a product': 'Search for a product name'
       }
     },
     tr: {
@@ -45,6 +82,9 @@ i18n.use(initReactI18next).init({
         'Password mismatch': 'Aynı şifreyi giriniz',
         Username: 'Kullanıcı Adı',
         'Display Name': 'Tercih Edilen İsim',
+        'Phone Number': 'Telefon Numarası',
+        Email: 'E-posta',
+        Address: 'Adres',
         Password: 'Şifre',
         'Password Repeat': 'Şifreyi Tekrarla',
         Login: 'Sisteme Gir',
@@ -54,6 +94,8 @@ i18n.use(initReactI18next).init({
         Previous: '< önceki',
         'Load Failure': 'Liste alınamadı',
         'User not found': 'Kullanıcı bulunamadı',
+        'Not Provided': 'Belirtilmemiş',
+        'No contact information provided': 'İletişim bilgisi belirtilmemiş',
         Edit: 'Düzenle',
         'Change Display Name': 'Görünür İsminizi Değiştirin',
         Save: 'Kaydet',
@@ -68,14 +110,46 @@ i18n.use(initReactI18next).init({
         'Reload CAPTCHA': 'CAPTCHA’yı yenile',
         'Enter CAPTCHA text': 'CAPTCHA metnini giriniz',
         'Verify CAPTCHA': 'CAPTCHA\'yı Doğrula',
-        'Followers': 'Takipçi',
-        'Following': 'Takip Edilen',
+         // ✅ Follow / Unfollow
+        Followers: 'Takipçi',
+        Following: 'Takip Edilen',
         'Follow': 'Takip Et',
-        'Unfollow': 'Takibi Bırak',             
+        'Unfollow': 'Takibi Bırak',
+        'Close modal': 'Modali Kapat',
+        'Loading...': 'Yükleniyor...',
+        'No users found.': 'Kullanıcı bulunamadı.',
+        Notifications: 'Bildirimler',
+        'No notifications': 'Bildirim yok',
+        'Started follow you': 'Seni takip etmeye başladı',
+        // ✅ Stock
+        'Stock Tracking': 'Stok Yönetimi',
+        'Add Stock': 'Stok Ekle',
+        'Product Name': 'Ürün Adı',
+        'Product Image':'Ürün Resmi',
+        Description: 'Açıklama',
+        Quantity: 'Adet',
+        Image: 'Görsel',
+        'Actions': 'İşlemler',
+        'Submit': 'Gönder',
+        'No stocks found.': 'Stok bulunamadı.',
+        'Stock added successfully.': 'Stok başarıyla eklendi.',
+        'Failed to add stock.': 'Stok ekleme başarısız.',
+        'Stock quantity updated.': 'Stok adedi güncellendi.',
+        'Stock Page': 'Stok Sayfası',
+        'Stock List' : 'Stok Listesi',
+        'Image uploaded successfully':'Resim başarıyla yüklendi',
+        'Only PNG , JPG, JPEG or WEBP images are allowed.': 'Yalnızda PNG, JPG , JPEG ve WEBP formatında resim yüklenebilir.',
+        'Add Stock':'Stok Ekle',
+        'Delete Record':'Kaydı Sil',
+        'Close':'Kapat',
+        'Are you sure you want to delete this stock ?' :'Seçili ürün kaydının tamamını silmek istediğinize emin misiniz ?',
+        // ✅ Search
+        "Search" : "Arama",
+        'Search for a product': 'Ürün adı ile ürün ara'
       }
     }
   },
-  fallbackLng: 'en',
+  fallbackLng: 'tr',
   ns: ['translations'],
   defaultNS: 'translations',
   keySeparator: false,
@@ -88,25 +162,24 @@ i18n.use(initReactI18next).init({
   }
 });
 
-const timeagoTR = (number, index) => {
-  return [
-    ['az önce', 'şimdi'],
-    ['%s saniye önce', '%s saniye içinde'],
-    ['1 dakika önce', '1 dakika içinde'],
-    ['%s dakika önce', '%s dakika içinde'],
-    ['1 saat önce', '1 saat içinde'],
-    ['%s saat önce', '%s saat içinde'],
-    ['1 gün önce', '1 gün içinde'],
-    ['%s gün önce', '%s gün içinde'],
-    ['1 hafta önce', '1 hafta içinde'],
-    ['%s hafta önce', '%s hafta içinde'],
-    ['1 ay önce', '1 ay içinde'],
-    ['%s ay önce', '%s ay içinde'],
-    ['1 yıl önce', '1 yıl içinde'],
-    ['%s yıl önce', '%s yıl içinde'],
-  ][index];
-}
+// Türkçe timeago
+const timeagoTR = (number, index) => [
+  ['az önce', 'şimdi'],
+  ['%s saniye önce', '%s saniye içinde'],
+  ['1 dakika önce', '1 dakika içinde'],
+  ['%s dakika önce', '%s dakika içinde'],
+  ['1 saat önce', '1 saat içinde'],
+  ['%s saat önce', '%s saat içinde'],
+  ['1 gün önce', '1 gün içinde'],
+  ['%s gün önce', '%s gün içinde'],
+  ['1 hafta önce', '1 hafta içinde'],
+  ['%s hafta önce', '%s hafta içinde'],
+  ['1 ay önce', '1 ay içinde'],
+  ['%s ay önce', '%s ay içinde'],
+  ['1 yıl önce', '1 yıl içinde'],
+  ['%s yıl önce', '%s yıl içinde'],
+][index];
 
-register('tr',timeagoTR);
+register('tr', timeagoTR);
 
 export default i18n;

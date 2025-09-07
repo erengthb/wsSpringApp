@@ -5,7 +5,6 @@ import lombok.Data;
 
 @Data
 public class UserVM {
-
     private Long id;
     private String username;
     private String displayName;
@@ -13,6 +12,11 @@ public class UserVM {
     private Integer followersCount;
     private Integer followingCount;
     private boolean isFollowing;
+    
+    // ✅ Yeni eklenen alanlar
+    private String email;
+    private String phoneNumber;
+    private String address;
 
     public UserVM(User user) {
         this.id = user.getId();
@@ -22,6 +26,11 @@ public class UserVM {
         this.followersCount = null;
         this.followingCount = null;
         this.isFollowing = false;
+        
+        // ✅ Contact bilgilerini ekle
+        this.email = user.getEmail();
+        this.phoneNumber = user.getPhoneNumber();
+        this.address = user.getAddress();
     }
 
     public UserVM(User user, boolean isFollowing, int followersCount, int followingCount) {

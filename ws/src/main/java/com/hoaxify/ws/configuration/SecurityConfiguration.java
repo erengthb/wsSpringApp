@@ -33,7 +33,7 @@ public class SecurityConfiguration {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(new AntPathRequestMatcher("/api/1.0/auth", "POST")).authenticated()
                 .requestMatchers(new AntPathRequestMatcher("/api/1.0/users/{username}", "PUT")).authenticated()
-                .requestMatchers(new AntPathRequestMatcher("/api/1.0/hoaxes", "PUT")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/1.0/hoaxes", "PUT")).authenticated()
                 .anyRequest().permitAll()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -50,7 +50,7 @@ public class SecurityConfiguration {
             "https://ws-spring-app.vercel.app",
             "https://ws-spring-app-git-uat-erengthbs-projects.vercel.app"
         ));
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
 
