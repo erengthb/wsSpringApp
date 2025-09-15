@@ -151,7 +151,7 @@ const TopBar = () => {
     <div className="shadow-sm bg-light mb-2">
       <nav className="navbar navbar-light container navbar-expand">
         <Link className="navbar-brand" to="/">
-          <img src={logo} width="120" alt="Oto Envanter Logo" />
+          <img src={logo} width="100" alt="Oto Envanter Logo" />
         </Link>
         {links}
       </nav>
