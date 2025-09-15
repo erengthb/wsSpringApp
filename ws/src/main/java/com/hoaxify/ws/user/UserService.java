@@ -36,7 +36,7 @@ public class UserService {
 
     public void save(User user) {
         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
-        user.setCreateDate(DateUtil.getCurrentDateString());
+        user.setCreateDate(DateUtil.getCurrentLocalDateTime());
         userRepository.save(user);
     }
 
