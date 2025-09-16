@@ -48,7 +48,8 @@ public class SecurityConfiguration {
         configuration.setAllowedOrigins(List.of(
             "http://localhost:3000",
             "https://ws-spring-app.vercel.app",
-            "https://ws-spring-app-git-uat-erengthbs-projects.vercel.app"
+            "https://ws-spring-app-git-uat-erengthbs-projects.vercel.app",
+            "https://otoenvanter.com" 
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(List.of("*"));
