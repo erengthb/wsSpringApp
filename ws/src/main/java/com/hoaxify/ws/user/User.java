@@ -1,5 +1,6 @@
 package com.hoaxify.ws.user;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -38,7 +39,9 @@ public class User implements UserDetails {
     @Size(min = 8, max = 100)
     private String password;
 
-    private String createDate;
+    @Column(name="create_date", nullable = false)
+    private LocalDateTime createDate = LocalDateTime.now();
+    
     private String image;
 
     // Yeni alanlar

@@ -67,6 +67,13 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
+logging:
+  level:
+    org.springframework.web: DEBUG
+    com.hoaxify: DEBUG
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
 hoaxify:
   upload-path: storage-uat
 

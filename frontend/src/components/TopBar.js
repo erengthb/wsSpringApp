@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getNotifications } from '../api/apiCalls';
 import { logoutSuccess } from '../redux/authActions';
 import ProfileImageWithDefault from './ProfileImageWithDefault';
-import logo from '../assets/hoaxify.png';
+import logo from '../assets/otoenvanterlogo.jpg';
 import { Link } from 'react-router-dom';
 
 const TopBar = () => {
@@ -151,8 +151,7 @@ const TopBar = () => {
     <div className="shadow-sm bg-light mb-2">
       <nav className="navbar navbar-light container navbar-expand">
         <Link className="navbar-brand" to="/">
-          <img src={logo} width="60" alt="Hoaxify Logo" />
-          Hoaxify
+          <img src={logo} width="100" alt="Oto Envanter Logo" />
         </Link>
         {links}
       </nav>
