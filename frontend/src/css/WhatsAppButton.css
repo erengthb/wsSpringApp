@@ -1,0 +1,56 @@
+.whatsapp-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #25D366;
+    color: white;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    text-decoration: none;
+    overflow: hidden;
+    width: 56px; /* sadece ikon başlangıçta */
+    padding: 12px;
+    transition: width 0.3s ease;
+    cursor: pointer;
+    z-index: 1000;
+  }
+  
+  .whatsapp-icon {
+    flex-shrink: 0;
+  }
+  
+  .whatsapp-text {
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(-20px);
+    margin-left: 8px;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    flex-shrink: 0;
+  }
+  
+  /* Desktop hover efektleri */
+  @media (hover: hover) and (pointer: fine) {
+    .whatsapp-button:hover {
+      width: 180px;
+    }
+  
+    .whatsapp-button:hover .whatsapp-text {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  /* Mobilde sadece ikon görünür */
+  @media (hover: none) and (pointer: coarse) {
+    .whatsapp-button {
+      width: 56px !important;
+    }
+  
+    .whatsapp-text {
+      display: none;
+    }
+  }
+  

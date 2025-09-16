@@ -3,6 +3,12 @@ import axios from 'axios';
 // Backend base URL'yi ortam değişkeninden alıyoruz
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
+// --- LANGUAGE HEADER AYARI ---
+export const setLanguageHeader = (language) => {
+  axios.defaults.headers['Accept-Language'] = language;
+};
+
+
 
 export const signup = body => {
   return axios.post('/api/1.0/users', body);

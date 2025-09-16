@@ -9,7 +9,8 @@ import TopBar from '../components/TopBar';
 import { useSelector } from 'react-redux';
 import StockPage from '../pages/StockPage';
 import WhatsAppButton from '../components/WhatsAppButton';
-
+import Footer from '../components/Footer';
+import UserSignupFormPage from '../pages/UserSignupFormPage';
 
 const App = () => {
   const { isLoggedIn } = useSelector((store) => ({
@@ -17,35 +18,28 @@ const App = () => {
   }));
 
   return (
-    <div>
+    <div className="app-container" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <Router>
         <TopBar />
-        <Switch>
-          <Route exact path="/" component={Homepage} />
-          {!isLoggedIn && <Route path="/login" component={LoginPage} />}
-          <Route exact path="/" component={Homepage} />
-          {!isLoggedIn && <Route path="/login" component={LoginPage} />}
-          
-          {/* signup yönlendirme 
-          <Route
-            path="/signup"
-            component={() => {
-              window.location.href =
-                "https://docs.google.com/forms/u/0/d/13PPn_0TIcgp4D_Xq0sIlD3W3xo9kZk5Dt4NsAtj2N-Q/preview";
-              return null;
-            }}
-          />*/}
-              <Route path="/signup" component={UserSignupPage} /> 
-          <Route path="/user/:username" component={UserPage} />
-          <Route path="/stock" component={StockPage} />
-          <Redirect to="/" />
-        </Switch>
+        <div className="content-wrap" style={{ flex: 1 }}>
+          <Switch>
+            <Route exact path="/" component={Homepage} />
+            {!isLoggedIn && <Route path="/login" component={LoginPage} />}
+            <Route path="/signup" component={UserSignupPage} />
+             {/*  <Route path="/signup" component={UserSignupFormPage} />  */}
+            <Route path="/user/:username" component={UserPage} />
+            <Route path="/stock" component={StockPage} />
+            <Redirect to="/" />
+          </Switch>
+        </div>
+
+        <LanguageSelector />
+        <WhatsAppButton />
+        <Footer />
       </Router>
-      <LanguageSelector />
-         {/* ✅ WhatsApp Butonu her sayfada sağ altta gözükecek */}
-         <WhatsAppButton />
     </div>
   );
 };
+
 
 export default App;

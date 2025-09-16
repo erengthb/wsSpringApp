@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import './bootstrap-override.scss';
@@ -8,17 +8,15 @@ import { Provider } from 'react-redux';
 import App from './container/App';
 import configureStore from './redux/configureStore';
 
-
-
 const store = configureStore();
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-<div>
-      <Provider store ={store} >
-          <App/>   
-      </Provider>
-</div>
+  <Suspense fallback={<div>Loading...</div>}>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </Suspense>
 );
 
 reportWebVitals();

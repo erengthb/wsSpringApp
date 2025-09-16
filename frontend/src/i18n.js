@@ -67,13 +67,16 @@ i18n.use(initReactI18next).init({
         'Stock List' : 'Stock List',
         'Image uploaded successfully':'Image uploaded successfully',
         'Only PNG , JPG, JPEG or WEBP images are allowed.': 'Only PNG , JPG, JPEG or WEBP images are allowed.',
-        'Add Stock':'Add Stock',
         'Delete Record':'Delete Record',
         'Close':'Close',
         'Are you sure you want to delete this stock ?' : 'Are you sure you want to delete this stock ?',
          // ✅ Search
         "Search" : "Search",
-        'Search for a product': 'Search for a product name'
+        'Search for a product': 'Search for a product name',
+        //GuestHomePage
+        "welcomeMessage": "Welcome to Oto Envanter. Log in or sign up to see your stocks and connect with the industry.",
+        "login": "Login",
+        "signup": "Sign Up"
       }
     },
     tr: {
@@ -139,13 +142,17 @@ i18n.use(initReactI18next).init({
         'Stock List' : 'Stok Listesi',
         'Image uploaded successfully':'Resim başarıyla yüklendi',
         'Only PNG , JPG, JPEG or WEBP images are allowed.': 'Yalnızda PNG, JPG , JPEG ve WEBP formatında resim yüklenebilir.',
-        'Add Stock':'Stok Ekle',
-        'Delete Record':'Kaydı Sil',
+        'Delete Record':'Kaydı Sil',  
         'Close':'Kapat',
         'Are you sure you want to delete this stock ?' :'Seçili ürün kaydının tamamını silmek istediğinize emin misiniz ?',
         // ✅ Search
         "Search" : "Arama",
-        'Search for a product': 'Ürün adı ile ürün ara'
+        'Search for a product': 'Ürün adı ile ürün ara',
+
+        //GuestHomePage
+        "welcomeMessage": "Oto Envanter'e hoş geldiniz. Stoklarınızı görmek ve sektörle buluşmak için giriş yapın veya kayıt olun.",
+        "login": "Giriş Yap",
+        "signup": "Kayıt Ol"
       }
     }
   },
@@ -158,7 +165,7 @@ i18n.use(initReactI18next).init({
     formatSeparator: ','
   },
   react: {
-    wait: true
+    useSuspense: true
   }
 });
 
