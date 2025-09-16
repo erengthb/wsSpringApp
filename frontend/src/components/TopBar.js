@@ -69,11 +69,10 @@ const TopBar = () => {
 
   let links = (
     <ul className="navbar-nav ml-auto">
-      <li>
-        <Link className="nav-link" to="/login">{t('Login')}</Link>
-      </li>
-      <li>
-        <Link className="nav-link" to="/signup">{t('Sign Up')}</Link>
+      <li className="nav-item">
+        <Link className="nav-link" to="/">
+          {t('Anasayfa')}
+        </Link>
       </li>
     </ul>
   );
