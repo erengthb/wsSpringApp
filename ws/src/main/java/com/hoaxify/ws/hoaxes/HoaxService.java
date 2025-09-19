@@ -42,6 +42,12 @@ public class HoaxService {
     public Page<Hoax> getOldHoaxes(long id, Pageable page) {
        return hoaxRepository.findByIdLessThan(id,page);
     }
+
+	public Page<Hoax> getOldHoaxesOfUser(String username, long id, Pageable page) {
+		User inDB = userService.getByUsername(username);
+		return hoaxRepository.findByUserAndIdLessThan(inDB, id, page);
+	}
+	
 	
 	
 

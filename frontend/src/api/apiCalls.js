@@ -56,6 +56,11 @@ export const getOldHoaxes = id => {
   return axios.get('/api/1.0/hoaxes/' + id );
 }
 
+export const getOldHoaxesOfUser = (username, id) => {
+  return axios.get(`/api/1.0/users/${username}/hoaxes/${id}`);
+};
+
+
 export const requestCaptcha = () => {
   return axios.post('/api/1.0/captcha/request');
 };
