@@ -77,7 +77,7 @@ public class SecurityConfiguration {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
+//test
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
