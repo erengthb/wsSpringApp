@@ -1,8 +1,6 @@
 package com.hoaxify.ws.configuration;
 
 import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -26,45 +24,57 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .csrf(csrf -> csrf.disable())
-            .headers(headers -> headers.frameOptions(frame -> frame.disable()))
+            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS aktif
+            .csrf(csrf -> csrf.disable()) // Stateless API olduğu için CSRF kapalı
+            .headers(headers -> headers.frameOptions(frame -> frame.disable())) // H2 console için
             .httpBasic(httpBasic -> httpBasic.authenticationEntryPoint(new AuthEntryPoint()))
             .authorizeHttpRequests(auth -> auth
-            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // <--- ÖNEMLİ
-            .requestMatchers(new AntPathRequestMatcher("/api/1.0/auth", "POST")).authenticated()
-            .requestMatchers(new AntPathRequestMatcher("/api/1.0/users/{username}", "PUT")).authenticated()
-            .requestMatchers(new AntPathRequestMatcher("/api/1.0/hoaxes", "PUT")).authenticated()
-            .anyRequest().permitAll()
-        )
-        
+                // *** OPTIONS isteği en başta ve permitAll ***
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                
+                // Authenticated endpointler
+                .requestMatchers(new AntPathRequestMatcher("/api/1.0/auth", "POST")).authenticated()
+                .requestMatchers(new AntPathRequestMatcher("/api/1.0/users/{username}", "PUT")).authenticated()
+                .requestMatchers(new AntPathRequestMatcher("/api/1.0/hoaxes", "PUT")).authenticated()
+                
+                // Diğer her şey serbest
+                .anyRequest().permitAll()
+            )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .build();
     }
-    
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of(
+        // Origin tam eşleşme yerine pattern kullan
+        configuration.setAllowedOriginPatterns(List.of(
             "http://localhost:3000",
-            "https://ws-spring-app.vercel.app",
-            "https://ws-spring-app-git-uat-erengthbs-projects.vercel.app",
-            "https://otoenvanter.com" ,
-            "https://www.otoenvanter.com" 
+            "https://*.vercel.app",
+            "https://otoenvanter.com",
+            "https://www.otoenvanter.com"
         ));
+
+        // HTTP metodları
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+
+        // Headerlar
         configuration.setAllowedHeaders(List.of(
-            "Authorization", "Content-Type", "X-Requested-With",
-            "Accept", "Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers"
+            "Authorization",
+            "Content-Type",
+            "X-Requested-With",
+            "Accept",
+            "Origin",
+            "Access-Control-Request-Method",
+            "Access-Control-Request-Headers"
         ));
-        
+
+        // Cookie / Authorization header desteği
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
-
         return source;
     }
 
