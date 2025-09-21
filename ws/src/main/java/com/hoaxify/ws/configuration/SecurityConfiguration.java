@@ -31,11 +31,13 @@ public class SecurityConfiguration {
             .headers(headers -> headers.frameOptions(frame -> frame.disable()))
             .httpBasic(httpBasic -> httpBasic.authenticationEntryPoint(new AuthEntryPoint()))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(new AntPathRequestMatcher("/api/1.0/auth", "POST")).authenticated()
-                .requestMatchers(new AntPathRequestMatcher("/api/1.0/users/{username}", "PUT")).authenticated()
-                .requestMatchers(new AntPathRequestMatcher("/api/1.0/hoaxes", "PUT")).authenticated()
-                .anyRequest().permitAll()
-            )
+            .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // <--- ÖNEMLİ
+            .requestMatchers(new AntPathRequestMatcher("/api/1.0/auth", "POST")).authenticated()
+            .requestMatchers(new AntPathRequestMatcher("/api/1.0/users/{username}", "PUT")).authenticated()
+            .requestMatchers(new AntPathRequestMatcher("/api/1.0/hoaxes", "PUT")).authenticated()
+            .anyRequest().permitAll()
+        )
+        
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .build();
     }
@@ -49,10 +51,15 @@ public class SecurityConfiguration {
             "http://localhost:3000",
             "https://ws-spring-app.vercel.app",
             "https://ws-spring-app-git-uat-erengthbs-projects.vercel.app",
-            "https://otoenvanter.com" 
+            "https://otoenvanter.com" ,
+            "https://www.otoenvanter.com" 
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setAllowedHeaders(List.of(
+            "Authorization", "Content-Type", "X-Requested-With",
+            "Accept", "Origin", "Access-Control-Request-Method", "Access-Control-Request-Headers"
+        ));
+        
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
