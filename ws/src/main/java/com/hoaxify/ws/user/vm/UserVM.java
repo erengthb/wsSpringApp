@@ -12,8 +12,6 @@ public class UserVM {
     private Integer followersCount;
     private Integer followingCount;
     private boolean isFollowing;
-    
-    // ✅ Yeni eklenen alanlar
     private String email;
     private String phoneNumber;
     private String address;
