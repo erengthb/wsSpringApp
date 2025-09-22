@@ -23,26 +23,30 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        return http
-            .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS aktif
-            .csrf(csrf -> csrf.disable()) // Stateless API olduğu için CSRF kapalı
-            .headers(headers -> headers.frameOptions(frame -> frame.disable())) // H2 console için
-            .httpBasic(httpBasic -> httpBasic.authenticationEntryPoint(new AuthEntryPoint()))
-            .authorizeHttpRequests(auth -> auth
-                // *** OPTIONS isteği en başta ve permitAll ***
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                
-                // Authenticated endpointler
-                .requestMatchers(new AntPathRequestMatcher("/api/1.0/auth", "POST")).authenticated()
-                .requestMatchers(new AntPathRequestMatcher("/api/1.0/users/{username}", "PUT")).authenticated()
-                .requestMatchers(new AntPathRequestMatcher("/api/1.0/hoaxes", "PUT")).authenticated()
-                
-                // Diğer her şey serbest
-                .anyRequest().permitAll()
-            )
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .build();
-    }
+    return http
+        .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS aktif
+        .csrf(csrf -> csrf.disable()) // Stateless API için CSRF kapalı
+        .headers(headers -> headers.frameOptions(frame -> frame.disable())) // H2 console için zorunlu
+        .httpBasic(httpBasic -> httpBasic.authenticationEntryPoint(new AuthEntryPoint()))
+        .authorizeHttpRequests(auth -> auth
+            // Preflight OPTIONS isteklerini serbest bırak
+            .requestMatchers(new AntPathRequestMatcher("/**", HttpMethod.OPTIONS.name())).permitAll()
+
+            // H2 Console erişimine izin ver
+            .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
+
+            // Authenticated endpointler
+            .requestMatchers(new AntPathRequestMatcher("/api/1.0/auth", "POST")).authenticated()
+            .requestMatchers(new AntPathRequestMatcher("/api/1.0/users/{username}", "PUT")).authenticated()
+            .requestMatchers(new AntPathRequestMatcher("/api/1.0/hoaxes", "PUT")).authenticated()
+
+            // Diğer tüm endpointlere izin ver
+            .anyRequest().permitAll()
+        )
+        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .build();
+}
+
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -77,7 +81,7 @@ public class SecurityConfiguration {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
+//test
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
