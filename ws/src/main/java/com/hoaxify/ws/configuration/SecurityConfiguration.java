@@ -48,39 +48,37 @@ public class SecurityConfiguration {
 }
 
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
+@Bean
+public CorsConfigurationSource corsConfigurationSource() {
+    CorsConfiguration configuration = new CorsConfiguration();
 
-        // Origin tam eşleşme yerine pattern kullan
-        configuration.setAllowedOriginPatterns(List.of(
-            "http://localhost:3000",
-            "https://*.vercel.app",
-            "https://otoenvanter.com",
-            "https://www.otoenvanter.com"
-        ));
+    // Sadece tam adresleri kullanın, pattern'leri kaldırın
+    configuration.setAllowedOrigins(List.of(
+        "https://otoenvanter.com",
+        "https://www.otoenvanter.com"
+    ));
 
-        // HTTP metodları
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+    // HTTP metotları
+    configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
 
-        // Headerlar
-        configuration.setAllowedHeaders(List.of(
-            "Authorization",
-            "Content-Type",
-            "X-Requested-With",
-            "Accept",
-            "Origin",
-            "Access-Control-Request-Method",
-            "Access-Control-Request-Headers"
-        ));
+    // Headerlar
+    configuration.setAllowedHeaders(List.of(
+        "Authorization",
+        "Content-Type",
+        "X-Requested-With",
+        "Accept",
+        "Origin",
+        "Access-Control-Request-Method",
+        "Access-Control-Request-Headers"
+    ));
 
-        // Cookie / Authorization header desteği
-        configuration.setAllowCredentials(true);
+    // Cookie / Authorization header desteği
+    configuration.setAllowCredentials(true);
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/**", configuration);
+    return source;
+}
 //test
     @Bean
     public PasswordEncoder passwordEncoder() {
