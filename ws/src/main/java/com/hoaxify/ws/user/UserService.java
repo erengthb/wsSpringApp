@@ -47,7 +47,7 @@ public class UserService {
         return userRepository.findAll(page);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public User getByUsername(String username) {
         User user = userRepository.findByUsername(username);
         if (user == null) {
