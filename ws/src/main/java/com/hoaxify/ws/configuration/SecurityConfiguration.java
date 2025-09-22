@@ -54,6 +54,7 @@ public CorsConfigurationSource corsConfigurationSource() {
 
     // Sadece tam adresleri kullanın, pattern'leri kaldırın
     configuration.setAllowedOrigins(List.of(
+        "http://localhost:3000",
         "https://otoenvanter.com",
         "https://www.otoenvanter.com"
     ));
