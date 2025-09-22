@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.hoaxify.ws.error.NotFoundException;
 import com.hoaxify.ws.file.FileService;
 import com.hoaxify.ws.notification.NotificationService;
-import com.hoaxify.ws.notification.NotificationType;
 import com.hoaxify.ws.user.vm.UserUpdateVM;
 import com.hoaxify.ws.user.vm.UserVM;
 import com.hoaxify.ws.utils.DateUtil;
@@ -39,12 +38,19 @@ public class UserService {
         user.setCreateDate(DateUtil.getCurrentLocalDateTime());
         userRepository.save(user);
     }
-
-    public Page<User> getUsers(Pageable page, User user) {
+    
+    // ** LAZY LOADING HATASI BURADA ÇÖZÜLDÜ **
+    @Transactional(readOnly = true)
+    public Page<UserVM> getUsers(Pageable page, User user) {
+        Page<User> usersPage;
         if (user != null) {
-            return userRepository.findByUsernameNot(user.getUsername(), page);
+            usersPage = userRepository.findByUsernameNot(user.getUsername(), page);
+        } else {
+            usersPage = userRepository.findAll(page);
         }
-        return userRepository.findAll(page);
+
+        // Mapping işlemini Transactional metot içinde yapıyoruz.
+        return usersPage.map(u -> new UserVM(u, false, u.getFollowers().size(), u.getFollowing().size()));
     }
 
     @Transactional(readOnly = true)
@@ -56,6 +62,7 @@ public class UserService {
         return user;
     }
 
+    @Transactional
     public User updateUser(String username, UserUpdateVM updatedUser) {
         User inDB = getByUsername(username);
     
@@ -110,6 +117,7 @@ public class UserService {
         return userRepository.isFollowing(followerUsername, targetUsername);
     }
 
+    @Transactional(readOnly = true)
     public List<UserVM> getFollowers(String username, Pageable page) {
         User user = getByUsername(username);
         List<User> followers = user.getFollowers().stream().collect(Collectors.toList());
@@ -126,6 +134,7 @@ public class UserService {
         return followers.subList(start, end).stream().map(UserVM::new).collect(Collectors.toList());
     }
     
+    @Transactional(readOnly = true)
     public List<UserVM> getFollowing(String username, Pageable page) {
         User user = getByUsername(username);
         List<User> following = user.getFollowing().stream().collect(Collectors.toList());

@@ -30,19 +30,18 @@ public class UserController {
         return new GenericResponse("user created");
     }
 
+    // ** GÜNCELLENEN METOT **
     @GetMapping("/users")
     public Page<UserVM> getUsers(Pageable page, @CurrentUserAnnotation User user) {
-        return userService.getUsers(page, user).map(UserVM::new);
+        return userService.getUsers(page, user);
     }
 
-	@PutMapping("/users/{username}")
+    @PutMapping("/users/{username}")
     @PreAuthorize("#username == principal.username")
     public UserVM updateUser(@Valid @RequestBody UserUpdateVM updatedUser, @PathVariable String username) {
         User user = userService.updateUser(username, updatedUser);
         return new UserVM(user);
     }
-
-
 
     @GetMapping("/users/{username}")
     public UserVM getUser(@PathVariable String username, @CurrentUserAnnotation User loggedInUser) {
