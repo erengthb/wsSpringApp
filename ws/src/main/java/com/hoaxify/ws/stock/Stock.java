@@ -28,7 +28,8 @@ public class Stock {
     private Integer quantity;
 
     @Lob
-    private String image; // base64 encoded string
+    @Column(columnDefinition = "text") // PostgreSQL için net TEXT
+    private String image; // base64 string
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

@@ -10,6 +10,9 @@ public interface StockRepository extends JpaRepository<Stock, Long> {
 
     Stock findByIdAndUserUsername(Long id, String username);
 
-    Page<Stock> findByUserUsernameAndProductNameContainingIgnoreCase(String username, String productName, Pageable pageable);
-
+    Page<Stock> findByUserUsernameAndProductNameContainingIgnoreCase(
+            String username,
+            String productName,
+            Pageable pageable
+    );
 }

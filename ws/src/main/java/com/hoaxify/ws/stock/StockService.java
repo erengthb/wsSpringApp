@@ -1,6 +1,7 @@
 package com.hoaxify.ws.stock;
 
 import com.hoaxify.ws.error.NotFoundException;
+import com.hoaxify.ws.stock.vm.StockVM;
 import com.hoaxify.ws.user.User;
 import com.hoaxify.ws.user.UserService;
 import jakarta.transaction.Transactional;
@@ -19,19 +20,19 @@ public class StockService {
         this.userService = userService;
     }
 
-    public Page<Stock> getStocks(String username, Pageable page) {
-        return stockRepository.findByUserUsername(username, page);
+    public Page<StockVM> getStocks(String username, Pageable page) {
+        return stockRepository.findByUserUsername(username, page).map(StockVM::new);
     }
 
     @Transactional
-    public Stock saveStock(String username, Stock stock) {
+    public StockVM saveStock(String username, Stock stock) {
         User user = userService.getByUsername(username);
         stock.setUser(user);
-        return stockRepository.save(stock);
+        return new StockVM(stockRepository.save(stock));
     }
 
     @Transactional
-    public Stock updateStock(String username, Long id, Stock updated) {
+    public StockVM updateStock(String username, Long id, Stock updated) {
         Stock inDB = stockRepository.findByIdAndUserUsername(id, username);
         if (inDB == null) {
             throw new NotFoundException();
@@ -40,7 +41,7 @@ public class StockService {
         inDB.setDescription(updated.getDescription());
         inDB.setQuantity(updated.getQuantity());
         inDB.setImage(updated.getImage());
-        return stockRepository.save(inDB);
+        return new StockVM(stockRepository.save(inDB));
     }
 
     @Transactional
@@ -53,21 +54,21 @@ public class StockService {
     }
 
     @Transactional
-    public Stock updateStockQuantity(String username, Long id, Integer newQuantity) {
+    public StockVM updateStockQuantity(String username, Long id, Integer newQuantity) {
         Stock inDB = stockRepository.findByIdAndUserUsername(id, username);
         if (inDB == null) {
             throw new NotFoundException();
         }
         inDB.setQuantity(newQuantity);
-        return stockRepository.save(inDB);
+        return new StockVM(stockRepository.save(inDB));
     }
 
-    public Page<Stock> searchStocksOfUser(String username, String productName, Pageable page) {
+    public Page<StockVM> searchStocksOfUser(String username, String productName, Pageable page) {
         if (productName != null && !productName.trim().isEmpty()) {
-            return stockRepository.findByUserUsernameAndProductNameContainingIgnoreCase(username, productName, page);
+            return stockRepository
+                    .findByUserUsernameAndProductNameContainingIgnoreCase(username, productName, page)
+                    .map(StockVM::new);
         }
-        return stockRepository.findByUserUsername(username, page);
+        return stockRepository.findByUserUsername(username, page).map(StockVM::new);
     }
-    
-
 }

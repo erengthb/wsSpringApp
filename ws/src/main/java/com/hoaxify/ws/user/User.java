@@ -9,6 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.*;
@@ -69,11 +70,13 @@ public class User implements UserDetails {
         joinColumns = @JoinColumn(name = "follower_id"),
         inverseJoinColumns = @JoinColumn(name = "following_id")
     )
+    @JsonIgnore
     private Set<User> following = new HashSet<>();
-
+    
     @ManyToMany(mappedBy = "following", fetch = FetchType.LAZY)
+    @JsonIgnore
     private Set<User> followers = new HashSet<>();
-
+    
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return AuthorityUtils.createAuthorityList("Role_user");
