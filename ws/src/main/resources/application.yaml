@@ -51,37 +51,6 @@ spring:
 hoaxify:
   upload-path: storage-dev
 
-# === UAT PROFİL ===
----
-spring:
-  config:
-    activate:
-      on-profile: uat
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: ${DATABASE_URL}
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
-  jpa:
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-  messages:
-    basename: ValidationMessages
-    encoding: UTF-8
-
-logging:
-  level:
-    org.springframework.web: DEBUG
-    com.hoaxify: DEBUG
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-
-hoaxify:
-  upload-path: storage-uat
-
 # === PRODUCTION PROFİL (2. madde EKLENDİ) ===
 ---
 spring:

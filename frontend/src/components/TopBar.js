@@ -1,11 +1,14 @@
+// src/components/TopBar.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
+
 import { getNotifications } from '../api/apiCalls';
 import { logoutSuccess } from '../redux/authActions';
 import ProfileImageWithDefault from './ProfileImageWithDefault';
+import ChangelogModal from './ChangelogModal'; // <-- EKLENDİ
 import logo from '../assets/otoenvanterlogo.jpg';
-import { Link } from 'react-router-dom';
 
 const TopBar = () => {
   const { t } = useTranslation();
@@ -23,11 +26,16 @@ const TopBar = () => {
   const [notificationsVisible, setNotificationsVisible] = useState(false);
   const [notifications, setNotifications] = useState([]);
 
+  // Güncellemeler modal kontrolü
+  const [showChangelog, setShowChangelog] = useState(false);
+  // İstersen buraya API bağlarsın: const [changelog, setChangelog] = useState(null);
+
   useEffect(() => {
     document.addEventListener('click', menuClickTracker);
     return () => {
       document.removeEventListener('click', menuClickTracker);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn]);
 
   useEffect(() => {
@@ -35,8 +43,14 @@ const TopBar = () => {
       getNotifications()
         .then(res => setNotifications(res.data))
         .catch(() => setNotifications([]));
+
+      // Güncellemeler için API'n varsa buraya ekle:
+      // getChangelog()
+      //   .then(res => setChangelog(res.data))
+      //   .catch(() => setChangelog(null));
     } else {
       setNotifications([]);
+      // setChangelog(null);
     }
   }, [isLoggedIn]);
 
@@ -55,7 +69,7 @@ const TopBar = () => {
     dispatch(logoutSuccess());
   };
 
-  // Sadece FOLLOW tipi bildirim mesajı
+  // Sadece FOLLOW tipi bildirim metni
   const getNotificationMessage = (notification) => {
     if (notification.type === 'FOLLOW') {
       return (
@@ -70,9 +84,7 @@ const TopBar = () => {
   let links = (
     <ul className="navbar-nav ml-auto">
       <li className="nav-item">
-        <Link className="nav-link" to="/">
-          {t('Anasayfa')}
-        </Link>
+        <Link className="nav-link" to="/">{t('Anasayfa')}</Link>
       </li>
     </ul>
   );
@@ -89,7 +101,12 @@ const TopBar = () => {
             style={{ cursor: 'pointer' }}
             onClick={() => setMenuVisible(true)}
           >
-            <ProfileImageWithDefault image={image} width="32" height="32" className="rounded-circle m-auto" />
+            <ProfileImageWithDefault
+              image={image}
+              width="32"
+              height="32"
+              className="rounded-circle m-auto"
+            />
             <span className="nav-link dropdown-toggle">{displayName}</span>
           </div>
 
@@ -133,6 +150,15 @@ const TopBar = () => {
               </div>
             )}
 
+            {/* Güncellemeler menü maddesi */}
+            <span
+              className="dropdown-item d-flex p-2"
+              onClick={() => { setShowChangelog(true); setMenuVisible(false); }}
+              style={{ cursor: 'pointer' }}
+            >
+              <i className="material-icons text-info mr-2">update</i> Güncelleme Notları
+            </span>
+
             <span
               className="dropdown-item d-flex p-2"
               onClick={onLogoutSuccess}
@@ -154,6 +180,16 @@ const TopBar = () => {
         </Link>
         {links}
       </nav>
+
+      {/* Güncellemeler Modalı: login ise kullanılabilir */}
+      {isLoggedIn && (
+        <ChangelogModal
+          open={showChangelog}
+          onClose={() => setShowChangelog(false)}
+          // updates prop'unu vermezsen ChangelogModal içindeki DEFAULT_UPDATES kullanılır.
+          // updates={changelog || undefined}
+        />
+      )}
     </div>
   );
 };

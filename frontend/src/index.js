@@ -7,6 +7,8 @@ import './i18n';
 import { Provider } from 'react-redux';
 import App from './container/App';
 import configureStore from './redux/configureStore';
+import './css/global.css';
+
 
 const store = configureStore();
 
