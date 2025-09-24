@@ -39,8 +39,18 @@ export const getUser = username => {
   return axios.get(`/api/1.0/users/${username}`);
 };
 
+// 🔴 DEĞİŞEN: multipart/form-data
 export const updateUser = (username, body) => {
-  return axios.put(`/api/1.0/users/${username}`, body);
+  const fd = new FormData();
+  fd.append('displayName', body.displayName);
+  if (body.phoneNumber) fd.append('phoneNumber', body.phoneNumber);
+  if (body.email) fd.append('email', body.email);
+  if (body.address) fd.append('address', body.address);
+  if (body.imageFile) fd.append('image', body.imageFile);
+
+  return axios.put(`/api/1.0/users/${username}`, fd, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  });
 };
 
 export const postHoax = hoax => {

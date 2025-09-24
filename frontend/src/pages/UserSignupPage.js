@@ -74,8 +74,8 @@ const UserSignupPage = (props) => {
 
     const onClickSignup = async (e) => {
         e.preventDefault();
-        const { username, displayName, password, phoneNumber, email, taxId } = form;
-        const body = { username, displayName, password, phoneNumber, email, taxId, captchaId, captchaInput };
+        const { username, displayName, password, phoneNumber, email, address, taxId } = form;
+        const body = { username, displayName, password, phoneNumber, email, address, taxId, captchaId, captchaInput };
 
         try {
             await dispatch(signupHandler(body));
@@ -141,6 +141,12 @@ const UserSignupPage = (props) => {
                     name="email"
                     label={t('Email')}
                     error={errors.email}
+                    onChange={onChange}
+                />
+                  <Input
+                    name="address"
+                    label={t('Address')}
+                    error={errors.address}
                     onChange={onChange}
                 />
                 <Input

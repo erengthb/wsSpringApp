@@ -18,6 +18,10 @@ spring:
   messages:
     basename: ValidationMessages
     encoding: UTF-8
+  servlet:
+    multipart:
+      max-file-size: 6MB
+      max-request-size: 6MB
 
 app:
   log-cleanup:
@@ -51,7 +55,7 @@ spring:
 hoaxify:
   upload-path: storage-dev
 
-# === PRODUCTION PROFİL (2. madde EKLENDİ) ===
+# === PRODUCTION PROFİL ===
 ---
 spring:
   config:
@@ -72,23 +76,11 @@ spring:
     basename: ValidationMessages
     encoding: UTF-8
 
-# >>> 2. madde: gerçek hatayı görmek için GEÇİCİ teşhis ayarları
 server:
   error:
     include-message: always
     include-binding-errors: always
-    include-stacktrace: ALWAYS   # Teşhis bitince 'never' yap
-
-logging:
-  level:
-    org.springframework.web: DEBUG
-    com.hoaxify: DEBUG
-    org.hibernate.SQL: DEBUG
-    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
-    # JSON yazımı ve MVC response konverterleri için detay log
-    org.springframework.http.converter.json: DEBUG
-    org.springframework.web.servlet.mvc.method.annotation: DEBUG
-    com.fasterxml.jackson.databind: DEBUG
+    include-stacktrace: ALWAYS
 
 hoaxify:
-  upload-path: storage-production
+  upload-path: /data/uploads

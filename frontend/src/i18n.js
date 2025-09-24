@@ -76,7 +76,14 @@ i18n.use(initReactI18next).init({
         //GuestHomePage
         "welcomeMessage": "Welcome to Oto Envanter. Log in or sign up to see your stocks and connect with the industry.",
         "login": "Login",
-        "signup": "Sign Up"
+        "signup": "Sign Up",
+          // ✅ ProfilePicture
+        'Click to preview': 'Click to preview',
+        'Click the photo to preview': 'Click the photo to preview',
+        'Upload/Edit Profile Picture': 'Upload/Edit Profile Picture',
+ 
+
+
       }
     },
     tr: {
@@ -152,7 +159,12 @@ i18n.use(initReactI18next).init({
         //GuestHomePage
         "welcomeMessage": "Oto Envanter'e hoş geldiniz. Stoklarınızı görmek ve sektörle buluşmak için giriş yapın veya kayıt olun.",
         "login": "Giriş Yap",
-        "signup": "Kayıt Ol"
+        "signup": "Kayıt Ol",
+
+         // ✅ ProfilePicture
+         'Click to preview': 'Resmi  Görüntüle',
+         'Click the photo to preview': 'Resmi Görüntülemek için tıklayınız',
+         'Upload/Edit Profile Picture': 'Profil Resmi Yükle/Düzenle',
       }
     }
   },
