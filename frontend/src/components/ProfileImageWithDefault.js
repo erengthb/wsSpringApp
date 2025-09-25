@@ -6,7 +6,7 @@ const ProfileImageWithDefault = props => {
 
   let imageSource = defaultPicture;
   if (image) {
-    imageSource = process.env.REACT_APP_API_URL + '/images/' + image;
+    imageSource = process.env.REACT_APP_API_URL + '/' + image;
   }
 
   return (

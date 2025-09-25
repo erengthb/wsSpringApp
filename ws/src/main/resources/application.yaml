@@ -20,8 +20,12 @@ spring:
     encoding: UTF-8
   servlet:
     multipart:
+      enabled: true
       max-file-size: 6MB
       max-request-size: 6MB
+
+STORAGE_DIR_PATH: "C:/Eren/wsSpringApp/ws/storage-dev" 
+
 
 app:
   log-cleanup:

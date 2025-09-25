@@ -1,23 +1,30 @@
 package com.hoaxify.ws.stock;
 
 import com.hoaxify.ws.error.NotFoundException;
+import com.hoaxify.ws.file.FileService;
 import com.hoaxify.ws.stock.vm.StockVM;
 import com.hoaxify.ws.user.User;
 import com.hoaxify.ws.user.UserService;
 import jakarta.transaction.Transactional;
+
+import java.io.IOException;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class StockService {
 
     private final StockRepository stockRepository;
     private final UserService userService;
+    private final FileService fileService;
 
-    public StockService(StockRepository stockRepository, UserService userService) {
+    public StockService(StockRepository stockRepository, UserService userService ,FileService fileService) {
         this.stockRepository = stockRepository;
         this.userService = userService;
+        this.fileService = fileService;
     }
 
     public Page<StockVM> getStocks(String username, Pageable page) {
@@ -25,11 +32,18 @@ public class StockService {
     }
 
     @Transactional
-    public StockVM saveStock(String username, Stock stock) {
-        User user = userService.getByUsername(username);
-        stock.setUser(user);
-        return new StockVM(stockRepository.save(stock));
+    public StockVM saveStock(String username, Stock stock, MultipartFile stockImage) throws IOException {
+    User user = userService.getByUsername(username);
+    stock.setUser(user);
+
+    if (stockImage != null && !stockImage.isEmpty()) {
+        String imagePath = fileService.saveStockImage(user.getUsername(), stock.getId(), stockImage);
+        stock.setImage(imagePath); // Resim yolunu veritabanına kaydet
     }
+
+    return new StockVM(stockRepository.save(stock));
+}
+
 
     @Transactional
     public StockVM updateStock(String username, Long id, Stock updated) {

@@ -183,12 +183,12 @@ const ProfileCard = (props) => {
 
   // Büyük resimde gösterilecek kaynak (önce temp varsa onu göster)
   const bigImageSrc = newImagePreview
-    ? newImagePreview
-    : user.image
-      ? (process.env.REACT_APP_API_URL
-          ? `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/images/${String(user.image).replace(/^\//, '')}`
-          : `/images/${String(user.image).replace(/^\//, '')}`)
-      : null;
+      ? newImagePreview
+      : user.image
+        ? (process.env.REACT_APP_API_URL
+            ? `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/${String(user.image).replace(/^\//, '')}`
+            : `/${String(user.image).replace(/^\//, '')}`)
+        : null;
 
   return (
     <div className="card text-center">

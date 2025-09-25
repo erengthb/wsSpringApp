@@ -24,6 +24,9 @@ const StockList = () => {
 
   const pageSize = 10;
 
+  // Get backend URL from .env file
+  const backendUrl = process.env.REACT_APP_API_URL;
+
   const loadStocks = async () => {
     setLoading(true);
     try {
@@ -119,18 +122,19 @@ const StockList = () => {
                   <td>{stock.description}</td>
                   <td>{stock.quantity}</td>
                   <td>
-                    {stock.image && (
-                      <img
-                        src={`data:image/jpeg;base64,${stock.image}`}
-                        alt="Stock"
-                        style={{
-                          width: '50px',
-                          height: '50px',
-                          objectFit: 'cover',
-                          cursor: 'pointer',
-                        }}
-                      />
-                    )}
+                  {stock.imagePath && (
+  <img
+  src={`${backendUrl}/${stock.imagePath}`}// Doğru yol: /stocks ile başlayan yol
+    alt="Stock"
+    style={{
+      width: '50px',
+      height: '50px',
+      objectFit: 'cover',
+      cursor: 'pointer',
+    }}
+  />
+)}
+
                   </td>
                   <td>
                     <button

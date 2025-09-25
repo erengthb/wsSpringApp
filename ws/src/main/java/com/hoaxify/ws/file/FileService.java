@@ -52,27 +52,30 @@ public class FileService {
 
     // ====== YENİ: Multipart ile STOK resmi kaydet ======
     // uploads/stocks/{userId}/{prefix}-{uuid}.ext  (prefix=stockId varsa o; yoksa userId)
-    public String saveStockImage(Long userId, Long stockId, MultipartFile file) throws IOException {
+    public String saveStockImage(String userName, Long stockId, MultipartFile file) throws IOException {
         validateMultipart(file);
-        String mime = detectType(file);
-        String ext  = extensionFor(mime);
-
-        String subDir = "stocks/" + userId;
+        String mime = detectType(file); // MIME tipi tespiti
+        String ext = extensionFor(mime); // Dosya uzantısını al (örneğin .png, .jpg)
+    
+        String subDir = "stocks/" + userName; // Kullanıcının stok resimleri için dizin
         String safeSubDir = sanitizeSubPath(subDir);
-
+    
         Path dir = Paths.get(appConfiguration.getUploadPath(), safeSubDir);
-        Files.createDirectories(dir);
-
-        String prefix  = (stockId != null ? String.valueOf(stockId) : String.valueOf(userId));
+        Files.createDirectories(dir); // Dizin var mı kontrol et, yoksa oluştur
+    
+        String prefix = (stockId != null ? String.valueOf(stockId) : String.valueOf(userName)); // Prefix, stockId veya userId olabilir
         String fileName = prefix + "-" + generateRandomName() + ext;
         Path target = dir.resolve(fileName);
-
+    
         try (InputStream in = file.getInputStream()) {
             Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
         }
-
-        return safeSubDir + "/" + fileName;
+    
+        return safeSubDir + "/" + fileName; // Veritabanına kaydedilecek göreli yol
     }
+
+  
+    
 
     // ====== SİLME ======
     public void deleteFile(String relativePath) {

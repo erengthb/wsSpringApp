@@ -108,8 +108,11 @@ export const getNotifications = () => {
 
 // ✅ STOCK işlemleri
 export const addStock = (stockData) => {
-  return axios.post('/api/1.0/stocks', stockData);
+  return axios.post('/api/1.0/stocks', stockData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
 };
+
 
 export const getUserStocks = (username, page = 0, size = 10) => {
   return axios.get(`/api/1.0/users/${username}/stocks`, {

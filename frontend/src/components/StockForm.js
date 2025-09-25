@@ -15,11 +15,12 @@ const StockForm = ({ onStockAdded }) => {
   const [imageName, setImageName] = useState('');
   const [imageUploaded, setImageUploaded] = useState(false);
   const [errors, setErrors] = useState({});
+  const [imagePreview, setImagePreview] = useState(null);  // Resim önizleme için state
 
   const onChangeFile = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-
+  
     if (!isValidImageFile(file)) {
       setErrors((prev) => ({
         ...prev,
@@ -28,19 +29,23 @@ const StockForm = ({ onStockAdded }) => {
       setImage(null);
       setImageName('');
       setImageUploaded(false);
+      setImagePreview(null); // Hata durumunda önizlemeyi sıfırlıyoruz
       return;
     }
-
+  
+    setImage(file); // Dosya kaydediliyor
+    setImageName(file.name);
+    setImageUploaded(true);
+    setErrors((prev) => ({ ...prev, image: undefined }));
+  
+    // Resmin önizlemesini base64 olarak alıyoruz
     const reader = new FileReader();
     reader.onloadend = () => {
-      setImage(reader.result);
-      setImageUploaded(true);
-      setImageName(file.name);
-      setErrors((prev) => ({ ...prev, image: undefined }));
+      setImagePreview(reader.result);  // Resmi base64 formatında saklıyoruz
     };
     reader.readAsDataURL(file);
   };
-
+  
   const onSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = {};
@@ -49,23 +54,24 @@ const StockForm = ({ onStockAdded }) => {
     if (!quantity || isNaN(quantity) || Number(quantity) < 0)
       validationErrors.quantity = t('Quantity must be a non-negative number');
     if (!image) validationErrors.image = t('Product image is required');
-
+  
     setErrors(validationErrors);
     if (Object.keys(validationErrors).length > 0) return;
-
+  
     try {
-      const base64Image = image.split(',')[1];
-      await addStock({
-        productName,
-        description,
-        quantity: Number(quantity),
-        image: base64Image,
-      });
+      const formData = new FormData();
+      formData.append('productName', productName);
+      formData.append('description', description);
+      formData.append('quantity', Number(quantity));
+      formData.append('image', image);  // Burada base64 değil, dosya gönderiliyor
+  
+      await addStock(formData);
       setProductName('');
       setDescription('');
       setQuantity('');
       setImage(null);
       setImageName('');
+      setImagePreview(null);  // Resim önizlemesini sıfırlıyoruz
       setImageUploaded(false);
       setErrors({});
       onStockAdded();
@@ -75,6 +81,7 @@ const StockForm = ({ onStockAdded }) => {
       }
     }
   };
+  
 
   return (
     <form onSubmit={onSubmit}>
@@ -138,11 +145,11 @@ const StockForm = ({ onStockAdded }) => {
             </div>
           )}
 
-          {/* Küçük önizleme */}
-          {image && (
+          {/* Resim önizleme */}
+          {imagePreview && (
             <div className="mt-2">
               <img
-                src={image}
+                src={imagePreview}
                 alt="Preview"
                 style={{ maxHeight: '80px', borderRadius: '4px' }}
               />

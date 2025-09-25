@@ -3,10 +3,10 @@ import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 const DEFAULT_UPDATES = [
-  { id: 1, date: '2025-09-29', title: 'Gelecek Güncellemeler', notes: ['QR Kodu ile stok listesine ürün ekleme ve çıkarma ', 
-    'Destek talepleri için yeni bir sayfa',
-    'Detaylıca hoax araması yapabilmek için hoaxlar içinde arama kısmının geliştirilmesi',
-    'Safya Tasarım iyileştirmeleri',
+  { id: 1, date: '2025-09-29', title: 'Gelecek Güncellemeler', notes: ['QR Kodu ile Stok listesine ürün ekleme ve çıkarma ', 
+    'Destek talepleri için yeni bir sayfa geliştirmesi: Destek taleplerini artık bu yeni geliştirilecek olan sayfada kolayca bize bildirebilirsiniz.',
+    'Detaylıca hoax araması yapabilmek için hoax sayfası  içinde hoax  arama alanının  geliştirilmesi',
+    'Sayfa Tasarımı iyileştirmeleri',
     'Uygulama performans  iyileştirmeleri',
 
     ] },
