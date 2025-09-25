@@ -1,3 +1,4 @@
 /.metadata/
 ws/storage-dev/
 ws/data/testdb.mv.db
+ws/data/testdb.trace.db
