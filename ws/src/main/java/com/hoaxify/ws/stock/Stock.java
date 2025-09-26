@@ -27,9 +27,8 @@ public class Stock {
     @Min(value = 0, message = "{stock.quantity.Min}")
     private Integer quantity;
 
-    @Lob
-    @Column(columnDefinition = "text") // PostgreSQL için net TEXT
-    private String image; // base64 string
+
+    private String image;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
