@@ -1,20 +1,29 @@
 /* src/css/global.css */
 
-/* Scrollbar her zaman sabit olsun (layout kayması engellenir) */
+/* Modern tarayıcılar için en iyi çözüm */
 :root {
-    scrollbar-gutter: stable both-edges;
-  }
-  
-  @supports not (scrollbar-gutter: stable) {
-    html, body {
+  scrollbar-gutter: stable both-edges;
+}
+
+/* * scrollbar-gutter desteği olmayan tarayıcılar için Fallback:
+* Dikey kaydırma çubuğunu daima göster (ya da yerini ayır).
+*/
+@supports not (scrollbar-gutter: stable) {
+  /* Kaydırma çubuğunun yerini her zaman ayırarak kaymayı engeller. */
+  html {
       overflow-y: scroll;
-    }
   }
-  
-  /* Navbar dropdown menünün sağdan açılması için */
-  .navbar .dropdown-menu {
-    position: absolute;
-    right: 0;
-    left: auto;
-  }
-  
+}
+
+/*
+* Ekleme (Opsiyonel): Eski IE/Edge için
+* -ms-overflow-style: scrollbar; eklenmesi gerekebilir, 
+* ancak bu modern web'de genellikle gerekli değildir.
+*/
+
+/* ... Navbar dropdown menü ayarlarınız ... */
+.navbar .dropdown-menu {
+  position: absolute;
+  right: 0;
+  left: auto;
+}

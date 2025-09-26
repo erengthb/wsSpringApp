@@ -1,0 +1,63 @@
+/* Overlay full screen */
+.stock-preview-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 10px; /* Mobilde kenarlara yaslanmasın */
+  box-sizing: border-box;
+}
+
+/* Container - sabit boyut 500px x 500px, mobilde %90 max */
+.stock-preview-container {
+  position: relative;
+  background-color: white;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 500px;
+  height: 500px;
+  max-width: 90%;
+  max-height: 90%;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.2s ease-in-out;
+  overflow: hidden;
+  padding: 5px;
+}
+
+/* Close button */
+.stock-preview-close {
+  position: absolute;
+  top: 5px;
+  right: 8px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #333;
+  z-index: 1;
+}
+
+/* Image style - popup içine sığacak */
+.stock-preview-image {
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* FadeIn Animation */
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95);}
+  to { opacity: 1; transform: scale(1);}
+}

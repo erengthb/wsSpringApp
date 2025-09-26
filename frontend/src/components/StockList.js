@@ -9,6 +9,7 @@ import {
 import Spinner from '../components/Spinner';
 import { useTranslation } from 'react-i18next';
 import SearchBar from '../utils/SearchBar';
+import '../css/StockList.css'; // CSS dosyasını eklediğimiz yer
 
 const StockList = () => {
   const { t } = useTranslation();
@@ -22,9 +23,9 @@ const StockList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const searchTimeout = useRef(null);
 
-  const pageSize = 10;
+  const [previewImage, setPreviewImage] = useState(null); // Popup için seçilen resim
 
-  // Get backend URL from .env file
+  const pageSize = 10;
   const backendUrl = process.env.REACT_APP_API_URL;
 
   const loadStocks = async () => {
@@ -81,9 +82,7 @@ const StockList = () => {
   };
 
   useEffect(() => {
-    if (username) {
-      loadStocks();
-    }
+    if (username) loadStocks();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username, page, searchTerm]);
 
@@ -122,19 +121,19 @@ const StockList = () => {
                   <td>{stock.description}</td>
                   <td>{stock.quantity}</td>
                   <td>
-                  {stock.imagePath && (
-  <img
-  src={`${backendUrl}/${stock.imagePath}`}// Doğru yol: /stocks ile başlayan yol
-    alt="Stock"
-    style={{
-      width: '50px',
-      height: '50px',
-      objectFit: 'cover',
-      cursor: 'pointer',
-    }}
-  />
-)}
-
+                    {stock.imagePath && (
+                      <img
+                        src={`${backendUrl}/${stock.imagePath}`}
+                        alt="Stock"
+                        style={{
+                          width: '50px',
+                          height: '50px',
+                          objectFit: 'cover',
+                          cursor: 'pointer',
+                        }}
+                        onClick={() => setPreviewImage(`${backendUrl}/${stock.imagePath}`)}
+                      />
+                    )}
                   </td>
                   <td>
                     <button
@@ -187,6 +186,28 @@ const StockList = () => {
             </button>
           </div>
         </>
+      )}
+
+      {/* Preview Popup */}
+      {previewImage && (
+        <div className="stock-preview-overlay" onClick={() => setPreviewImage(null)}>
+          <div
+            className="stock-preview-container"
+            onClick={(e) => e.stopPropagation()} // sadece overlay tıklayınca kapanacak
+          >
+            <button
+              className="stock-preview-close"
+              onClick={() => setPreviewImage(null)}
+            >
+              &times;
+            </button>
+            <img
+              src={previewImage}
+              alt="Preview"
+              className="stock-preview-image"
+            />
+          </div>
+        </div>
       )}
     </>
   );
