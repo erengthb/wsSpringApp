@@ -1,77 +1,79 @@
-import React, { useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { addStock } from '../api/apiCalls';
-import { useSelector } from 'react-redux';
-import { isValidImageFile } from '../utils/fileValidators';
+import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { addStock } from "../api/apiCalls";
+import { useSelector } from "react-redux";
+import { isValidImageFile } from "../utils/fileValidators";
 
 const StockForm = ({ onStockAdded }) => {
   const { t } = useTranslation();
   const username = useSelector((state) => state.username);
 
-  const [productName, setProductName] = useState('');
-  const [description, setDescription] = useState('');
-  const [quantity, setQuantity] = useState('');
+  const [productName, setProductName] = useState("");
+  const [description, setDescription] = useState("");
+  const [quantity, setQuantity] = useState("");
   const [image, setImage] = useState(null);
-  const [imageName, setImageName] = useState('');
+  const [imageName, setImageName] = useState("");
   const [imageUploaded, setImageUploaded] = useState(false);
   const [errors, setErrors] = useState({});
-  const [imagePreview, setImagePreview] = useState(null);  // Resim önizleme için state
+  const [imagePreview, setImagePreview] = useState(null); // Resim önizleme için state
 
   const onChangeFile = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-  
+
     if (!isValidImageFile(file)) {
       setErrors((prev) => ({
         ...prev,
-        image: t('Only PNG , JPG, JPEG or WEBP images are allowed.'),
+        image: t("Only PNG , JPG, JPEG or WEBP images are allowed."),
       }));
       setImage(null);
-      setImageName('');
+      setImageName("");
       setImageUploaded(false);
       setImagePreview(null); // Hata durumunda önizlemeyi sıfırlıyoruz
       return;
     }
-  
+
     setImage(file); // Dosya kaydediliyor
     setImageName(file.name);
     setImageUploaded(true);
     setErrors((prev) => ({ ...prev, image: undefined }));
-  
+
     // Resmin önizlemesini base64 olarak alıyoruz
     const reader = new FileReader();
     reader.onloadend = () => {
-      setImagePreview(reader.result);  // Resmi base64 formatında saklıyoruz
+      setImagePreview(reader.result); // Resmi base64 formatında saklıyoruz
     };
     reader.readAsDataURL(file);
   };
-  
+
   const onSubmit = async (e) => {
     e.preventDefault();
     const validationErrors = {};
-    if (!productName.trim()) validationErrors.productName = t('Product name is required');
-    if (!description.trim()) validationErrors.description = t('Description is required');
+    if (!productName.trim())
+      validationErrors.productName = t("Product name is required");
+    if (!description.trim())
+      validationErrors.description = t("Description is required");
     if (!quantity || isNaN(quantity) || Number(quantity) < 0)
-      validationErrors.quantity = t('Quantity must be a non-negative number');
-    if (!image) validationErrors.image = t('Product image is required');
-  
+      validationErrors.quantity = t("Quantity must be a non-negative number");
+    if (!image) validationErrors.image = t("Product image is required");
+
     setErrors(validationErrors);
     if (Object.keys(validationErrors).length > 0) return;
-  
+
     try {
       const formData = new FormData();
-      formData.append('productName', productName);
-      formData.append('description', description);
-      formData.append('quantity', Number(quantity));
-      formData.append('image', image);  // Burada base64 değil, dosya gönderiliyor
-  
+      formData.append("productName", productName);
+      formData.append("description", description);
+      formData.append("quantity", Number(quantity));
+      formData.append("image", image); // Burada base64 değil, dosya gönderiliyor
+
       await addStock(formData);
-      setProductName('');
-      setDescription('');
-      setQuantity('');
+      setProductName("");
+      setDescription("");
+      setQuantity("");
       setImage(null);
-      setImageName('');
-      setImagePreview(null);  // Resim önizlemesini sıfırlıyoruz
+      setImageName("");
+      setImagePreview(null); // Resim önizlemesini sıfırlıyoruz
       setImageUploaded(false);
       setErrors({});
       onStockAdded();
@@ -81,67 +83,74 @@ const StockForm = ({ onStockAdded }) => {
       }
     }
   };
-  
 
   return (
     <form onSubmit={onSubmit}>
       {/* Ürün Adı ve Adet */}
       <div className="form-row d-flex align-items-end gap-4 mb-3">
         <div className="form-group flex-fill">
-          <label>{t('Product Name')}</label>
+          <label>{t("Product Name")}</label>
           <input
-            className={`form-control ${errors.productName ? 'is-invalid' : ''}`}
+            className={`form-control ${errors.productName ? "is-invalid" : ""}`}
             value={productName}
             onChange={(e) => setProductName(e.target.value)}
           />
-          {errors.productName && <div className="invalid-feedback">{errors.productName}</div>}
+          {errors.productName && (
+            <div className="invalid-feedback">{errors.productName}</div>
+          )}
         </div>
 
-        <div className="form-group" style={{ maxWidth: '120px' }}>
-          <label>{t('Quantity')}</label>
+        <div className="form-group" style={{ maxWidth: "120px" }}>
+          <label>{t("Quantity")}</label>
           <input
             type="number"
-            className={`form-control ${errors.quantity ? 'is-invalid' : ''}`}
+            className={`form-control ${errors.quantity ? "is-invalid" : ""}`}
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
           />
-          {errors.quantity && <div className="invalid-feedback">{errors.quantity}</div>}
+          {errors.quantity && (
+            <div className="invalid-feedback">{errors.quantity}</div>
+          )}
         </div>
       </div>
 
       {/* Açıklama ve Resim Yükleme */}
       <div className="form-row d-flex gap-4 mb-3">
         <div className="form-group flex-fill">
-          <label>{t('Description')}</label>
+          <label>{t("Description")}</label>
           <textarea
-            className={`form-control ${errors.description ? 'is-invalid' : ''}`}
+            className={`form-control ${errors.description ? "is-invalid" : ""}`}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
-          {errors.description && <div className="invalid-feedback">{errors.description}</div>}
+          {errors.description && (
+            <div className="invalid-feedback">{errors.description}</div>
+          )}
         </div>
 
-        <div className="form-group" style={{ minWidth: '250px' }}>
+        <div className="form-group" style={{ minWidth: "250px" }}>
           <label>
-            {t('Product Image')}
+            {t("Product Image")}
             {imageUploaded && (
               <span className="text-success ms-2">
-                ✓ {t('Image uploaded successfully')}
+                ✓ {t("Image uploaded successfully")}
               </span>
             )}
           </label>
           <input
             type="file"
-            className={`form-control ${errors.image ? 'is-invalid' : ''}`}
+            className={`form-control ${errors.image ? "is-invalid" : ""}`}
             onChange={onChangeFile}
             accept="image/png, image/jpeg, image/jpg, image/webp"
           />
-          {errors.image && <div className="invalid-feedback d-block">{errors.image}</div>}
+          {errors.image && (
+            <div className="invalid-feedback d-block">{errors.image}</div>
+          )}
 
           {/* Resim adı */}
           {imageName && (
-            <div className="mt-1 text-muted" style={{ fontSize: '0.85rem' }}>
-              {t('Selected file')}: {imageName}
+            <div className="mt-1 text-muted" style={{ fontSize: "0.85rem" }}>
+              {t("Selected file")}: {imageName}
             </div>
           )}
 
@@ -151,7 +160,7 @@ const StockForm = ({ onStockAdded }) => {
               <img
                 src={imagePreview}
                 alt="Preview"
-                style={{ maxHeight: '80px', borderRadius: '4px' }}
+                style={{ maxHeight: "80px", borderRadius: "4px" }}
               />
             </div>
           )}
@@ -159,7 +168,7 @@ const StockForm = ({ onStockAdded }) => {
       </div>
 
       <button type="submit" className="btn btn-primary">
-        {t('Add Stock')}
+        {t("Add Stock")}
       </button>
     </form>
   );

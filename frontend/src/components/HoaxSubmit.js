@@ -1,22 +1,22 @@
 // src/components/HoaxSubmit.js
-import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import ProfileImageWithDefault from './ProfileImageWithDefault';
-import { useTranslation } from 'react-i18next';
-import { postHoax } from '../api/apiCalls';
-import { useApiProgress } from '../shared/ApiProgress';
-import ButtonWithProgress from './ButtonWithProgress';
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import ProfileImageWithDefault from "./ProfileImageWithDefault";
+import { useTranslation } from "react-i18next";
+import { postHoax } from "../api/apiCalls";
+import { useApiProgress } from "../shared/ApiProgress";
+import ButtonWithProgress from "./ButtonWithProgress";
 
 const HoaxSubmit = ({ onSuccess }) => {
-  const { image } = useSelector(store => ({ image: store.image }));
+  const { image } = useSelector((store) => ({ image: store.image }));
   const [focused, setFocused] = useState(false);
-  const [hoax, setHoax] = useState('');
+  const [hoax, setHoax] = useState("");
   const [errors, setErrors] = useState({});
   const { t } = useTranslation();
 
   useEffect(() => {
     if (!focused) {
-      setHoax('');
+      setHoax("");
       setErrors({});
     }
   }, [focused]);
@@ -25,7 +25,7 @@ const HoaxSubmit = ({ onSuccess }) => {
     setErrors({});
   }, [hoax]);
 
-  const pendingApiCall = useApiProgress('post', '/api/1.0/hoaxes');
+  const pendingApiCall = useApiProgress("post", "/api/1.0/hoaxes");
 
   const onClickHoaxify = async () => {
     const body = { content: hoax };
@@ -40,18 +40,23 @@ const HoaxSubmit = ({ onSuccess }) => {
     }
   };
 
-  let textAreaClass = 'form-control';
-  if (errors.content) textAreaClass += ' is-invalid';
+  let textAreaClass = "form-control";
+  if (errors.content) textAreaClass += " is-invalid";
 
   return (
     <div className="card p-1 flex-row">
-      <ProfileImageWithDefault image={image} width="32" height="32" className="rounded-circle mr-1" />
+      <ProfileImageWithDefault
+        image={image}
+        width="32"
+        height="32"
+        className="rounded-circle mr-1"
+      />
       <div className="flex-fill">
         <textarea
           className={textAreaClass}
-          rows={focused ? '3' : '1'}
+          rows={focused ? "3" : "1"}
           onFocus={() => setFocused(true)}
-          onChange={e => setHoax(e.target.value)}
+          onChange={(e) => setHoax(e.target.value)}
           value={hoax}
         />
         <div className="invalid-feedback">{errors.content}</div>
@@ -64,9 +69,13 @@ const HoaxSubmit = ({ onSuccess }) => {
               pendingApiCall={pendingApiCall}
               disabled={pendingApiCall}
             />
-            <button className="btn btn-light d-inline-flex ml-1" onClick={() => setFocused(false)} disabled={pendingApiCall}>
+            <button
+              className="btn btn-light d-inline-flex ml-1"
+              onClick={() => setFocused(false)}
+              disabled={pendingApiCall}
+            >
               <i className="material-icons">close</i>
-              {t('Cancel')}
+              {t("Cancel")}
             </button>
           </div>
         )}

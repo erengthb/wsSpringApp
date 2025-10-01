@@ -1,24 +1,23 @@
-import React, { Suspense } from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import './bootstrap-override.scss';
-import reportWebVitals from './reportWebVitals';
-import './i18n';
-import { Provider } from 'react-redux';
-import App from './container/App';
-import configureStore from './redux/configureStore';
-import './css/global.css';
-
+import React, { Suspense } from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import "./bootstrap-override.scss";
+import reportWebVitals from "./reportWebVitals";
+import "./i18n";
+import { Provider } from "react-redux";
+import App from "./container/App";
+import configureStore from "./redux/configureStore";
+import "./css/global.css";
 
 const store = configureStore();
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Suspense fallback={<div>Loading...</div>}>
     <Provider store={store}>
       <App />
     </Provider>
-  </Suspense>
+  </Suspense>,
 );
 
 reportWebVitals();

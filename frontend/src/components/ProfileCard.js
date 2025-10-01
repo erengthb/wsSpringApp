@@ -1,21 +1,22 @@
 // src/components/ProfileCard.jsx
-import React, { useState, useEffect, useRef } from 'react';
-import { useParams } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import '../css/ProfileCard.css';
-import ProfileImageWithDefault from './ProfileImageWithDefault';
-import { useTranslation } from 'react-i18next';
-import Input from './Input';
-import { updateUser, followUser, unfollowUser, getUser } from '../api/apiCalls';
-import { useApiProgress } from '../shared/ApiProgress';
-import ButtonWithProgress from './ButtonWithProgress';
-import { updateSuccess } from '../redux/authActions';
-import UserListModal from './UserListModal';
-import '../css/ProfileCard.css';
-
+import React, { useState, useEffect, useRef } from "react";
+import { useParams } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import "../css/ProfileCard.css";
+import ProfileImageWithDefault from "./ProfileImageWithDefault";
+import { useTranslation } from "react-i18next";
+import Input from "./Input";
+import { updateUser, followUser, unfollowUser, getUser } from "../api/apiCalls";
+import { useApiProgress } from "../shared/ApiProgress";
+import ButtonWithProgress from "./ButtonWithProgress";
+import { updateSuccess } from "../redux/authActions";
+import UserListModal from "./UserListModal";
+import "../css/ProfileCard.css";
 
 const ProfileCard = (props) => {
-  const { username: loggedInUsername } = useSelector((store) => ({ username: store.username }));
+  const { username: loggedInUsername } = useSelector((store) => ({
+    username: store.username,
+  }));
   const isLoggedIn = Boolean(loggedInUsername);
   const routeParams = useParams();
   const pathUsername = routeParams.username;
@@ -38,8 +39,12 @@ const ProfileCard = (props) => {
   const [validationErrors, setValidationErrors] = useState({});
 
   const [isFollowing, setIsFollowing] = useState(user.following || false);
-  const [followersCount, setFollowersCount] = useState(user.followersCount || 0);
-  const [followingCount, setFollowingCount] = useState(user.followingCount || 0);
+  const [followersCount, setFollowersCount] = useState(
+    user.followersCount || 0,
+  );
+  const [followingCount, setFollowingCount] = useState(
+    user.followingCount || 0,
+  );
   const [pendingFollowCall, setPendingFollowCall] = useState(false);
 
   const [modalVisible, setModalVisible] = useState(false);
@@ -97,22 +102,25 @@ const ProfileCard = (props) => {
       setValidationErrors({});
     } else {
       setUpdatedDisplayName(user.displayName);
-      setUpdatedPhoneNumber(user.phoneNumber || '');
-      setUpdatedEmail(user.email || '');
-      setUpdatedAddress(user.address || '');
+      setUpdatedPhoneNumber(user.phoneNumber || "");
+      setUpdatedEmail(user.email || "");
+      setUpdatedAddress(user.address || "");
     }
   }, [inEditMode, user]);
 
   // ESC ile image modal kapat
   useEffect(() => {
     const handler = (e) => {
-      if (e.key === 'Escape') setImageModalOpen(false);
+      if (e.key === "Escape") setImageModalOpen(false);
     };
-    if (imageModalOpen) document.addEventListener('keydown', handler);
-    return () => document.removeEventListener('keydown', handler);
+    if (imageModalOpen) document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
   }, [imageModalOpen]);
 
-  const pendingApiCall = useApiProgress('put', '/api/1.0/users/' + (user.username || ''));
+  const pendingApiCall = useApiProgress(
+    "put",
+    "/api/1.0/users/" + (user.username || ""),
+  );
 
   // Kaydet (PUT cevabını anında ekrana yaz)
   const onClickSave = async () => {
@@ -170,10 +178,21 @@ const ProfileCard = (props) => {
   };
 
   // Modal (followers/following list)
-  const openModal = (type) => { setModalType(type); setModalVisible(true); };
-  const closeModal = () => { setModalVisible(false); setModalType(null); };
+  const openModal = (type) => {
+    setModalType(type);
+    setModalVisible(true);
+  };
+  const closeModal = () => {
+    setModalVisible(false);
+    setModalType(null);
+  };
 
-  const { displayName: displayNameError, phoneNumber: phoneError, email: emailError, address: addressError } = validationErrors || {};
+  const {
+    displayName: displayNameError,
+    phoneNumber: phoneError,
+    email: emailError,
+    address: addressError,
+  } = validationErrors || {};
 
   // Yardımcılar
   const openImageChooser = () => fileInputRef.current?.click();
@@ -183,18 +202,23 @@ const ProfileCard = (props) => {
 
   // Büyük resimde gösterilecek kaynak (önce temp varsa onu göster)
   const bigImageSrc = newImagePreview
-      ? newImagePreview
-      : user.image
-        ? (process.env.REACT_APP_API_URL
-            ? `${process.env.REACT_APP_API_URL.replace(/\/$/, '')}/${String(user.image).replace(/^\//, '')}`
-            : `/${String(user.image).replace(/^\//, '')}`)
-        : null;
+    ? newImagePreview
+    : user.image
+      ? process.env.REACT_APP_API_URL
+        ? `${process.env.REACT_APP_API_URL.replace(/\/$/, "")}/${String(user.image).replace(/^\//, "")}`
+        : `/${String(user.image).replace(/^\//, "")}`
+      : null;
 
   return (
     <div className="card text-center">
       {/* Avatar ve başlık */}
       <div className="card-header">
-        <div className="profile-avatar" role="button" title={t('Click to preview')} onClick={() => setImageModalOpen(true)}>
+        <div
+          className="profile-avatar"
+          role="button"
+          title={t("Click to preview")}
+          onClick={() => setImageModalOpen(true)}
+        >
           <ProfileImageWithDefault
             className="rounded-circle shadow"
             width="200"
@@ -205,7 +229,7 @@ const ProfileCard = (props) => {
           />
         </div>
         <div className="small text-muted mt-2">
-          {t('Click the photo to preview')}
+          {t("Click the photo to preview")}
         </div>
       </div>
 
@@ -213,26 +237,45 @@ const ProfileCard = (props) => {
       <div className="card-body">
         {!inEditMode ? (
           <>
-            <h3>{user.displayName} @{user.username}</h3>
+            <h3>
+              {user.displayName} @{user.username}
+            </h3>
             <div className="mb-3">
-              <span className="mr-3" style={{ cursor: 'pointer' }} onClick={() => openModal('followers')}>
-                <strong>{followersCount}</strong> {t('Followers')}
+              <span
+                className="mr-3"
+                style={{ cursor: "pointer" }}
+                onClick={() => openModal("followers")}
+              >
+                <strong>{followersCount}</strong> {t("Followers")}
               </span>
-              <span style={{ cursor: 'pointer' }} onClick={() => openModal('following')}>
-                <strong>{followingCount}</strong> {t('Following')}
+              <span
+                style={{ cursor: "pointer" }}
+                onClick={() => openModal("following")}
+              >
+                <strong>{followingCount}</strong> {t("Following")}
               </span>
               <div className="mt-2 text-left">
                 {user.phoneNumber && (
-                  <div><strong>{t('Phone Number')}:</strong> {String(user.phoneNumber).trim()}</div>
+                  <div>
+                    <strong>{t("Phone Number")}:</strong>{" "}
+                    {String(user.phoneNumber).trim()}
+                  </div>
                 )}
                 {user.email && (
-                  <div><strong>{t('Email')}:</strong> {String(user.email).trim()}</div>
+                  <div>
+                    <strong>{t("Email")}:</strong> {String(user.email).trim()}
+                  </div>
                 )}
                 {user.address && (
-                  <div><strong>{t('Address')}:</strong> {String(user.address).trim()}</div>
+                  <div>
+                    <strong>{t("Address")}:</strong>{" "}
+                    {String(user.address).trim()}
+                  </div>
                 )}
                 {!user.phoneNumber && !user.email && !user.address && (
-                  <div className="text-muted"><em>{t('No contact information provided')}</em></div>
+                  <div className="text-muted">
+                    <em>{t("No contact information provided")}</em>
+                  </div>
                 )}
               </div>
             </div>
@@ -240,55 +283,72 @@ const ProfileCard = (props) => {
             {isLoggedIn && !isOwnProfile && (
               <>
                 {isFollowing ? (
-                  <button className="btn btn-danger" onClick={onClickUnfollow} disabled={pendingFollowCall}>
-                    {pendingFollowCall && <span className="spinner-border spinner-border-sm mr-1" />}
-                    {t('Unfollow')}
+                  <button
+                    className="btn btn-danger"
+                    onClick={onClickUnfollow}
+                    disabled={pendingFollowCall}
+                  >
+                    {pendingFollowCall && (
+                      <span className="spinner-border spinner-border-sm mr-1" />
+                    )}
+                    {t("Unfollow")}
                   </button>
                 ) : (
-                  <button className="btn btn-primary" onClick={onClickFollow} disabled={pendingFollowCall}>
-                    {pendingFollowCall && <span className="spinner-border spinner-border-sm mr-1" />}
-                    {t('Follow')}
+                  <button
+                    className="btn btn-primary"
+                    onClick={onClickFollow}
+                    disabled={pendingFollowCall}
+                  >
+                    {pendingFollowCall && (
+                      <span className="spinner-border spinner-border-sm mr-1" />
+                    )}
+                    {t("Follow")}
                   </button>
                 )}
               </>
             )}
 
             {editable && (
-              <button className="btn btn-success d-inline-flex ml-2" onClick={() => setInEditMode(true)}>
-                <i className="material-icons">edit</i> {t('Edit')}
+              <button
+                className="btn btn-success d-inline-flex ml-2"
+                onClick={() => setInEditMode(true)}
+              >
+                <i className="material-icons">edit</i> {t("Edit")}
               </button>
             )}
           </>
         ) : (
           <div>
             <Input
-              label={t('Change Display Name')}
-              value={updatedDisplayName || ''}
+              label={t("Change Display Name")}
+              value={updatedDisplayName || ""}
               onChange={(e) => setUpdatedDisplayName(e.target.value)}
               error={displayNameError}
             />
             <Input
-              label={t('Phone Number')}
-              value={updatedPhoneNumber || ''}
+              label={t("Phone Number")}
+              value={updatedPhoneNumber || ""}
               onChange={(e) => setUpdatedPhoneNumber(e.target.value)}
               error={phoneError}
             />
             <Input
-              label={t('Email')}
-              value={updatedEmail || ''}
+              label={t("Email")}
+              value={updatedEmail || ""}
               onChange={(e) => setUpdatedEmail(e.target.value)}
               error={emailError}
             />
             <Input
-              label={t('Address')}
-              value={updatedAddress || ''}
+              label={t("Address")}
+              value={updatedAddress || ""}
               onChange={(e) => setUpdatedAddress(e.target.value)}
               error={addressError}
             />
 
             {/* --- Profil Resmi Yükleme Bölümü --- */}
             <div className="profile-image-upload">
-              <label className="d-block mb-1">{t('Upload/Edit Profile Picture')}</label>
+              <label className="d-block mb-1">
+                {t("Upload/Edit Profile Picture")}
+              </label>
 
               <div className="preview-container">
                 <ProfileImageWithDefault
@@ -301,12 +361,22 @@ const ProfileCard = (props) => {
                 />
 
                 <div>
-                  <button type="button" className="btn btn-outline-secondary btn-sm" onClick={openImageChooser}>
-                    <i className="material-icons" style={{ fontSize: 16, verticalAlign: 'middle' }}>file_upload</i>
-                    <span className="ml-1">{t('Resim Seç')}</span>
+                  <button
+                    type="button"
+                    className="btn btn-outline-secondary btn-sm"
+                    onClick={openImageChooser}
+                  >
+                    <i
+                      className="material-icons"
+                      style={{ fontSize: 16, verticalAlign: "middle" }}
+                    >
+                      file_upload
+                    </i>
+                    <span className="ml-1">{t("Resim Seç")}</span>
                   </button>
                   <div className="help-text">
-                    {t('Desteklenen formatlar')}: PNG, JPEG, WEBP — {t('Maks')} 5MB
+                    {t("Desteklenen formatlar")}: PNG, JPEG, WEBP — {t("Maks")}{" "}
+                    5MB
                   </div>
                 </div>
               </div>
@@ -328,14 +398,18 @@ const ProfileCard = (props) => {
                 onClick={onClickSave}
                 disabled={pendingApiCall}
                 pendingApiCall={pendingApiCall}
-                text={<><i className="material-icons">save</i> {t('Save')}</>}
+                text={
+                  <>
+                    <i className="material-icons">save</i> {t("Save")}
+                  </>
+                }
               />
               <button
                 className="btn btn-light d-inline-flex ml-1"
                 onClick={() => setInEditMode(false)}
                 disabled={pendingApiCall}
               >
-                <i className="material-icons">close</i> {t('Cancel')}
+                <i className="material-icons">close</i> {t("Cancel")}
               </button>
             </div>
           </div>
@@ -343,7 +417,11 @@ const ProfileCard = (props) => {
       </div>
 
       {modalVisible && (
-        <UserListModal username={user.username} type={modalType} onClose={closeModal} />
+        <UserListModal
+          username={user.username}
+          type={modalType}
+          onClose={closeModal}
+        />
       )}
 
       {/* Avatar büyük önizleme modalı */}
@@ -363,7 +441,7 @@ const ProfileCard = (props) => {
               <button
                 className="btn btn-sm btn-light"
                 onClick={() => setImageModalOpen(false)}
-                aria-label={t('Close modal')}
+                aria-label={t("Close modal")}
               >
                 &times;
               </button>

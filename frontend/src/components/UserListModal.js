@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { getUserFollowers, getUserFollowing } from '../api/apiCalls';
-import ProfileImageWithDefault from './ProfileImageWithDefault';
-import '../css/UserListModal.css';
-import { useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { getUserFollowers, getUserFollowing } from "../api/apiCalls";
+import ProfileImageWithDefault from "./ProfileImageWithDefault";
+import "../css/UserListModal.css";
+import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 const UserListModal = ({ username, type, onClose }) => {
   const [users, setUsers] = useState([]);
@@ -17,7 +17,7 @@ const UserListModal = ({ username, type, onClose }) => {
       setLoading(true);
       try {
         let response;
-        if (type === 'followers') {
+        if (type === "followers") {
           response = await getUserFollowers(username);
         } else {
           response = await getUserFollowing(username);
@@ -46,21 +46,21 @@ const UserListModal = ({ username, type, onClose }) => {
         <div className="modal-content" onClick={(e) => e.stopPropagation()}>
           <div className="modal-header">
             <h5 id="modal-title">
-              {type === 'followers' ? t('Followers') : t('Following')}
+              {type === "followers" ? t("Followers") : t("Following")}
             </h5>
             <button
               onClick={onClose}
               className="close-button"
-              aria-label={t('Close modal')}
+              aria-label={t("Close modal")}
             >
               &times;
             </button>
           </div>
 
-          {loading && <div className="loading-text">{t('Loading...')}</div>}
+          {loading && <div className="loading-text">{t("Loading...")}</div>}
 
           {!loading && users.length === 0 && (
-            <div className="no-users-text">{t('No users found.')}</div>
+            <div className="no-users-text">{t("No users found.")}</div>
           )}
 
           <ul className="user-list">

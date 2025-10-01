@@ -1,85 +1,84 @@
 /* === Avatar / Profil Resmi === */
 .profile-avatar {
-    cursor: zoom-in;
-    display: inline-block;
-  }
-  
-  .profile-avatar img {
-    border-radius: 50%;
-    box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
-  }
-  
-  /* === Profil Resmi Yükleme Alanı === */
-  .profile-image-upload {
-    margin-top: 1rem;
-    text-align: left;
-  }
-  
-  .profile-image-upload label {
-    font-weight: bold;
-    display: block;
-    margin-bottom: 0.25rem;
-  }
-  
-  .profile-image-upload .preview-container {
-    display: flex;
-    align-items: center;
-  }
-  
-  .profile-image-upload .preview-container img {
-    border-radius: 50%;
-    border: 1px solid #ddd;
-    margin-right: 0.75rem;
-  }
-  
-  .profile-image-upload .btn {
-    font-size: 0.85rem;
-    padding: 0.25rem 0.5rem;
-  }
-  
-  .profile-image-upload .help-text {
-    font-size: 0.75rem;
-    color: #6c757d;
-    margin-top: 0.25rem;
-  }
-  
-  /* === Avatar Büyük Önizleme Modalı === */
-  .image-preview-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1050;
-  }
-  
-  .image-preview-modal {
-    background: #fff;
-    border-radius: 6px;
-    padding: 12px;
-    max-width: 90vw;
-    max-height: 90vh;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  }
-  
-  .image-preview-modal img {
-    max-width: 86vw;
-    max-height: 76vh;
-    display: block;
-    margin: 0 auto;
-  }
-  
-  .image-preview-close {
-    display: flex;
-    justify-content: flex-end;
-  }
-  
-  .image-preview-close button {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    line-height: 1;
-  }
-  
+  cursor: zoom-in;
+  display: inline-block;
+}
+
+.profile-avatar img {
+  border-radius: 50%;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+}
+
+/* === Profil Resmi Yükleme Alanı === */
+.profile-image-upload {
+  margin-top: 1rem;
+  text-align: left;
+}
+
+.profile-image-upload label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.profile-image-upload .preview-container {
+  display: flex;
+  align-items: center;
+}
+
+.profile-image-upload .preview-container img {
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  margin-right: 0.75rem;
+}
+
+.profile-image-upload .btn {
+  font-size: 0.85rem;
+  padding: 0.25rem 0.5rem;
+}
+
+.profile-image-upload .help-text {
+  font-size: 0.75rem;
+  color: #6c757d;
+  margin-top: 0.25rem;
+}
+
+/* === Avatar Büyük Önizleme Modalı === */
+.image-preview-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
+}
+
+.image-preview-modal {
+  background: #fff;
+  border-radius: 6px;
+  padding: 12px;
+  max-width: 90vw;
+  max-height: 90vh;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.image-preview-modal img {
+  max-width: 86vw;
+  max-height: 76vh;
+  display: block;
+  margin: 0 auto;
+}
+
+.image-preview-close {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.image-preview-close button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  line-height: 1;
+}

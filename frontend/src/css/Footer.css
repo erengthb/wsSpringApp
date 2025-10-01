@@ -12,15 +12,19 @@
 
 /* footer CSS’iniz */
 .app-footer {
-  background: linear-gradient(90deg, rgba(248,249,250,1) 0%, rgba(233,236,239,1) 100%);
-  border-top: 1px solid rgba(0,0,0,0.05);
+  background: linear-gradient(
+    90deg,
+    rgba(248, 249, 250, 1) 0%,
+    rgba(233, 236, 239, 1) 100%
+  );
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
   position: relative;
   padding: 1rem 0;
   text-align: center;
 }
 
 .app-footer .footer-nav a {
-  color: rgba(0,0,0,0.7);
+  color: rgba(0, 0, 0, 0.7);
   text-decoration: none;
 }
 
@@ -33,7 +37,15 @@
 }
 
 @media (max-width: 576px) {
-  .guest-home .btn { width: 48%; }
-  .app-footer .footer-nav { flex-wrap: wrap; justify-content: center; }
-  .app-footer .footer-brand, .app-footer .footer-credits { text-align: center; }
+  .guest-home .btn {
+    width: 48%;
+  }
+  .app-footer .footer-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .app-footer .footer-brand,
+  .app-footer .footer-credits {
+    text-align: center;
+  }
 }

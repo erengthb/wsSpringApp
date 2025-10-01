@@ -11,7 +11,7 @@
 @supports not (scrollbar-gutter: stable) {
   /* Kaydırma çubuğunun yerini her zaman ayırarak kaymayı engeller. */
   html {
-      overflow-y: scroll;
+    overflow-y: scroll;
   }
 }
 

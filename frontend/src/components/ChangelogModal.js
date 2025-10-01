@@ -1,15 +1,20 @@
 // src/components/ChangelogModal.js
-import React, { useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect } from "react";
+import PropTypes from "prop-types";
 
 const DEFAULT_UPDATES = [
-  { id: 1, date: '2025-09-29', title: 'Gelecek Güncellemeler', notes: ['QR Kodu ile Stok listesine ürün ekleme ve çıkarma ', 
-    'Destek talepleri için yeni bir sayfa geliştirmesi: Destek taleplerini artık bu yeni geliştirilecek olan sayfada kolayca bize bildirebilirsiniz.',
-    'Detaylıca hoax araması yapabilmek için hoax sayfası  içinde hoax  arama alanının  geliştirilmesi',
-    'Sayfa Tasarımı iyileştirmeleri',
-    'Uygulama performans  iyileştirmeleri',
-
-    ] },
+  {
+    id: 1,
+    date: "2025-09-29",
+    title: "Gelecek Güncellemeler",
+    notes: [
+      "QR Kodu ile Stok listesine ürün ekleme ve çıkarma ",
+      "Destek talepleri için yeni bir sayfa geliştirmesi: Destek taleplerini artık bu yeni geliştirilecek olan sayfada kolayca bize bildirebilirsiniz.",
+      "Detaylıca hoax araması yapabilmek için hoax sayfası  içinde hoax  arama alanının  geliştirilmesi",
+      "Sayfa Tasarımı iyileştirmeleri",
+      "Uygulama performans  iyileştirmeleri",
+    ],
+  },
 ];
 
 function Backdrop({ onClick }) {
@@ -18,7 +23,10 @@ function Backdrop({ onClick }) {
       className="modal-backdrop show"
       onClick={onClick}
       style={{
-        position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.5)', zIndex: 1040,
+        position: "fixed",
+        inset: 0,
+        background: "rgba(0,0,0,0.5)",
+        zIndex: 1040,
       }}
       aria-hidden="true"
     />
@@ -30,34 +38,35 @@ Backdrop.propTypes = {
 };
 
 const ChangelogModal = ({ open, onClose, updates }) => {
-  const list = Array.isArray(updates) && updates.length > 0 ? updates : DEFAULT_UPDATES;
+  const list =
+    Array.isArray(updates) && updates.length > 0 ? updates : DEFAULT_UPDATES;
 
   // Body scroll kilidi – short-circuit kullanımını if ile değiştiriyoruz
   useEffect(() => {
     if (open) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     }
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     };
   }, [open]);
 
   // ESC kapatma – yine if kullanıyoruz
   useEffect(() => {
     function onKeyDown(e) {
-      if (e.key === 'Escape') {
-        if (typeof onClose === 'function') {
+      if (e.key === "Escape") {
+        if (typeof onClose === "function") {
           onClose();
         }
       }
     }
     if (open) {
-      window.addEventListener('keydown', onKeyDown);
+      window.addEventListener("keydown", onKeyDown);
     }
     return () => {
-      window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener("keydown", onKeyDown);
     };
   }, [open, onClose]);
 
@@ -66,7 +75,7 @@ const ChangelogModal = ({ open, onClose, updates }) => {
   }
 
   const handleCloseClick = () => {
-    if (typeof onClose === 'function') {
+    if (typeof onClose === "function") {
       onClose();
     }
   };
@@ -79,11 +88,19 @@ const ChangelogModal = ({ open, onClose, updates }) => {
         aria-modal="true"
         style={{ zIndex: 1050 }}
       >
-        <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div
+          className="modal-dialog modal-lg modal-dialog-centered"
+          role="document"
+        >
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title">Güncelleme Notları</h5>
-              <button type="button" className="close" aria-label="Close" onClick={handleCloseClick}>
+              <button
+                type="button"
+                className="close"
+                aria-label="Close"
+                onClick={handleCloseClick}
+              >
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
@@ -91,7 +108,7 @@ const ChangelogModal = ({ open, onClose, updates }) => {
             <div className="modal-body">
               {list.length > 0 ? (
                 <ul className="list-unstyled mb-0">
-                  {list.map(item => (
+                  {list.map((item) => (
                     <li key={item.id} className="mb-3 pb-3 border-bottom">
                       <div className="d-flex justify-content-between">
                         <strong>{item.title}</strong>
@@ -110,12 +127,18 @@ const ChangelogModal = ({ open, onClose, updates }) => {
                   ))}
                 </ul>
               ) : (
-                <div className="text-muted">Şimdilik gösterilecek güncelleme yok.</div>
+                <div className="text-muted">
+                  Şimdilik gösterilecek güncelleme yok.
+                </div>
               )}
             </div>
 
             <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" onClick={handleCloseClick}>
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={handleCloseClick}
+              >
                 Kapat
               </button>
             </div>
@@ -137,7 +160,7 @@ ChangelogModal.propTypes = {
       date: PropTypes.string,
       title: PropTypes.string,
       notes: PropTypes.arrayOf(PropTypes.string),
-    })
+    }),
   ),
 };
 

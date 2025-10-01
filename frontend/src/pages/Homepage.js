@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import UserList from '../components/UserList';
-import HoaxSubmit from '../components/HoaxSubmit';
-import HoaxList from '../components/HoaxList';
-import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { useTranslation } from 'react-i18next';
-import '../css/Footer.css';
+import React, { useState } from "react";
+import UserList from "../components/UserList";
+import HoaxSubmit from "../components/HoaxSubmit";
+import HoaxList from "../components/HoaxList";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
+import "../css/Footer.css";
 
 const GuestHomepage = () => {
   const { t } = useTranslation();
@@ -17,8 +17,12 @@ const GuestHomepage = () => {
           <h1 className="mb-4">Oto Envanter</h1>
           <p className="lead">{t("welcomeMessage")}</p>
           <div className="d-flex justify-content-center gap-2 mt-3">
-            <Link to="/login" className="btn btn-primary btn-lg">{t("login")}</Link>
-            <Link to="/signup" className="btn btn-outline-primary btn-lg">{t("signup")}</Link>
+            <Link to="/login" className="btn btn-primary btn-lg">
+              {t("login")}
+            </Link>
+            <Link to="/signup" className="btn btn-outline-primary btn-lg">
+              {t("signup")}
+            </Link>
           </div>
         </div>
       </div>
@@ -27,7 +31,9 @@ const GuestHomepage = () => {
 };
 
 const HomePage = () => {
-  const { isLoggedIn } = useSelector(store => ({ isLoggedIn: store.isLoggedIn }));
+  const { isLoggedIn } = useSelector((store) => ({
+    isLoggedIn: store.isLoggedIn,
+  }));
   const [refreshCounter, setRefreshCounter] = useState(0);
 
   if (!isLoggedIn) return <GuestHomepage />;
@@ -37,7 +43,9 @@ const HomePage = () => {
       <div className="row">
         <div className="col-12 col-lg-8 mb-3">
           <div className="mb-1">
-            <HoaxSubmit onSuccess={() => setRefreshCounter(prev => prev + 1)} />
+            <HoaxSubmit
+              onSuccess={() => setRefreshCounter((prev) => prev + 1)}
+            />
           </div>
           <HoaxList refreshTrigger={refreshCounter} />
         </div>

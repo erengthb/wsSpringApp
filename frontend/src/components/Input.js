@@ -1,4 +1,4 @@
-import React, { useId } from 'react';
+import React, { useId } from "react";
 
 const Input = (props) => {
   const {
@@ -6,25 +6,25 @@ const Input = (props) => {
     error,
     name,
     onChange,
-    type = 'text',
+    type = "text",
     value,
     defaultValue,
     ...rest
   } = props;
 
-  let className = 'form-control';
-  if (type === 'file') {
-    className += '-file';
+  let className = "form-control";
+  if (type === "file") {
+    className += "-file";
   }
   if (error !== undefined) {
-    className += ' is-invalid';
+    className += " is-invalid";
   }
 
   const autoId = useId();
   const inputId = name || `input-${autoId}`;
 
   // File input özel durum: tarayıcı güvenliği nedeniyle value/defaultValue forward etmiyoruz
-  if (type === 'file') {
+  if (type === "file") {
     return (
       <div className="form-group">
         {label && <label htmlFor={inputId}>{label}</label>}
@@ -50,7 +50,7 @@ const Input = (props) => {
         className={className}
         name={name}
         type={type}
-        value={value}            // controlled kullanım
+        value={value} // controlled kullanım
         defaultValue={defaultValue} // fallback uncontrolled
         onChange={onChange}
         {...rest}

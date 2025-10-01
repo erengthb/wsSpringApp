@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 export const useApiProgress = (apiMethod, apiPath, strictPath) => {
   const [pendingApiCall, setPendingApiCall] = useState(false);
@@ -19,23 +19,23 @@ export const useApiProgress = (apiMethod, apiPath, strictPath) => {
     };
 
     const registerInterceptors = () => {
-      requestInterceptor = axios.interceptors.request.use(request => {
+      requestInterceptor = axios.interceptors.request.use((request) => {
         const { url, method } = request;
         updateApiCallFor(method, url, true);
         return request;
       });
 
       responseInterceptor = axios.interceptors.response.use(
-        response => {
+        (response) => {
           const { url, method } = response.config;
           updateApiCallFor(method, url, false);
           return response;
         },
-        error => {
+        (error) => {
           const { url, method } = error.config;
           updateApiCallFor(method, url, false);
           throw error;
-        }
+        },
       );
     };
 

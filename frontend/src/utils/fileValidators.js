@@ -1,5 +1,9 @@
-
-const allowedImageTypes = ['image/jpeg', 'image/png','image/jpg', 'image/webp'];
+const allowedImageTypes = [
+  "image/jpeg",
+  "image/png",
+  "image/jpg",
+  "image/webp",
+];
 
 export const isValidImageFile = (file) => {
   if (!file || !file.type) return false;

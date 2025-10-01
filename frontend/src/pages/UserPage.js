@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import ProfileCard from '../components/ProfileCard';
-import { getUser } from '../api/apiCalls';
-import { useParams } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
-import { useApiProgress } from '../shared/ApiProgress';
-import Spinner from '../components/Spinner';
-import HoaxList from '../components/HoaxList';
+import React, { useState, useEffect } from "react";
+import ProfileCard from "../components/ProfileCard";
+import { getUser } from "../api/apiCalls";
+import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { useApiProgress } from "../shared/ApiProgress";
+import Spinner from "../components/Spinner";
+import HoaxList from "../components/HoaxList";
 
 const UserPage = () => {
   const [user, setUser] = useState(null);
@@ -14,7 +14,11 @@ const UserPage = () => {
   const { username } = useParams();
   const { t } = useTranslation();
 
-  const pendingApiCall = useApiProgress('get', '/api/1.0/users/' + username, true);
+  const pendingApiCall = useApiProgress(
+    "get",
+    "/api/1.0/users/" + username,
+    true,
+  );
 
   useEffect(() => {
     setNotFound(false);
@@ -37,11 +41,11 @@ const UserPage = () => {
       <div className="container">
         <div className="alert alert-danger text-center">
           <div>
-            <i className="material-icons" style={{ fontSize: '48px' }}>
+            <i className="material-icons" style={{ fontSize: "48px" }}>
               error
             </i>
           </div>
-          {t('User not found')}
+          {t("User not found")}
         </div>
       </div>
     );
