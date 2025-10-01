@@ -13,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Service
 public class StockService {
@@ -59,13 +61,28 @@ public class StockService {
     }
 
     @Transactional
-    public void deleteStock(String username, Long id) {
-        Stock inDB = stockRepository.findByIdAndUserUsername(id, username);
-        if (inDB == null) {
-            throw new NotFoundException();
-        }
-        stockRepository.delete(inDB);
+public void deleteStock(String username, Long id) {
+    Stock inDB = stockRepository.findByIdAndUserUsername(id, username);
+    if (inDB == null) {
+        throw new NotFoundException();
     }
+
+    // Silinecek dosya yolunu önce al
+    String imagePath = inDB.getImage();
+
+    // DB'den stoku sil
+    stockRepository.delete(inDB);
+
+    // Dosyayı, yalnızca transaksiyon başarıyla commit olursa sil
+    if (imagePath != null && !imagePath.isBlank()) {
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                fileService.deleteFile(imagePath);
+            }
+        });
+    }
+}
 
     @Transactional
     public StockVM updateStockQuantity(String username, Long id, Integer newQuantity) {

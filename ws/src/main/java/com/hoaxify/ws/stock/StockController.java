@@ -5,9 +5,7 @@ import com.hoaxify.ws.shared.CurrentUserAnnotation;
 import com.hoaxify.ws.stock.vm.StockVM;
 import com.hoaxify.ws.user.User;
 import jakarta.validation.Valid;
-
 import java.io.IOException;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
@@ -20,46 +18,33 @@ public class StockController {
     private final StockService stockService;
     private final FileService fileService;
 
-    public StockController(StockService stockService ,   FileService  fileService) {
+    public StockController(StockService stockService , FileService fileService) {
         this.stockService = stockService;
         this.fileService = fileService;
     }
+
     @GetMapping("/users/{username}/stocks")
     public Page<StockVM> getUserStocks(@PathVariable String username, Pageable page) {
-        // Stock nesnelerini alıyoruz
-        Page<StockVM> stockVMs = stockService.getStocks(username, page);
-        return stockVMs;
+        return stockService.getStocks(username, page);
     }
-    
-    
-    
-
-    
 
     @PostMapping(value = "/stocks", consumes = "multipart/form-data")
-public StockVM createStock(
-    @RequestParam("productName") String productName,
-    @RequestParam("description") String description,
-    @RequestParam("quantity") Integer quantity,
-    @RequestParam(value = "image", required = false) MultipartFile image,
-    @CurrentUserAnnotation User loggedInUser) throws IOException {
+    public StockVM createStock(
+            @RequestParam("productName") String productName,
+            @RequestParam("description") String description,
+            @RequestParam("quantity") Integer quantity,
+            @RequestParam(value = "image", required = false) MultipartFile image,
+            @CurrentUserAnnotation User loggedInUser) throws IOException {
 
-    // Stok nesnesini oluşturuyoruz
-    Stock stock = new Stock();
-    stock.setProductName(productName);
-    stock.setDescription(description);
-    stock.setQuantity(quantity);
+        // Stok nesnesini oluştur
+        Stock stock = new Stock();
+        stock.setProductName(productName);
+        stock.setDescription(description);
+        stock.setQuantity(quantity);
 
-    // Resim varsa kaydediyoruz
-    if (image != null && !image.isEmpty()) {
-        String imagePath = fileService.saveStockImage(loggedInUser.getUsername(), stock.getId(), image);
-        stock.setImage(imagePath);  // Resim yolunu veritabanına kaydediyoruz
+        // DİKKAT: Resmi burada kaydetmiyoruz, sadece Service katmanına geçiyoruz.
+        return stockService.saveStock(loggedInUser.getUsername(), stock, image);
     }
-
-    return stockService.saveStock(loggedInUser.getUsername(), stock, image);
-}
-
-    
 
     @PatchMapping("/stocks/{stockId}")
     public StockVM updateStockQuantity(@PathVariable Long stockId,
@@ -70,8 +55,7 @@ public StockVM createStock(
     }
 
     @DeleteMapping("/stocks/{stockId}")
-    public void deleteStock(@PathVariable Long stockId,
-                            @CurrentUserAnnotation User loggedInUser) {
+    public void deleteStock(@PathVariable Long stockId, @CurrentUserAnnotation User loggedInUser) {
         stockService.deleteStock(loggedInUser.getUsername(), stockId);
     }
 
