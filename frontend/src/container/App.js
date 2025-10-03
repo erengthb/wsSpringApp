@@ -41,7 +41,7 @@ const App = () => {
           </Switch>
         </div>
 
-        <LanguageSelector />
+        {/* <LanguageSelector />*/}
         <WhatsAppButton />
         <Footer />
       </Router>
