@@ -1,45 +1,48 @@
+/* === Material Icons spacing & alignment helpers === */
+.mi {
+  font-size: 20px;
+  line-height: 1;
+  vertical-align: -0.2ex;
+  margin-right: .5rem; /* ikon ile yazı arasında küçük boşluk */
+}
+.mi-sm { font-size: 18px; }
+.mi-lg { font-size: 22px; }
+.mi-none { margin-right: 0; } /* sadece ikon kullanacağınız yerde metinsiz */
+
 /* StockList.css - Tablo Hizalama ve Buton Düzenlemeleri */
 
 /* Tüm tablo başlıklarını (th) ve hücrelerini (td) dikey olarak ortala */
-.table th, 
+.table th,
 .table td {
-    vertical-align: middle;
+  vertical-align: middle;
 }
 
 /* Tablodaki resimlerin boyutlarını ve görünümünü zorunlu kıl */
 .table td img {
-    width: 50px;
-    height: 50px;
-    object-fit: cover; 
-    display: block; 
-    margin: 0 auto; 
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;
 }
 
-/* YENİ DÜZENLEME: + ve - butonları arasına boşluk ekleme */
+/* + ve - butonları arasına boşluk */
 .stock-actions-group .btn {
-    /* Butonları birbirinden ayırmak için küçük bir sağ margin ekliyoruz */
-    margin-right: 8px;
+  margin-right: 8px;
 }
-/* btn-group son butonu sağa kaydırmaması için: */
 .stock-actions-group .btn:last-child {
-    margin-right: 0;
+  margin-right: 0;
 }
 
-
-/* Delete butonunun genişliğini + ve - butonlarının toplam genişliğini geçmeyecek şekilde sınırla */
+/* Delete butonu genişlik ve tipografi */
 .stock-delete-button {
-    /* Butonun maksimum genişliğini 100px olarak belirliyoruz, mobil için yeterli */
-    max-width: 100px; 
-    /* Metin sığmazsa diye yazı boyutunu biraz küçültebiliriz */
-    font-size: 0.75rem; 
-    /* Mobil görünümde ortalamak için */
-    margin-left: auto;
-    margin-right: auto;
+  max-width: 120px;
+  font-size: 0.8rem;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* --- Önizleme Popup Stilleri --- */
-
-/* Overlay full screen */
 .stock-preview-overlay {
   position: fixed;
   top: 0;
@@ -51,11 +54,10 @@
   justify-content: center;
   align-items: center;
   z-index: 9999;
-  padding: 10px; 
+  padding: 10px;
   box-sizing: border-box;
 }
 
-/* Container */
 .stock-preview-container {
   position: relative;
   background-color: white;
@@ -73,7 +75,6 @@
   padding: 5px;
 }
 
-/* Close button */
 .stock-preview-close {
   position: absolute;
   top: 5px;
@@ -87,7 +88,6 @@
   z-index: 1;
 }
 
-/* Image style - popup içine sığacak */
 .stock-preview-image {
   max-width: 100%;
   max-height: 100%;
@@ -97,8 +97,41 @@
   display: block;
 }
 
-/* FadeIn Animation */
 @keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.95);}
-  to { opacity: 1; transform: scale(1);}
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
 }
+
+/* Küçük önizleme overlay'i (büyüteç ikonu) */
+.stock-thumb-wrapper {
+  position: relative;
+  display: inline-block;
+}
+.stock-thumb-wrapper.can-preview .stock-thumb-overlay {
+  opacity: 0;
+  transition: opacity 0.15s ease-in-out;
+}
+.stock-thumb-wrapper.can-preview:hover .stock-thumb-overlay {
+  opacity: 1;
+}
+.stock-thumb-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+.stock-thumb-overlay .material-icons,
+.stock-thumb-overlay .mi {
+  color: #fff;
+  font-size: 22px;
+  margin-right: 0; /* ortada ikon, sağ boşluk istemeyiz */
+}
+
+/* Var olan yardımcı sınıflar (korundu) */
+.image-preview { width: 100px; height: auto; cursor: pointer; margin-top: 8px; }
+.stock-image { width: 60px; height: auto; cursor: pointer; }
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 9999; }
+.modal-image { max-width: 90%; max-height: 90%; border-radius: 10px; }

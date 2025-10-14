@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import StockForm from "../components/StockForm";
 import StockList from "../components/StockList";
+import "../css/StockList.css"; // .mi helper için
 
 const StockPage = () => {
   const { t } = useTranslation();
@@ -11,41 +12,46 @@ const StockPage = () => {
   const username = useSelector((state) => state.username);
   const history = useHistory();
 
-  // ✅ Logout sonrası yönlendirme
   useEffect(() => {
     if (!username) {
-      history.push("/"); // logout sonrası anasayfaya yönlendir
+      history.push("/");
     }
   }, [username, history]);
 
   return (
     <div className="container mt-4">
-      <h2>{t("Stock Tracking")}</h2>
+      <h2 className="d-flex align-items-center">
+        {t("Stock Tracking")}
+      </h2>
 
       <ul className="nav nav-tabs mb-4">
         <li className="nav-item">
           <span
-            className={`nav-link ${activeTab === "form" ? "active" : ""}`}
+            className={`nav-link d-inline-flex align-items-center ${
+              activeTab === "form" ? "active" : ""
+            }`}
             onClick={() => setActiveTab("form")}
             style={{ cursor: "pointer" }}
           >
+            <span className="material-icons mi">add_circle</span>
             {t("Add Stock")}
           </span>
         </li>
         <li className="nav-item">
           <span
-            className={`nav-link ${activeTab === "list" ? "active" : ""}`}
+            className={`nav-link d-inline-flex align-items-center ${
+              activeTab === "list" ? "active" : ""
+            }`}
             onClick={() => setActiveTab("list")}
             style={{ cursor: "pointer" }}
           >
+            <span className="material-icons mi">inventory</span>
             {t("Stock List")}
           </span>
         </li>
       </ul>
 
-      {activeTab === "form" && (
-        <StockForm onStockAdded={() => setActiveTab("list")} />
-      )}
+      {activeTab === "form" && <StockForm onStockAdded={() => setActiveTab("list")} />}
       {activeTab === "list" && <StockList />}
     </div>
   );

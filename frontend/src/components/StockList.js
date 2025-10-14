@@ -25,17 +25,14 @@ const StockList = () => {
   const searchTimeout = useRef(null);
 
   const [previewImage, setPreviewImage] = useState(null); // Popup için seçilen resim
-  
-  // YENİ STATE: Resmin başarılı yüklenip yüklenmediğini tutar
-  const [imageLoadStatus, setImageLoadStatus] = useState({}); 
+  const [imageLoadStatus, setImageLoadStatus] = useState({}); // resim load durumları
 
   const pageSize = 10;
   const backendUrl = process.env.REACT_APP_API_URL;
 
   const loadStocks = async () => {
     setLoading(true);
-    // Yeni yükleme başladığında önceki yükleme hatalarını sıfırla
-    setImageLoadStatus({}); 
+    setImageLoadStatus({}); // yeni yüklemede hataları sıfırla
     try {
       let response;
       if (!searchTerm) {
@@ -51,16 +48,14 @@ const StockList = () => {
       setLoading(false);
     }
   };
-  
-  // Fonksiyon: StockImageWithDefault'tan yükleme durumunu almak için
+
   const handleImageLoadStatus = (stockId, isLoaded) => {
-      setImageLoadStatus(prev => ({ ...prev, [stockId]: isLoaded }));
+    setImageLoadStatus((prev) => ({ ...prev, [stockId]: isLoaded }));
   };
 
   const onSearchChange = (value) => {
     setPage(0);
     if (searchTimeout.current) clearTimeout(searchTimeout.current);
-
     searchTimeout.current = setTimeout(() => {
       setSearchTerm(value);
     }, 400);
@@ -73,9 +68,7 @@ const StockList = () => {
     try {
       await updateStockQuantity(stockId, newQuantity);
       setStocks((prev) =>
-        prev.map((s) =>
-          s.id === stockId ? { ...s, quantity: newQuantity } : s,
-        ),
+        prev.map((s) => (s.id === stockId ? { ...s, quantity: newQuantity } : s)),
       );
     } catch (err) {
       console.error("Update quantity failed:", err);
@@ -83,8 +76,7 @@ const StockList = () => {
   };
 
   const onDeleteStock = async (stockId) => {
-    if (!window.confirm(t("Are you sure you want to delete this stock ?")))
-      return;
+    if (!window.confirm(t("Are you sure you want to delete this stock ?"))) return;
 
     try {
       await deleteStock(stockId);
@@ -103,7 +95,13 @@ const StockList = () => {
 
   return (
     <>
-      <h3>{t("Stock List")}</h3>
+      {/* Başlık ve arama ipucu */}
+      <div className="d-flex align-items-center justify-content-between mb-3">
+        <h3 className="mb-0 d-flex align-items-center">
+          <span className="material-icons mi">inventory</span>
+          {t("Stock List")}
+        </h3>
+      </div>
 
       <div className="mb-3">
         <SearchBar
@@ -113,117 +111,143 @@ const StockList = () => {
         />
       </div>
 
-      {stocks.length === 0 && <p>{t("No stocks found.")}</p>}
+      {stocks.length === 0 && (
+        <p className="text-muted d-flex align-items-center">
+          <span className="material-icons mi">inbox</span>
+          {t("No stocks found.")}
+        </p>
+      )}
 
       {stocks.length > 0 && (
         <>
           <table className="table table-bordered">
             <thead>
               <tr>
-                <th>{t("Product Name")}</th>
-                <th>{t("Description")}</th>
-                <th>{t("Quantity")}</th>
-                <th>{t("Image")}</th>
-                <th>{t("Actions")}</th>
+                <th className="fw-semibold">
+                  <span className="material-icons mi mi-sm">sell</span>
+                  {t("Product Name")}
+                </th>
+                <th className="fw-semibold">
+                  <span className="material-icons mi mi-sm">description</span>
+                  {t("Description")}
+                </th>
+                <th className="fw-semibold">
+                  <span className="material-icons mi mi-sm">format_list_numbered</span>
+                  {t("Quantity")}
+                </th>
+                <th className="fw-semibold">
+                  <span className="material-icons mi mi-sm">image</span>
+                  {t("Image")}
+                </th>
+                <th className="fw-semibold">
+                  <span className="material-icons mi mi-sm">build</span>
+                  {t("Actions")}
+                </th>
               </tr>
             </thead>
             <tbody>
               {stocks.map((stock) => {
-                  // Kontrol 1: imagePath mevcut mu?
-                  const hasImagePath = stock.imagePath && stock.imagePath.trim() !== "";
-                  
-                  // Kontrol 2: Resim yüklenirken hata oluştu mu? (False: Hata oluştu, Default gösteriliyor)
-                  const isImageSuccessfullyLoaded = imageLoadStatus[stock.id] !== false;
+                const hasImagePath = stock.imagePath && stock.imagePath.trim() !== "";
+                const isImageSuccessfullyLoaded = imageLoadStatus[stock.id] !== false;
+                const canPreview = hasImagePath && isImageSuccessfullyLoaded;
 
-                  // Önizleme SADECE hem imagePath varsa HEM de başarılı yüklenmişse açılır.
-                  const canPreview = hasImagePath && isImageSuccessfullyLoaded;
+                return (
+                  <tr key={stock.id}>
+                    <td>{stock.productName}</td>
+                    <td>{stock.description}</td>
+                    <td>{stock.quantity}</td>
 
-                  return (
-                    <tr key={stock.id}>
-                      <td>{stock.productName}</td>
-                      <td>{stock.description}</td>
-                      <td>{stock.quantity}</td>
-                      
-                      {/* GÖRSEL HÜCRESİ */}
-                      <td>
+                    {/* Görsel hücresi (overlay + büyüteç) */}
+                    <td>
+                      <div
+                        className={`stock-thumb-wrapper ${canPreview ? "can-preview" : ""}`}
+                        title={canPreview ? t("Click to preview") : ""}
+                        onClick={() => {
+                          if (canPreview) {
+                            setPreviewImage(`${backendUrl}/${stock.imagePath}`);
+                          }
+                        }}
+                      >
                         <StockImageWithDefault
-                          image={stock.imagePath} 
+                          image={stock.imagePath}
                           alt={stock.productName}
-                          // Yükleme durumunu takip etmek için callback gönderilir
-                          onImageLoadStatus={(isLoaded) => handleImageLoadStatus(stock.id, isLoaded)}
+                          onImageLoadStatus={(isLoaded) =>
+                            handleImageLoadStatus(stock.id, isLoaded)
+                          }
                           style={{
                             width: "50px",
                             height: "50px",
                             objectFit: "cover",
-                            // Sadece önizleme yapılabilirse 'pointer' olsun
-                            cursor: canPreview ? "pointer" : "default", 
-                          }}
-                          onClick={() => {
-                            // SADECE canPreview true ise popup'ı aç
-                            if (canPreview) {
-                              setPreviewImage(`${backendUrl}/${stock.imagePath}`);
-                            }
+                            cursor: canPreview ? "pointer" : "default",
                           }}
                         />
-                      </td>
-                      
-                      {/* İŞLEMLER HÜCRESİ */}
-                      <td>
-                        {/* + ve - butonlarını boşluksuz grupluyoruz (CSS ile 2px boşluk eklendi) */}
-                        <div className="btn-group stock-actions-group" role="group">
-                          <button
-                            type="button"
-                            className="btn btn-sm btn-success" 
-                            onClick={() => onChangeQuantity(stock.id, stock.quantity, 1)}
-                          >
-                            +
-                          </button>
-                          <button
-                            type="button"
-                            className="btn btn-sm btn-danger" 
-                            onClick={() => onChangeQuantity(stock.id, stock.quantity, -1)}
-                            disabled={stock.quantity === 0}
-                          >
-                            -
-                          </button>
-                        </div>
-                        
-                        {/* Delete butonu yeni bir satır veya blokta */}
-                        <div className="d-block mt-1">
-                          <button
-                            type="button"
-                            className="btn btn-sm btn-outline-danger stock-delete-button" 
-                            onClick={() => onDeleteStock(stock.id)}
-                          >
-                            {t("Delete")} 
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
+                        {canPreview && (
+                          <div className="stock-thumb-overlay">
+                            <span className="material-icons mi-none">zoom_in</span>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+
+                    {/* İşlemler hücresi — BU BLOĞA DOKUNMADIM */}
+                    <td>
+                      <div className="btn-group stock-actions-group" role="group">
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-success"
+                          onClick={() => onChangeQuantity(stock.id, stock.quantity, 1)}
+                        >
+                          +
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-danger"
+                          onClick={() => onChangeQuantity(stock.id, stock.quantity, -1)}
+                          disabled={stock.quantity === 0}
+                        >
+                          -
+                        </button>
+                      </div>
+
+                      <div className="d-block mt-1">
+                        <button
+                          type="button"
+                          className="btn btn-sm btn-outline-danger stock-delete-button"
+                          onClick={() => onDeleteStock(stock.id)}
+                        >
+                          {t("Hepsini Sil")}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
               })}
             </tbody>
           </table>
 
+          {/* Sayfalama */}
           <div className="d-flex justify-content-between align-items-center mt-3">
             <button
               type="button"
-              className="btn btn-outline-secondary"
+              className="btn btn-outline-secondary d-inline-flex align-items-center"
               onClick={() => setPage((prev) => prev - 1)}
               disabled={page === 0}
             >
+              <span className="material-icons mi">chevron_left</span>
               {t("Previous")}
             </button>
-            <span>
+            <span className="text-muted d-flex align-items-center">
+              <span className="material-icons mi mi-sm">layers</span>
               {t("Stock Page")} {page + 1} / {totalPages}
             </span>
             <button
               type="button"
-              className="btn btn-outline-secondary"
+              className="btn btn-outline-secondary d-inline-flex align-items-center"
               onClick={() => setPage((prev) => prev + 1)}
               disabled={page >= totalPages - 1}
             >
               {t("Next")}
+              <span className="material-icons mi">chevron_right</span>
             </button>
           </div>
         </>
@@ -231,25 +255,12 @@ const StockList = () => {
 
       {/* Preview Popup */}
       {previewImage && (
-        <div
-          className="stock-preview-overlay"
-          onClick={() => setPreviewImage(null)}
-        >
-          <div
-            className="stock-preview-container"
-            onClick={(e) => e.stopPropagation()} 
-          >
-            <button
-              className="stock-preview-close"
-              onClick={() => setPreviewImage(null)}
-            >
-              &times;
+        <div className="stock-preview-overlay" onClick={() => setPreviewImage(null)}>
+          <div className="stock-preview-container" onClick={(e) => e.stopPropagation()}>
+            <button className="stock-preview-close" onClick={() => setPreviewImage(null)}>
+              <span className="material-icons">close</span>
             </button>
-            <img
-              src={previewImage}
-              alt="Preview"
-              className="stock-preview-image"
-            />
+            <img src={previewImage} alt="Preview" className="stock-preview-image" />
           </div>
         </div>
       )}
