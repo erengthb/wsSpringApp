@@ -6,8 +6,6 @@ import { useApiProgress } from "../shared/ApiProgress";
 import { useDispatch } from "react-redux";
 import { signupHandler } from "../redux/authActions";
 import {
-  requestCaptcha,
-  verifyCaptcha,
   setLanguageHeader,
 } from "../api/apiCalls";
 
@@ -22,11 +20,6 @@ const UserSignupPage = (props) => {
     taxId: "",
   });
 
-  const [captchaId, setCaptchaId] = useState("");
-  const [captchaInput, setCaptchaInput] = useState("");
-  const [captchaImage, setCaptchaImage] = useState("");
-  const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
-  const [captchaError, setCaptchaError] = useState("");
   const [errors, setErrors] = useState({});
 
   const dispatch = useDispatch();
@@ -37,22 +30,8 @@ const UserSignupPage = (props) => {
     setLanguageHeader(i18n.language);
   }, [i18n.language]);
 
-  const loadCaptcha = async () => {
-    try {
-      const response = await requestCaptcha();
-      setCaptchaId(response.data.captchaId);
-      setCaptchaImage(response.data.captchaImage);
-      setCaptchaInput("");
-      setIsCaptchaVerified(false);
-      setCaptchaError("");
-    } catch (error) {
-      setCaptchaError(t("Failed to load CAPTCHA"));
-    }
-  };
+ 
 
-  useEffect(() => {
-    loadCaptcha();
-  }, []);
 
   const onChange = (event) => {
     const { name, value } = event.target;
@@ -60,21 +39,8 @@ const UserSignupPage = (props) => {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const onCaptchaInputChange = (e) => {
-    setCaptchaInput(e.target.value);
-    setCaptchaError("");
-  };
 
-  const onVerifyCaptcha = async () => {
-    try {
-      await verifyCaptcha(captchaId, captchaInput);
-      setIsCaptchaVerified(true);
-      setCaptchaError("");
-    } catch (err) {
-      setCaptchaError(t("Invalid CAPTCHA input"));
-      setIsCaptchaVerified(false);
-    }
-  };
+ 
 
   const onClickSignup = async (e) => {
     e.preventDefault();
@@ -95,8 +61,6 @@ const UserSignupPage = (props) => {
       email,
       address,
       taxId,
-      captchaId,
-      captchaInput,
     };
 
     try {
@@ -173,54 +137,18 @@ const UserSignupPage = (props) => {
         />
         <Input
           name="taxId"
-          label={t("Tax ID")}
+          label={t("Vergi Numarası")}
           error={errors.taxId}
           onChange={onChange}
         />
 
-        <div className="form-group">
-          <label>{t("CAPTCHA")}:</label>
-          <div className="captcha-image-container mb-2">
-            {captchaImage && <img src={captchaImage} alt="captcha" />}
-            <button
-              type="button"
-              className="btn btn-link btn-sm"
-              onClick={loadCaptcha}
-              disabled={pendingApiCall}
-            >
-              {t("Reload CAPTCHA")}
-            </button>
-          </div>
-          <input
-            className="form-control"
-            value={captchaInput}
-            onChange={onCaptchaInputChange}
-            disabled={isCaptchaVerified}
-            placeholder={t("Enter CAPTCHA text")}
-          />
-          <button
-            className="btn btn-secondary mt-2"
-            onClick={onVerifyCaptcha}
-            type="button"
-            disabled={isCaptchaVerified || !captchaInput}
-          >
-            {t("Verify CAPTCHA")}
-          </button>
-          {captchaError && (
-            <div className="text-danger mt-2">{captchaError}</div>
-          )}
-          {isCaptchaVerified && (
-            <div className="text-success mt-2">{t("CAPTCHA verified")}</div>
-          )}
-        </div>
 
         <div className="text-center mt-3">
           <ButtonWithProgress
             onClick={onClickSignup}
             disabled={
               pendingApiCall ||
-              passwordRepeatError !== undefined ||
-              !isCaptchaVerified
+              passwordRepeatError !== undefined     
             }
             pendingApiCall={pendingApiCall}
             text={t("Sign Up")}
