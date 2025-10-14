@@ -1,3 +1,4 @@
+// src/pages/HomePage.jsx
 import React, { useState } from "react";
 import UserList from "../components/UserList";
 import HoaxSubmit from "../components/HoaxSubmit";
@@ -5,7 +6,9 @@ import HoaxList from "../components/HoaxList";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
+import Tabs from "../components/Tabs";
 import "../css/Footer.css";
+import "../css/HomeTabs.css"; // küçük stil iyileştirmeleri için
 
 const GuestHomepage = () => {
   const { t } = useTranslation();
@@ -35,22 +38,41 @@ const HomePage = () => {
     isLoggedIn: store.isLoggedIn,
   }));
   const [refreshCounter, setRefreshCounter] = useState(0);
+  const { t } = useTranslation();
 
   if (!isLoggedIn) return <GuestHomepage />;
 
-  return (
-    <div className="container main-home py-3">
-      <div className="row">
-        <div className="col-12 col-lg-8 mb-3">
-          <div className="mb-1">
-            <HoaxSubmit
-              onSuccess={() => setRefreshCounter((prev) => prev + 1)}
-            />
+  const tabs = [
+    {
+      key: "feed",
+      icon: "dynamic_feed",
+      label: t("Hoax Akış"),
+      content: (
+        <div className="feed-tab">
+          <div className="mb-3">
+            <HoaxSubmit onSuccess={() => setRefreshCounter((p) => p + 1)} />
           </div>
           <HoaxList refreshTrigger={refreshCounter} />
         </div>
-        <div className="col-12 col-lg-4">
+      ),
+    },
+    {
+      key: "users",
+      icon: "people",
+      label: t("Kullanıcılar"),
+      content: (
+        <div className="users-tab">
           <UserList />
+        </div>
+      ),
+    },
+  ];
+
+  return (
+    <div className="container main-home py-3">
+      <div className="row justify-content-center">
+        <div className="col-12 col-xl-10">
+          <Tabs tabs={tabs} storageKey="home_active_tab" />
         </div>
       </div>
     </div>

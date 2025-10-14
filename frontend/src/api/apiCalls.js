@@ -20,7 +20,7 @@ export const changeLanguage = (language) => {
   axios.defaults.headers["accept-language"] = language;
 };
 
-export const getUsers = (page = 0, size = 3) => {
+export const getUsers = (page = 0, size = 10) => {
   return axios.get(`/api/1.0/users?page=${page}&size=${size}`);
 };
 

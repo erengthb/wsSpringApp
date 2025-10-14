@@ -1,0 +1,41 @@
+/* src/css/HomeTabs.css */
+.tabs-card .nav-tabs .nav-link {
+    border: none;
+    border-bottom: 2px solid transparent;
+    font-weight: 600;
+  }
+  
+  .tabs-card .nav-tabs .nav-link.active {
+    border-bottom-color: currentColor;
+  }
+  
+  .tabs-card .card-header {
+    position: sticky;
+    top: 0; /* içinde bulunduğu container'a göre */
+    z-index: 1;
+  }
+  
+  .tabs-card .card-body {
+    padding-top: 1rem;
+  }
+  
+  /* Mobile yatay kaydırma için rahat boşluk */
+  .nav-tabs.flex-nowrap {
+    scrollbar-width: thin;
+    -ms-overflow-style: -ms-autohiding-scrollbar;
+  }
+  
+  /* Card gölgesi ve radius */
+  .tabs-card.card {
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: .75rem;
+  }
+
+  /* Sekme ikonlarıyla metin arasında daha fazla boşluk */
+.tabs-card .nav-link .material-icons {
+    margin-right: 0.5rem; /* 8px */
+    font-size: 20px; /* biraz daha orantılı görünür */
+    vertical-align: middle;
+  }
+  
+  
