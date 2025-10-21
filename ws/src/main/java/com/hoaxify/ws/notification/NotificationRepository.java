@@ -1,13 +1,16 @@
 package com.hoaxify.ws.notification;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.hoaxify.ws.user.User;
-
-import java.util.List;
-
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
-    List<Notification> findByTargetUserAndTypeOrderByCreatedAtDesc(User targetUser, NotificationType type);
+
+    @EntityGraph(attributePaths = {"triggeredBy"})
+    Slice<Notification> findByTargetUser_UsernameAndType(
+            String username,
+            NotificationType type,
+            Pageable pageable
+    );
 }
-
-

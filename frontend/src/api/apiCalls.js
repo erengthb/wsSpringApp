@@ -101,8 +101,11 @@ export const getUserFollowing = (username) => {
   return axios.get(`/api/1.0/users/${username}/following`);
 };
 
-export const getNotifications = () => {
-  return axios.get("/api/1.0/notifications");
+// --- GÜNCEL: bildirimleri sayfalı al
+export const getNotifications = (page = 0, limit = 3) => {
+  return axios.get("/api/1.0/notifications", {
+    params: { page, limit },
+  });
 };
 
 // ✅ STOCK işlemleri

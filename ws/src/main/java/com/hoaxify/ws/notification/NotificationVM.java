@@ -1,9 +1,7 @@
-
 package com.hoaxify.ws.notification;
 
 import lombok.Data;
 import java.time.LocalDateTime;
-
 import com.hoaxify.ws.user.vm.UserVM;
 
 @Data
@@ -22,4 +20,3 @@ public class NotificationVM {
         this.triggeredBy = new UserVM(notification.getTriggeredBy());
     }
 }
-

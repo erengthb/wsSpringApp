@@ -7,7 +7,7 @@ import { Link } from "react-router-dom";
 import { getNotifications } from "../api/apiCalls";
 import { logoutSuccess } from "../redux/authActions";
 import ProfileImageWithDefault from "./ProfileImageWithDefault";
-import ChangelogModal from "./ChangelogModal"; // <-- EKLENDİ
+import ChangelogModal from "./ChangelogModal";
 import logo from "../assets/otoenvanterlogo.jpg";
 
 const TopBar = () => {
@@ -24,35 +24,58 @@ const TopBar = () => {
   const menuArea = useRef(null);
   const [menuVisible, setMenuVisible] = useState(false);
   const [notificationsVisible, setNotificationsVisible] = useState(false);
-  const [notifications, setNotifications] = useState([]);
 
-  // Güncellemeler modal kontrolü
+  // notifications + pagination
+  const [notifications, setNotifications] = useState([]);
+  const [notifPage, setNotifPage] = useState(0);
+  const [notifLoading, setNotifLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(false); // <— son fetch limit kadar mı geldi?
+  const NOTIF_LIMIT = 3// <— İSTEDİĞİN DEĞER
+
+  // changelog modal
   const [showChangelog, setShowChangelog] = useState(false);
-  // İstersen buraya API bağlarsın: const [changelog, setChangelog] = useState(null);
 
   useEffect(() => {
     document.addEventListener("click", menuClickTracker);
-    return () => {
-      document.removeEventListener("click", menuClickTracker);
-    };
+    return () => document.removeEventListener("click", menuClickTracker);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn]);
 
   useEffect(() => {
     if (isLoggedIn) {
-      getNotifications()
-        .then((res) => setNotifications(res.data))
-        .catch(() => setNotifications([]));
-
-      // Güncellemeler için API'n varsa buraya ekle:
-      // getChangelog()
-      //   .then(res => setChangelog(res.data))
-      //   .catch(() => setChangelog(null));
+      // ilk sayfa
+      setNotifPage(0);
+      setNotifications([]);
+      setHasMore(false);
+      fetchNotifications(0);
     } else {
       setNotifications([]);
-      // setChangelog(null);
+      setNotifPage(0);
+      setHasMore(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoggedIn]);
+
+  const fetchNotifications = async (pageToLoad) => {
+    if (notifLoading) return;
+    setNotifLoading(true);
+    try {
+      const res = await getNotifications(pageToLoad, NOTIF_LIMIT);
+      const list = Array.isArray(res.data) ? res.data : [];
+      if (pageToLoad === 0) {
+        setNotifications(list);
+      } else {
+        setNotifications((prev) => [...prev, ...list]);
+      }
+      // “daha fazla”yı sadece list uzunluğu limit’e eşitse açık tut
+      setHasMore(list.length === NOTIF_LIMIT);
+    } catch {
+      if (pageToLoad === 0) setNotifications([]);
+      setHasMore(false);
+    } finally {
+      setNotifLoading(false);
+    }
+  };
 
   const menuClickTracker = (event) => {
     if (menuArea.current === null || !menuArea.current.contains(event.target)) {
@@ -69,7 +92,6 @@ const TopBar = () => {
     dispatch(logoutSuccess());
   };
 
-  // Sadece FOLLOW tipi bildirim metni
   const getNotificationMessage = (notification) => {
     if (notification.type === "FOLLOW") {
       return (
@@ -147,21 +169,38 @@ const TopBar = () => {
                 style={{ maxHeight: 300, overflowY: "auto" }}
               >
                 {notifications.length === 0 ? (
-                  <div className="text-muted">{t("No notifications")}</div>
+                  <div className="text-muted">
+                    {notifLoading ? t("Loading...") : t("No notifications")}
+                  </div>
                 ) : (
-                  notifications.map((n) => (
-                    <div key={n.id} className="small border-bottom py-1">
-                      {getNotificationMessage(n)} <br />
-                      <small className="text-muted">
-                        {new Date(n.createdAt).toLocaleString()}
-                      </small>
-                    </div>
-                  ))
+                  <>
+                    {notifications.map((n) => (
+                      <div key={n.id} className="small border-bottom py-1">
+                        {getNotificationMessage(n)} <br />
+                        <small className="text-muted">
+                          {new Date(n.createdAt).toLocaleString()}
+                        </small>
+                      </div>
+                    ))}
+
+                    {hasMore && (
+                      <button
+                        className="btn btn-link btn-sm w-100"
+                        disabled={notifLoading}
+                        onClick={() => {
+                          const next = notifPage + 1;
+                          setNotifPage(next);
+                          fetchNotifications(next);
+                        }}
+                      >
+                        {notifLoading ? t("Loading...") : t("Daha fazla yükle")}
+                      </button>
+                    )}
+                  </>
                 )}
               </div>
             )}
 
-            {/* Güncellemeler menü maddesi */}
             <span
               className="dropdown-item d-flex p-2"
               onClick={() => {
@@ -199,13 +238,10 @@ const TopBar = () => {
         {links}
       </nav>
 
-      {/* Güncellemeler Modalı: login ise kullanılabilir */}
       {isLoggedIn && (
         <ChangelogModal
           open={showChangelog}
           onClose={() => setShowChangelog(false)}
-          // updates prop'unu vermezsen ChangelogModal içindeki DEFAULT_UPDATES kullanılır.
-          // updates={changelog || undefined}
         />
       )}
     </div>
