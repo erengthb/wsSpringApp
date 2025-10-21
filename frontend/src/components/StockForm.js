@@ -97,8 +97,7 @@ const StockForm = ({ onStockAdded }) => {
       {/* Ürün Adı ve Adet */}
       <div className="form-row d-flex align-items-end gap-4 mb-3">
         <div className="form-group flex-fill">
-          <label className="fw-semibold d-flex align-items-center">
-            <span className="material-icons mi">inventory_2</span>
+          <label className="fw-semibold d-flex align-items-center">       
             {t("Product Name")}
           </label>
           <div className="input-group">
@@ -123,7 +122,7 @@ const StockForm = ({ onStockAdded }) => {
 
         <div className="form-group" style={{ maxWidth: "160px" }}>
           <label className="fw-semibold d-flex align-items-center">
-            <span className="material-icons mi">countertops</span>
+           
             {t("Quantity")}
           </label>
           <div className="input-group">
@@ -152,7 +151,6 @@ const StockForm = ({ onStockAdded }) => {
       <div className="form-row d-flex gap-4 mb-3">
         <div className="form-group flex-fill">
           <label className="fw-semibold d-flex align-items-center">
-            <span className="material-icons mi">description</span>
             {t("Description")}
           </label>
           <div className="input-group">
@@ -178,7 +176,7 @@ const StockForm = ({ onStockAdded }) => {
 
         <div className="form-group" style={{ minWidth: "280px" }}>
           <label className="fw-semibold d-flex align-items-center">
-            <span className="material-icons mi">image</span>
+           
             {t("Product Image")}
             {imageUploaded && (
               <span className="badge bg-success ms-2 d-flex align-items-center">
