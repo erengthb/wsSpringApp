@@ -51,35 +51,26 @@ public class SecurityConfiguration {
 @Bean
 public CorsConfigurationSource corsConfigurationSource() {
     CorsConfiguration configuration = new CorsConfiguration();
-
-    // Sadece tam adresleri kullanın, pattern'leri kaldırın
     configuration.setAllowedOrigins(List.of(
         "http://localhost:3000",
         "https://otoenvanter.com",
         "https://www.otoenvanter.com"
     ));
-
-    // HTTP metotları
     configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-
-    // Headerlar
     configuration.setAllowedHeaders(List.of(
-        "Authorization",
-        "Content-Type",
-        "X-Requested-With",
-        "Accept",
-        "Origin",
-        "Access-Control-Request-Method",
-        "Access-Control-Request-Headers"
+        "Authorization","Content-Type","X-Requested-With","Accept","Origin",
+        "Access-Control-Request-Method","Access-Control-Request-Headers"
     ));
-
-    // Cookie / Authorization header desteği
     configuration.setAllowCredentials(true);
+
+    // <-- EK: Preflight yanıtını 1 saat cache’le
+    configuration.setMaxAge(3600L);
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
     return source;
 }
+
 //test
     @Bean
     public PasswordEncoder passwordEncoder() {

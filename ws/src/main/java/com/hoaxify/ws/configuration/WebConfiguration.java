@@ -22,55 +22,42 @@ public class WebConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
-        // Upload path'i alıyoruz ve sonundaki '/' karakterini kesiyoruz
         String uploadPath = appConfiguration.getUploadPath();
-        String normalized = StringUtils.trimTrailingCharacter(uploadPath, '/');
-
-        // Path'in absolute veya relative olup olmadığını kontrol ediyoruz
+        String normalized = org.springframework.util.StringUtils.trimTrailingCharacter(uploadPath, '/');
+    
         boolean isAbsolute = new File(normalized).isAbsolute();
         String locationPrefix = isAbsolute ? "file:" : "file:./";
-        String resourceLocation = locationPrefix + normalized + "/";
-
-        // PROFIL RESİMLERİ İÇİN DÜZELTİLMİŞ KISIM
+    
+        // 365 gün cache + immutable
+        var longCache = CacheControl.maxAge(java.time.Duration.ofDays(365)).cachePublic().immutable();
+    
         String ppLocation = locationPrefix + normalized + "/" + appConfiguration.getProfilePicturesDir() + "/";
         registry.addResourceHandler("/profilepictures/**")
                 .addResourceLocations(ppLocation)
-                .setCacheControl(CacheControl.noStore());
-
-        // Eğer başka bir resim dizini varsa (örneğin stocks)
+                .setCacheControl(longCache);
+    
         registry.addResourceHandler("/stocks/**")
-                .addResourceLocations(resourceLocation + "/stocks/")
-                .setCacheControl(CacheControl.noStore());
+                .addResourceLocations(locationPrefix + normalized + "/stocks/")
+                .setCacheControl(longCache);
     }
-
-    // ...
-
+    
     @Bean
     CommandLineRunner createStorageDirectories() {
         return (args) -> {
-            // root (uploadPath)
             File root = new File(appConfiguration.getUploadPath());
-            System.out.println("Upload Path: " + root); // Debugging
-            if (!root.exists()) {
-                root.mkdirs();
-            }
-
-            // alt klasörler (varsa)
+            if (!root.exists()) root.mkdirs();
+    
             String ppDir = appConfiguration.getProfilePicturesDir();
-            System.out.println("Profile Pictures Dir: " + ppDir); // Debugging
             if (ppDir != null && !ppDir.isEmpty()) {
-                File pp = new File(root, ppDir);
-                if (!pp.exists())
-                    pp.mkdirs();
+                new File(root, ppDir).mkdirs();
             }
-
+    
             String stDir = appConfiguration.getStocksDir();
-            System.out.println("Stocks Dir: " + stDir); // Debugging
             if (stDir != null && !stDir.isEmpty()) {
-                File st = new File(root, stDir);
-                if (!st.exists())
-                    st.mkdirs();
+                new File(root, stDir).mkdirs();
             }
+            // System.out debug loglarını çıkarıyoruz -> stdout log maliyeti azalır
         };
     }
+    
 }

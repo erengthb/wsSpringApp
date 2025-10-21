@@ -16,11 +16,17 @@ public class MessageSourceConfig {
     @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-        messageSource.setBasename("classpath:validation"); // validation.properties & validation_tr.properties
+        messageSource.setBasename("classpath:validation");
         messageSource.setDefaultEncoding("UTF-8");
         messageSource.setUseCodeAsDefaultMessage(true);
+    
+        // <-- EK: prod’da sık değişmiyor; 24 saat cache
+        messageSource.setCacheSeconds(86400);
+        // Yerel sistem locale’ine düşmesin
+        messageSource.setFallbackToSystemLocale(false);
         return messageSource;
     }
+    
 
     @Bean
     public LocalValidatorFactoryBean getValidator() {
