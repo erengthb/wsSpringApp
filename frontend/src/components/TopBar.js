@@ -8,7 +8,10 @@ import { getNotifications } from "../api/apiCalls";
 import { logoutSuccess } from "../redux/authActions";
 import ProfileImageWithDefault from "./ProfileImageWithDefault";
 import ChangelogModal from "./ChangelogModal";
+import PaymentLinkPreviewModal from "./PaymentLinkPreviewModal";
 import logo from "../assets/otoenvanterlogo.jpg";
+
+const PAYMENT_URL = "https://linkode.me/irIXqBnqD5";
 
 const TopBar = () => {
   const { t } = useTranslation();
@@ -29,11 +32,12 @@ const TopBar = () => {
   const [notifications, setNotifications] = useState([]);
   const [notifPage, setNotifPage] = useState(0);
   const [notifLoading, setNotifLoading] = useState(false);
-  const [hasMore, setHasMore] = useState(false); // <— son fetch limit kadar mı geldi?
-  const NOTIF_LIMIT = 3// <— İSTEDİĞİN DEĞER
+  const [hasMore, setHasMore] = useState(false); // son fetch limit kadar mı geldi?
+  const NOTIF_LIMIT = 3; // istediğin değer
 
-  // changelog modal
+  // modals
   const [showChangelog, setShowChangelog] = useState(false);
+  const [showPaymentPreview, setShowPaymentPreview] = useState(false);
 
   useEffect(() => {
     document.addEventListener("click", menuClickTracker);
@@ -154,6 +158,7 @@ const TopBar = () => {
               {t("Stock Tracking")}
             </Link>
 
+            {/* Bildirimler */}
             <span
               className="dropdown-item d-flex p-2"
               onClick={toggleNotifications}
@@ -161,6 +166,19 @@ const TopBar = () => {
             >
               <i className="material-icons text-warning mr-2">notifications</i>{" "}
               {t("Notifications")}
+            </span>
+
+            {/* Bildirimlerden sonra: Ödeme Linki sekmesi */}
+            <span
+              className="dropdown-item d-flex p-2"
+              onClick={() => {
+                setShowPaymentPreview(true);
+                setMenuVisible(false);
+              }}
+              style={{ cursor: "pointer" }}
+            >
+              <i className="material-icons text-success mr-2">paid</i>{" "}
+              Ödeme Linki
             </span>
 
             {notificationsVisible && (
@@ -242,6 +260,15 @@ const TopBar = () => {
         <ChangelogModal
           open={showChangelog}
           onClose={() => setShowChangelog(false)}
+        />
+      )}
+
+      {isLoggedIn && (
+        <PaymentLinkPreviewModal
+          open={showPaymentPreview}
+          onClose={() => setShowPaymentPreview(false)}
+          url={PAYMENT_URL}
+          title="Ödeme Linki Önizleme"
         />
       )}
     </div>
