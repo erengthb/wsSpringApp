@@ -70,7 +70,7 @@ spring:
     url: ${DATABASE_URL}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
-  jpa:
+  jpa: 
     hibernate:
       ddl-auto: update
     properties:

@@ -1,45 +1,35 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useTranslation } from "react-i18next";
 
 const sanitizeSearchInput = (input) => {
   return input.replace(/\s+/g, " ").trim(); // Fazla boşlukları teke indirip baş-son boşlukları sil
 };
 
-const SearchBar = ({
-  onSearch,
-  placeholder = "Search for a product", // i18n key olarak default
-  initialValue = "",
-  debounceDelay = 400,
-}) => {
+const SearchBar = ({ value, onChange, placeholder = "Search for a product", debounceDelay = 400 }) => {
   const { t } = useTranslation();
-  const [inputValue, setInputValue] = useState(initialValue);
+  const [inputValue, setInputValue] = useState(value || "");
   const timeoutRef = useRef(null);
-  const isFirstRender = useRef(true); // ✅ ilk render kontrolü
 
+  // Eğer parent state değişirse inputValue güncellensin
   useEffect(() => {
-    // ✅ İlk render'da arama tetiklenmesin
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
+    setInputValue(value || "");
+  }, [value]);
 
-    const sanitized = sanitizeSearchInput(inputValue);
-
+  // Debounce
+  useEffect(() => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
     timeoutRef.current = setTimeout(() => {
-      onSearch(sanitized);
+      const sanitized = sanitizeSearchInput(inputValue);
+      onChange(sanitized);
     }, debounceDelay);
 
     return () => clearTimeout(timeoutRef.current);
-  }, [inputValue, debounceDelay, onSearch]);
+  }, [inputValue, debounceDelay, onChange]);
 
   const handleChange = (e) => {
     const raw = e.target.value;
-
-    // Başta boşlukla başlamasını engelle
-    if (raw.length === 1 && raw === " ") return;
-
+    if (raw.length === 1 && raw === " ") return; // Başta boşluk olmasın
     setInputValue(raw);
   };
 

@@ -22,17 +22,15 @@ const StockList = () => {
   const [loading, setLoading] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState("");
-  const searchTimeout = useRef(null);
-
-  const [previewImage, setPreviewImage] = useState(null); // Popup için seçilen resim
-  const [imageLoadStatus, setImageLoadStatus] = useState({}); // resim load durumları
+  const [previewImage, setPreviewImage] = useState(null);
+  const [imageLoadStatus, setImageLoadStatus] = useState({});
 
   const pageSize = 10;
   const backendUrl = process.env.REACT_APP_API_URL;
 
   const loadStocks = async () => {
     setLoading(true);
-    setImageLoadStatus({}); // yeni yüklemede hataları sıfırla
+    setImageLoadStatus({});
     try {
       let response;
       if (!searchTerm) {
@@ -53,14 +51,6 @@ const StockList = () => {
     setImageLoadStatus((prev) => ({ ...prev, [stockId]: isLoaded }));
   };
 
-  const onSearchChange = (value) => {
-    setPage(0);
-    if (searchTimeout.current) clearTimeout(searchTimeout.current);
-    searchTimeout.current = setTimeout(() => {
-      setSearchTerm(value);
-    }, 400);
-  };
-
   const onChangeQuantity = async (stockId, currentQuantity, delta) => {
     const newQuantity = currentQuantity + delta;
     if (newQuantity < 0) return;
@@ -68,7 +58,7 @@ const StockList = () => {
     try {
       await updateStockQuantity(stockId, newQuantity);
       setStocks((prev) =>
-        prev.map((s) => (s.id === stockId ? { ...s, quantity: newQuantity } : s)),
+        prev.map((s) => (s.id === stockId ? { ...s, quantity: newQuantity } : s))
       );
     } catch (err) {
       console.error("Update quantity failed:", err);
@@ -88,14 +78,12 @@ const StockList = () => {
 
   useEffect(() => {
     if (username) loadStocks();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [username, page, searchTerm]);
 
   if (loading) return <Spinner />;
 
   return (
     <>
-      {/* Başlık ve arama ipucu */}
       <div className="d-flex align-items-center justify-content-between mb-3">
         <h3 className="mb-0 d-flex align-items-center">
           <span className="material-icons mi">inventory</span>
@@ -105,9 +93,12 @@ const StockList = () => {
 
       <div className="mb-3">
         <SearchBar
-          onSearch={onSearchChange}
+          value={searchTerm}
+          onChange={(val) => {
+            setPage(0);
+            setSearchTerm(val);
+          }}
           placeholder={t("Search for a product")}
-          initialValue={searchTerm}
         />
       </div>
 
@@ -123,26 +114,11 @@ const StockList = () => {
           <table className="table table-bordered">
             <thead>
               <tr>
-                <th className="fw-semibold">
-                  <span className="material-icons mi mi-sm">sell</span>
-                  {t("Product Name")}
-                </th>
-                <th className="fw-semibold">
-                  <span className="material-icons mi mi-sm">description</span>
-                  {t("Description")}
-                </th>
-                <th className="fw-semibold">
-                  <span className="material-icons mi mi-sm">format_list_numbered</span>
-                  {t("Quantity")}
-                </th>
-                <th className="fw-semibold">
-                  <span className="material-icons mi mi-sm">image</span>
-                  {t("Image")}
-                </th>
-                <th className="fw-semibold">
-                  <span className="material-icons mi mi-sm">build</span>
-                  {t("Actions")}
-                </th>
+                <th className="fw-semibold">{t("Product Name")}</th>
+                <th className="fw-semibold">{t("Description")}</th>
+                <th className="fw-semibold">{t("Quantity")}</th>
+                <th className="fw-semibold">{t("Image")}</th>
+                <th className="fw-semibold">{t("Actions")}</th>
               </tr>
             </thead>
             <tbody>
@@ -156,16 +132,12 @@ const StockList = () => {
                     <td>{stock.productName}</td>
                     <td>{stock.description}</td>
                     <td>{stock.quantity}</td>
-
-                    {/* Görsel hücresi (overlay + büyüteç) */}
                     <td>
                       <div
                         className={`stock-thumb-wrapper ${canPreview ? "can-preview" : ""}`}
                         title={canPreview ? t("Click to preview") : ""}
                         onClick={() => {
-                          if (canPreview) {
-                            setPreviewImage(`${backendUrl}/${stock.imagePath}`);
-                          }
+                          if (canPreview) setPreviewImage(`${backendUrl}/${stock.imagePath}`);
                         }}
                       >
                         <StockImageWithDefault
@@ -188,8 +160,6 @@ const StockList = () => {
                         )}
                       </div>
                     </td>
-
-                    {/* İşlemler hücresi — BU BLOĞA DOKUNMADIM */}
                     <td>
                       <div className="btn-group stock-actions-group" role="group">
                         <button
@@ -225,7 +195,6 @@ const StockList = () => {
             </tbody>
           </table>
 
-          {/* Sayfalama */}
           <div className="d-flex justify-content-between align-items-center mt-3">
             <button
               type="button"
@@ -253,7 +222,6 @@ const StockList = () => {
         </>
       )}
 
-      {/* Preview Popup */}
       {previewImage && (
         <div className="stock-preview-overlay" onClick={() => setPreviewImage(null)}>
           <div className="stock-preview-container" onClick={(e) => e.stopPropagation()}>
