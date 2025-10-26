@@ -1,239 +1,301 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import {
-  getUserStocks,
-  searchUserStocks,
-  updateStockQuantity,
-  deleteStock,
+    getUserStocks,
+    searchUserStocks,
+    updateStockQuantity,
+    deleteStock,
 } from "../api/apiCalls";
 import Spinner from "../components/Spinner";
 import { useTranslation } from "react-i18next";
-import SearchBar from "../utils/SearchBar";
-import "../css/StockList.css";
+// Ant Design Bileşenleri
+import { Table, Button, Space, Input, Modal, message } from "antd";
+import { PlusOutlined, MinusOutlined, DeleteOutlined, ZoomInOutlined, InboxOutlined } from "@ant-design/icons";
+import "../css/StockList.css"; // CSS'i import etmeyi unutmayın
 import StockImageWithDefault from "../components/StockImageWithDefault";
 
+const { Search } = Input;
+
 const StockList = () => {
-  const { t } = useTranslation();
-  const username = useSelector((state) => state.username);
+    const { t } = useTranslation();
+    const username = useSelector((state) => state.username);
 
-  const [stocks, setStocks] = useState([]);
-  const [page, setPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
-  const [loading, setLoading] = useState(false);
+    // ... (Diğer state ve fonksiyonlar aynı kalır)
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [previewImage, setPreviewImage] = useState(null);
-  const [imageLoadStatus, setImageLoadStatus] = useState({});
+    const [stocks, setStocks] = useState([]);
+    const [pagination, setPagination] = useState({
+        current: 1, 
+        pageSize: 10,
+        total: 0,
+    });
+    const [loading, setLoading] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [previewImage, setPreviewImage] = useState(null);
+    const [imageLoadStatus, setImageLoadStatus] = useState({});
 
-  const pageSize = 10;
-  const backendUrl = process.env.REACT_APP_API_URL;
+    const backendUrl = process.env.REACT_APP_API_URL;
 
-  const loadStocks = async () => {
-    setLoading(true);
-    setImageLoadStatus({});
-    try {
-      let response;
-      if (!searchTerm) {
-        response = await getUserStocks(username, page, pageSize);
-      } else {
-        response = await searchUserStocks(username, searchTerm, page, pageSize);
-      }
-      setStocks(response.data.content || []);
-      setTotalPages(response.data.totalPages || 0);
-    } catch (err) {
-      console.error("Stock load failed:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const handleTableChange = (newPagination) => {
+        setPagination(newPagination);
+    };
 
-  const handleImageLoadStatus = (stockId, isLoaded) => {
-    setImageLoadStatus((prev) => ({ ...prev, [stockId]: isLoaded }));
-  };
+    const loadStocks = async (current = 1, pageSize = 10, search = searchTerm) => {
+        setLoading(true);
+        setImageLoadStatus({});
+        try {
+            let response;
+            const pageToSend = current - 1; 
 
-  const onChangeQuantity = async (stockId, currentQuantity, delta) => {
-    const newQuantity = currentQuantity + delta;
-    if (newQuantity < 0) return;
+            if (!search) {
+                response = await getUserStocks(username, pageToSend, pageSize);
+            } else {
+                response = await searchUserStocks(username, search, pageToSend, pageSize);
+            }
 
-    try {
-      await updateStockQuantity(stockId, newQuantity);
-      setStocks((prev) =>
-        prev.map((s) => (s.id === stockId ? { ...s, quantity: newQuantity } : s))
-      );
-    } catch (err) {
-      console.error("Update quantity failed:", err);
-    }
-  };
+            setStocks(response.data.content.map(stock => ({ ...stock, key: stock.id })) || []);
+            
+            setPagination((prev) => ({
+                ...prev,
+                total: response.data.totalElements || 0,
+                current: current,
+                pageSize: pageSize,
+            }));
 
-  const onDeleteStock = async (stockId) => {
-    if (!window.confirm(t("Are you sure you want to delete this stock ?"))) return;
+        } catch (err) {
+            console.error("Stock load failed:", err);
+            message.error(t("Stok yükleme başarısız !"));
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    try {
-      await deleteStock(stockId);
-      setStocks((prev) => prev.filter((s) => s.id !== stockId));
-    } catch (err) {
-      alert(t("Stock could not be deleted"));
-    }
-  };
+    const handleImageLoadStatus = (stockId, isLoaded) => {
+        setImageLoadStatus((prev) => ({ ...prev, [stockId]: isLoaded }));
+    };
 
-  useEffect(() => {
-    if (username) loadStocks();
-  }, [username, page, searchTerm]);
+    const onChangeQuantity = async (stockId, currentQuantity, delta) => {
+        const newQuantity = currentQuantity + delta;
+        if (newQuantity < 0) return;
 
-  if (loading) return <Spinner />;
+        try {
+            await updateStockQuantity(stockId, newQuantity);
+            setStocks((prev) =>
+                prev.map((s) => (s.id === stockId ? { ...s, quantity: newQuantity } : s))
+            );
+        } catch (err) {
+            console.error("Update quantity failed:", err);
+            message.error(t("Stok adedi güncellenemedi !"));
+        }
+    };
 
-  return (
-    <>
-      <div className="d-flex align-items-center justify-content-between mb-3">
-        <h3 className="mb-0 d-flex align-items-center">
-          <span className="material-icons mi">inventory</span>
-          {t("Stock List")}
-        </h3>
-      </div>
-
-      <div className="mb-3">
-        <SearchBar
-          value={searchTerm}
-          onChange={(val) => {
-            setPage(0);
-            setSearchTerm(val);
-          }}
-          placeholder={t("Search for a product")}
-        />
-      </div>
-
-      {stocks.length === 0 && (
-        <p className="text-muted d-flex align-items-center">
-          <span className="material-icons mi">inbox</span>
-          {t("No stocks found.")}
-        </p>
-      )}
-
-      {stocks.length > 0 && (
-        <>
-          <table className="table table-bordered">
-            <thead>
-              <tr>
-                <th className="fw-semibold">{t("Product Name")}</th>
-                <th className="fw-semibold">{t("Description")}</th>
-                <th className="fw-semibold">{t("Quantity")}</th>
-                <th className="fw-semibold">{t("Image")}</th>
-                <th className="fw-semibold">{t("Actions")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {stocks.map((stock) => {
-                const hasImagePath = stock.imagePath && stock.imagePath.trim() !== "";
-                const isImageSuccessfullyLoaded = imageLoadStatus[stock.id] !== false;
+    const onDeleteStock = async (stockId) => {
+        Modal.confirm({
+            title: t("Uyarı !"),
+            content: t("Seçilen stok ürününün tamamını silmek istediğinize emin misiniz ?"),
+            okText: t("Evet"),
+            cancelText: t("Hayır"),
+            onOk: async () => {
+                try {
+                    await deleteStock(stockId);
+                    message.success(t("Stok başarıyla silindi !"));
+                    loadStocks(pagination.current, pagination.pageSize, searchTerm); 
+                } catch (err) {
+                    message.error(t("Stok silme başarısız !"));
+                }
+            },
+        });
+    };
+    
+    // Ant Design'ın Columns tanımı
+    const columns = [
+        {
+            title: t("Product Name"),
+            dataIndex: 'productName',
+            key: 'productName',
+            sorter: (a, b) => a.productName.localeCompare(b.productName),
+            width: '20%',
+        },
+        {
+            title: t("Description"),
+            dataIndex: 'description',
+            key: 'description',
+            width: '20%', 
+        },
+        {
+            title: t("Quantity"),
+            dataIndex: 'quantity',
+            key: 'quantity',
+            align: 'center',
+            sorter: (a, b) => a.quantity - b.quantity,
+            width: '10%',
+        },
+        {
+            title: t("Fiyat (₺)"),
+            dataIndex: 'price',
+            key: 'price',
+            align: 'right',
+            render: (text) => (text != null ? `${Number(text).toFixed(2)} ₺` : "-"),
+            sorter: (a, b) => a.price - b.price,
+            width: '10%',
+        },
+        {
+            title: t("Image"),
+            dataIndex: 'imagePath',
+            key: 'imagePath',
+            align: 'center',
+            width: '10%',
+            render: (imagePath, record) => {
+                const hasImagePath = imagePath && imagePath.trim() !== "";
+                const isImageSuccessfullyLoaded = imageLoadStatus[record.id] !== false;
                 const canPreview = hasImagePath && isImageSuccessfullyLoaded;
 
                 return (
-                  <tr key={stock.id}>
-                    <td>{stock.productName}</td>
-                    <td>{stock.description}</td>
-                    <td>{stock.quantity}</td>
-                    <td>
-                      <div
-                        className={`stock-thumb-wrapper ${canPreview ? "can-preview" : ""}`}
-                        title={canPreview ? t("Click to preview") : ""}
+                    <div
+                        className="stock-image-container" 
+                        style={{ position: 'relative', display: 'inline-block', cursor: canPreview ? 'pointer' : 'default' }}
                         onClick={() => {
-                          if (canPreview) setPreviewImage(`${backendUrl}/${stock.imagePath}`);
+                            if (canPreview) setPreviewImage(`${backendUrl}/${imagePath}`);
                         }}
-                      >
+                    >
                         <StockImageWithDefault
-                          image={stock.imagePath}
-                          alt={stock.productName}
-                          onImageLoadStatus={(isLoaded) =>
-                            handleImageLoadStatus(stock.id, isLoaded)
-                          }
-                          style={{
-                            width: "50px",
-                            height: "50px",
-                            objectFit: "cover",
-                            cursor: canPreview ? "pointer" : "default",
-                          }}
+                            image={imagePath}
+                            alt={record.productName}
+                            onImageLoadStatus={(isLoaded) =>
+                                handleImageLoadStatus(record.id, isLoaded)
+                            }
+                            style={{
+                                width: "40px",
+                                height: "40px",
+                                objectFit: "cover",
+                                borderRadius: '4px',
+                            }}
                         />
                         {canPreview && (
-                          <div className="stock-thumb-overlay">
-                            <span className="material-icons mi-none">zoom_in</span>
-                          </div>
+                            <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,0.3)', display: 'flex', justifyContent: 'center', alignItems: 'center', borderRadius: '4px' }}>
+                                <ZoomInOutlined style={{ color: 'white', fontSize: '16px' }} />
+                            </div>
                         )}
-                      </div>
-                    </td>
-                    <td>
-                      <div className="btn-group stock-actions-group" role="group">
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-success"
-                          onClick={() => onChangeQuantity(stock.id, stock.quantity, 1)}
-                        >
-                          +
-                        </button>
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-danger"
-                          onClick={() => onChangeQuantity(stock.id, stock.quantity, -1)}
-                          disabled={stock.quantity === 0}
-                        >
-                          -
-                        </button>
-                      </div>
-
-                      <div className="d-block mt-1">
-                        <button
-                          type="button"
-                          className="btn btn-sm btn-outline-danger stock-delete-button"
-                          onClick={() => onDeleteStock(stock.id)}
-                        >
-                          {t("Hepsini Sil")}
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
+                    </div>
                 );
-              })}
-            </tbody>
-          </table>
+            }
+        },
+        {
+            title: t("Actions"),
+            key: 'actions',
+            align: 'center',
+            width: '30%', 
+            render: (text, record) => (
+                <Space direction="vertical" size="small" style={{ width: '100%', maxWidth: '120px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
+                        {/* + Butonu */}
+                        <Button
+                            type="primary"
+                            icon={<PlusOutlined />}
+                            size="small"
+                            onClick={() => onChangeQuantity(record.id, record.quantity, 1)}
+                            style={{ width: '50px' }} 
+                        />
+                        {/* - Butonu - type="danger" ve ek olarak className="minus-button-red" eklendi */}
+                        <Button
+                            type="danger" 
+                            className="minus-button-red" // Kırmızı rengi zorlayan sınıf
+                            icon={<MinusOutlined />}
+                            size="small"
+                            onClick={() => onChangeQuantity(record.id, record.quantity, -1)}
+                            disabled={record.quantity === 0}
+                            style={{ width: '50px' }} 
+                        />
+                    </div>
+                    {/* Hepsini Sil Butonu */}
+                    <Button
+                        type="default"
+                        icon={<DeleteOutlined />}
+                        size="small"
+                        onClick={() => onDeleteStock(record.id)}
+                        danger 
+                        style={{ width: '100%', maxWidth: '108px' }} 
+                    >
+                        {t("Hepsini Sil")}
+                    </Button>
+                </Space>
+            ),
+        },
+    ];
 
-          <div className="d-flex justify-content-between align-items-center mt-3">
-            <button
-              type="button"
-              className="btn btn-outline-secondary d-inline-flex align-items-center"
-              onClick={() => setPage((prev) => prev - 1)}
-              disabled={page === 0}
+
+    useEffect(() => {
+        if (username) {
+            loadStocks(pagination.current, pagination.pageSize, searchTerm);
+        }
+    }, [username, pagination.current, pagination.pageSize, searchTerm]); 
+    
+
+    if (loading && stocks.length === 0) return <Spinner />;
+
+    return (
+        <>
+            <div className="d-flex align-items-center justify-content-between mb-3">
+                <h3 className="mb-0 d-flex align-items-center">
+                    <span className="material-icons mi" style={{ marginRight: '8px' }}>inventory</span>
+                    {t("Stock List")}
+                </h3>
+            </div>
+
+            <div className="mb-3">
+                <Search
+                    placeholder={t("Search for a product")}
+                    allowClear
+                    enterButton={t("Search")}
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onSearch={() => {
+                        setPagination(prev => ({ ...prev, current: 1 }));
+                        loadStocks(1, pagination.pageSize, searchTerm);
+                    }}
+                    style={{ width: '100%' }}
+                />
+            </div>
+
+
+            {/* Tablo */}
+            {stocks.length === 0 && !loading ? (
+                <p className="text-muted d-flex align-items-center">
+                    <InboxOutlined style={{ marginRight: '8px', fontSize: '18px' }} />
+                    {t("No stocks found.")}
+                </p>
+            ) : (
+                <Table
+                    columns={columns}
+                    dataSource={stocks}
+                    pagination={{
+                        ...pagination,
+                        showSizeChanger: true,
+                        showTotal: (total, range) => `${range[0]}-${range[1]} / ${total} ${t("total")}`,
+                        pageSizeOptions: ['10', '20', '50'],
+                    }}
+                    loading={loading}
+                    onChange={handleTableChange} 
+                    scroll={{ x: 'max-content' }} 
+                />
+            )}
+            
+            <Modal
+                title={t("Image Preview")}
+                open={!!previewImage}
+                onCancel={() => setPreviewImage(null)}
+                footer={null}
+                centered
             >
-              <span className="material-icons mi">chevron_left</span>
-              {t("Previous")}
-            </button>
-            <span className="text-muted d-flex align-items-center">
-              <span className="material-icons mi mi-sm">layers</span>
-              {t("Stock Page")} {page + 1} / {totalPages}
-            </span>
-            <button
-              type="button"
-              className="btn btn-outline-secondary d-inline-flex align-items-center"
-              onClick={() => setPage((prev) => prev + 1)}
-              disabled={page >= totalPages - 1}
-            >
-              {t("Next")}
-              <span className="material-icons mi">chevron_right</span>
-            </button>
-          </div>
+                {previewImage && (
+                    <img
+                        src={previewImage}
+                        alt="Preview"
+                        style={{ width: '100%', height: 'auto', display: 'block' }}
+                    />
+                )}
+            </Modal>
         </>
-      )}
-
-      {previewImage && (
-        <div className="stock-preview-overlay" onClick={() => setPreviewImage(null)}>
-          <div className="stock-preview-container" onClick={(e) => e.stopPropagation()}>
-            <button className="stock-preview-close" onClick={() => setPreviewImage(null)}>
-              <span className="material-icons">close</span>
-            </button>
-            <img src={previewImage} alt="Preview" className="stock-preview-image" />
-          </div>
-        </div>
-      )}
-    </>
-  );
+    );
 };
 
 export default StockList;

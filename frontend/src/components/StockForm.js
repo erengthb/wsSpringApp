@@ -3,262 +3,300 @@ import { useTranslation } from "react-i18next";
 import { addStock } from "../api/apiCalls";
 import { useSelector } from "react-redux";
 import { isValidImageFile } from "../utils/fileValidators";
-import "../css/StockList.css"; // .mi ikon boşluk yardımcıları
+
+// Ant Design Bileşenleri ve İkonlar
+import {
+    Form,
+    Input,
+    InputNumber,
+    Button,
+    Upload,
+    Row,
+    Col,
+    message,
+    Modal,
+    // EKSİK OLAN 'Space' BURAYA EKLENMELİDİR!
+    Space, 
+} from "antd";
+import {
+    PlusOutlined,
+    EditOutlined,
+    DollarOutlined,
+    CalculatorOutlined,
+    UploadOutlined,
+    DeleteOutlined,
+    EyeOutlined,
+    TagOutlined,
+} from "@ant-design/icons";
+import "../css/StockList.css"; 
+
+// ... (formItemColProps ve diğer sabit tanımlamalar aynı kalır)
+
+const formItemColProps = {
+    xs: 24, // Mobil: Tam genişlik (100%)
+    sm: 24, // Tablet: Tam genişlik (100%)
+    md: 12, // Masaüstü/Orta: Yarım genişlik (50%)
+    lg: 8, // Geniş Masaüstü: Üçte bir genişlik (~33%)
+};
+
+const { TextArea } = Input;
+const { Dragger } = Upload;
 
 const StockForm = ({ onStockAdded }) => {
-  const { t } = useTranslation();
-  const username = useSelector((state) => state.username);
+    const { t } = useTranslation();
+    const username = useSelector((state) => state.username);
+    const [form] = Form.useForm(); 
 
-  const [productName, setProductName] = useState("");
-  const [description, setDescription] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [image, setImage] = useState(null);
-  const [imageName, setImageName] = useState("");
-  const [imageUploaded, setImageUploaded] = useState(false);
-  const [errors, setErrors] = useState({});
-  const [imagePreview, setImagePreview] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [image, setImage] = useState(null);
+    const [imagePreview, setImagePreview] = useState(null);
+    const [previewOpen, setPreviewOpen] = useState(false);
+    const [imageError, setImageError] = useState(undefined);
 
-  const onChangeFile = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+    const handlePreview = async () => {
+        if (!imagePreview) return;
+        setPreviewOpen(true);
+    };
 
-    if (!isValidImageFile(file)) {
-      setErrors((prev) => ({
-        ...prev,
-        image: t("Sadece PNG, JPG, JPEG veya WEBP kabul edilir."),
-      }));
-      setImage(null);
-      setImageName("");
-      setImageUploaded(false);
-      setImagePreview(null);
-      return;
-    }
+    const handleCancel = () => setPreviewOpen(false);
 
-    setImage(file);
-    setImageName(file.name);
-    setImageUploaded(true);
-    setErrors((prev) => ({ ...prev, image: undefined }));
+    const onFinish = async (values) => {
+        // Form submit edildiğinde çağrılır (Ant Design'da başarılı doğrulama sonrası)
+        if (!image) {
+            setImageError(t("Ürün resmi seçilmesi zorunludur."));
+            return;
+        }
 
-    const reader = new FileReader();
-    reader.onloadend = () => setImagePreview(reader.result);
-    reader.readAsDataURL(file);
-  };
+        setLoading(true);
+        const { productName, description, quantity, price } = values;
 
-  const clearImage = () => {
-    setImage(null);
-    setImageName("");
-    setImageUploaded(false);
-    setImagePreview(null);
-    setErrors((prev) => ({ ...prev, image: undefined }));
-    // input value sıfırlansın (aynı dosyayı tekrar seçebilin)
-    const el = document.getElementById("product-image-input");
-    if (el) el.value = "";
-  };
+        try {
+            const formData = new FormData();
+            formData.append("productName", productName);
+            formData.append("description", description);
+            formData.append("quantity", Number(quantity));
+            formData.append("price", Number(price));
+            formData.append("image", image);
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    const validationErrors = {};
-    if (!productName.trim())
-      validationErrors.productName = t("Ürün adı girilmesi zorunludur");
-    if (!description.trim())
-      validationErrors.description = t("Ürün açıklaması girilmesi zorunludur");
-    if (!quantity || isNaN(quantity) || Number(quantity) < 0)
-      validationErrors.quantity = t(
-        "Geçerli olan ürün adedinin girilmesi zorunludur."
-      );
-    if (!image) validationErrors.image = t("Ürün resmi seçilmesi zorunludur.");
+            await addStock(formData);
+            message.success(t("Stok başarıyla eklendi!"));
+            
+            // Başarılı işlem sonrası formu sıfırla
+            form.resetFields();
+            setImage(null);
+            setImagePreview(null);
+            setImageError(undefined);
+            onStockAdded();
 
-    setErrors(validationErrors);
-    if (Object.keys(validationErrors).length > 0) return;
+        } catch (err) {
+            if (err.response?.data?.validationErrors) {
+                // Backend'den gelen doğrulama hatalarını Ant Design formuna set et
+                const antErrors = Object.keys(err.response.data.validationErrors).map(key => ({
+                    name: key,
+                    errors: [err.response.data.validationErrors[key]],
+                }));
+                form.setFields(antErrors);
 
-    try {
-      const formData = new FormData();
-      formData.append("productName", productName);
-      formData.append("description", description);
-      formData.append("quantity", Number(quantity));
-      formData.append("image", image);
+            } else {
+                message.error(t("An unexpected error occurred."));
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
 
-      await addStock(formData);
-      setProductName("");
-      setDescription("");
-      setQuantity("");
-      clearImage();
-      setErrors({});
-      onStockAdded();
-    } catch (err) {
-      if (err.response?.data?.validationErrors) {
-        setErrors(err.response.data.validationErrors);
-      }
-    }
-  };
+    const beforeUpload = (file) => {
+        if (!isValidImageFile(file)) {
+            setImageError(t("Sadece PNG, JPG, JPEG veya WEBP kabul edilir."));
+            return Upload.LIST_IGNORE; 
+        }
+        
+        return false; 
+    };
 
-  return (
-    <form onSubmit={onSubmit}>
-      {/* Ürün Adı ve Adet */}
-      <div className="form-row d-flex align-items-end gap-4 mb-3">
-        <div className="form-group flex-fill">
-          <label className="fw-semibold d-flex align-items-center">       
-            {t("Product Name")}
-          </label>
-          <div className="input-group">
-            <span className="input-group-text">
-              <span className="material-icons mi-none">sell</span>
-            </span>
-            <input
-              className={`form-control ${
-                errors.productName ? "is-invalid" : ""
-              }`}
-              value={productName}
-              onChange={(e) => setProductName(e.target.value)}
-             
-            />
-          </div>
-          {errors.productName && (
-            <div className="invalid-feedback d-block">
-              {errors.productName}
-            </div>
-          )}
-        </div>
+    const onFileChange = (info) => {
+        const file = info.file;
+        
+        if (!isValidImageFile(file)) {
+            setImageError(t("Sadece PNG, JPG, JPEG veya WEBP kabul edilir."));
+            setImage(null);
+            setImagePreview(null);
+            return;
+        }
+        
+        setImageError(undefined);
+        setImage(file);
+        
+        const reader = new FileReader();
+        reader.onloadend = () => setImagePreview(reader.result);
+        reader.readAsDataURL(file);
+    };
 
-        <div className="form-group" style={{ maxWidth: "160px" }}>
-          <label className="fw-semibold d-flex align-items-center">
-           
-            {t("Quantity")}
-          </label>
-          <div className="input-group">
-            <span className="input-group-text">
-              <span className="material-icons mi-none">exposure</span>
-            </span>
-            <input
-              type="number"
-              className={`form-control ${
-                errors.quantity ? "is-invalid" : ""
-              }`}
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
-              min={0}
-            />
-          </div>
-          {errors.quantity && (
-            <div className="invalid-feedback d-block">
-              {errors.quantity}
-            </div>
-          )}
-        </div>
-      </div>
+    const onRemove = () => {
+        setImage(null);
+        setImagePreview(null);
+        setImageError(undefined);
+        return true; 
+    };
 
-      {/* Açıklama ve Resim Yükleme */}
-      <div className="form-row d-flex gap-4 mb-3">
-        <div className="form-group flex-fill">
-          <label className="fw-semibold d-flex align-items-center">
-            {t("Description")}
-          </label>
-          <div className="input-group">
-            <span className="input-group-text">
-              <span className="material-icons mi-none">edit_note</span>
-            </span>
-            <textarea
-              className={`form-control ${
-                errors.description ? "is-invalid" : ""
-              }`}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={3}
-              placeholder={t("Kısa açıklama ekleyin")}
-            />
-          </div>
-          {errors.description && (
-            <div className="invalid-feedback d-block">
-              {errors.description}
-            </div>
-          )}
-        </div>
+    return (
+        <Form
+            form={form}
+            layout="vertical"
+            onFinish={onFinish}
+            initialValues={{ quantity: 1, price: 0 }}
+        >
+            <Row gutter={[24, 16]}>
+                
+                {/* Ürün Adı */}
+                <Col {...formItemColProps}>
+                    <Form.Item
+                        name="productName"
+                        label={t("Product Name")}
+                        rules={[
+                            { required: true, message: t("Ürün adı girilmesi zorunludur") },
+                        ]}
+                    >
+                        <Input 
+                            prefix={<TagOutlined />} 
+                            placeholder={t("Ürün adını girin")}
+                        />
+                    </Form.Item>
+                </Col>
 
-        <div className="form-group" style={{ minWidth: "280px" }}>
-          <label className="fw-semibold d-flex align-items-center">
-           
-            {t("Product Image")}
-            {imageUploaded && (
-              <span className="badge bg-success ms-2 d-flex align-items-center">
-                <span className="material-icons mi mi-sm">check_circle</span>
-                {t("Image uploaded successfully")}
-              </span>
-            )}
-          </label>
+                {/* Adet */}
+                <Col {...formItemColProps}>
+                    <Form.Item
+                        name="quantity"
+                        label={t("Quantity")}
+                        rules={[
+                            { required: true, message: t("Geçerli olan ürün adedinin girilmesi zorunludur.") },
+                        ]}
+                    >
+                        <InputNumber
+                            min={0}
+                            style={{ width: "100%" }}
+                            prefix={<CalculatorOutlined />}
+                            placeholder="0"
+                        />
+                    </Form.Item>
+                </Col>
+                
+                {/* Fiyat */}
+                <Col {...formItemColProps}>
+                    <Form.Item
+                        name="price"
+                        label={t("Fiyat (₺)")}
+                        rules={[
+                            { required: true, message: t("Geçerli bir fiyat girilmesi zorunludur.") },
+                        ]}
+                    >
+                        <InputNumber
+                            min={0}
+                            step={0.01}
+                            style={{ width: "100%" }}
+                            prefix={<DollarOutlined />}
+                            formatter={value => `${value} ₺`}
+                            parser={value => value.replace(' ₺', '')}
+                            placeholder="0.00"
+                        />
+                    </Form.Item>
+                </Col>
 
-          {/* Özel dosya seçim alanı (Choose File yerine Türkçe buton) */}
-          <div className="d-flex align-items-center gap-2">
-            {/* görünmez native input */}
-            <input
-              id="product-image-input"
-              type="file"
-              className="d-none"
-              onChange={onChangeFile}
-              accept="image/png, image/jpeg, image/jpg, image/webp"
-            />
+                {/* Açıklama */}
+                <Col xs={24} md={12} lg={8}>
+                    <Form.Item
+                        name="description"
+                        label={t("Description")}
+                        rules={[
+                            { required: true, message: t("Ürün açıklaması girilmesi zorunludur") },
+                        ]}
+                    >
+                        <TextArea 
+                            rows={3} 
+                            placeholder={t("Kısa açıklama ekleyin")} 
+                        />
+                    </Form.Item>
+                </Col>
+                
+                {/* Resim Yükleme */}
+                <Col xs={24} md={12} lg={8}>
+                    <Form.Item
+                        label={t("Product Image")}
+                        validateStatus={imageError ? 'error' : ''}
+                        help={imageError}
+                        required={true}
+                    >
+                        <Dragger
+                            name="file"
+                            multiple={false}
+                            accept="image/png, image/jpeg, image/jpg, image/webp"
+                            beforeUpload={beforeUpload}
+                            onChange={onFileChange}
+                            onRemove={onRemove}
+                            fileList={image ? [{ 
+                                uid: '-1', 
+                                name: image.name, 
+                                status: 'done',
+                            }] : []} 
+                            listType={image ? "text" : "picture"} 
+                        >
+                            <p className="ant-upload-drag-icon">
+                                <UploadOutlined />
+                            </p>
+                            <p className="ant-upload-text">{t("Dosyayı buraya sürükleyin veya tıklayın")}</p>
+                            <p className="ant-upload-hint">
+                                {t("Sadece PNG, JPG, JPEG veya WEBP kabul edilir.")}
+                            </p>
+                        </Dragger>
+                        
+                        {/* Önizleme ve Temizleme Butonları (Space burada kullanılıyor) */}
+                        {imagePreview && (
+                            <div className="d-flex align-items-center mt-2 gap-2">
+                                <img
+                                    src={imagePreview}
+                                    alt="Preview"
+                                    className="rounded shadow-sm"
+                                    style={{ maxHeight: "120px", width: "auto" }}
+                                />
+                                <Space> {/* Bu kısım hata veriyordu */}
+                                    <Button icon={<EyeOutlined />} onClick={handlePreview}>
+                                        {t("Önizle")}
+                                    </Button>
+                                    <Button danger icon={<DeleteOutlined />} onClick={onRemove}>
+                                        {t("Temizle")}
+                                    </Button>
+                                </Space>
+                            </div>
+                        )}
+                    </Form.Item>
+                </Col>
 
-            {/* görünen Türkçe buton */}
-            <button
-              type="button"
-              className="btn btn-outline-secondary d-flex align-items-center"
-              onClick={() =>
-                document.getElementById("product-image-input")?.click()
-              }
-            >
-              <span className="material-icons mi-none">cloud_upload</span>
-              <span className="ms-2">{t("Dosya Seç")}</span>
-            </button>
+            </Row>
 
-            {/* seçilen dosya adı */}
-            <span className="text-muted small">
-              {imageName || t("Dosya seçilmedi")}
-            </span>
-          </div>
-
-          {errors.image && (
-            <div className="invalid-feedback d-block">{errors.image}</div>
-          )}
-
-          {imageName && (
-            <div className="mt-2 d-flex align-items-center justify-content-between rounded border p-2">
-              <div className="text-muted small d-flex align-items-center">
-                <span className="material-icons mi mi-sm">insert_photo</span>
-                <strong>{t("Seçilen dosya")}:</strong>&nbsp;{imageName}
-              </div>
-              <button
-                type="button"
-                className="btn btn-sm btn-outline-secondary d-flex align-items-center"
-                onClick={clearImage}
-                title={t("Resmi temizle")}
-              >
-                <span className="material-icons mi mi-sm">close</span>
-                {t("Temizle")}
-              </button>
-            </div>
-          )}
-
-          {imagePreview && (
-            <div className="mt-2">
-              <img
-                src={imagePreview}
-                alt="Preview"
-                className="rounded shadow-sm"
-                style={{ maxHeight: "90px" }}
-              />
-            </div>
-          )}
-        </div>
-      </div>
-
-      <button
-        type="submit"
-        className="btn btn-primary d-inline-flex align-items-center"
-      >
-        <span className="material-icons mi">add_circle</span>
-        {t("Add Stock")}
-      </button>
-    </form>
-  );
+            {/* Gönderme Butonu */}
+            <Form.Item className="mt-4">
+                <Button 
+                    type="primary" 
+                    htmlType="submit" 
+                    loading={loading}
+                    icon={<PlusOutlined />}
+                    size="large"
+                >
+                    {t("Add Stock")}
+                </Button>
+            </Form.Item>
+            
+            {/* Modal Önizleme */}
+            <Modal open={previewOpen} footer={null} onCancel={handleCancel}>
+                <img
+                    alt="Preview"
+                    style={{ width: '100%' }}
+                    src={imagePreview}
+                />
+            </Modal>
+        </Form>
+    );
 };
 
 export default StockForm;

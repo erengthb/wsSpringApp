@@ -7,9 +7,10 @@ public record StockVM(
         String productName,
         String description,
         Integer quantity,
-        String imagePath // Resim dosyasının yolu
-) {
+        Double price,
+        String imagePath) {
     public StockVM(Stock s) {
-        this(s.getId(), s.getProductName(), s.getDescription(), s.getQuantity(), s.getImage()); // imagePath'ı ekliyoruz
+        this(s.getId(), s.getProductName(), s.getDescription(),
+                s.getQuantity(), s.getPrice(), s.getImage());
     }
 }

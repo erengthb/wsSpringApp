@@ -1,137 +1,44 @@
-/* === Material Icons spacing & alignment helpers === */
-.mi {
-  font-size: 20px;
-  line-height: 1;
-  vertical-align: -0.2ex;
-  margin-right: .5rem; /* ikon ile yazı arasında küçük boşluk */
-}
-.mi-sm { font-size: 18px; }
-.mi-lg { font-size: 22px; }
-.mi-none { margin-right: 0; } /* sadece ikon kullanacağınız yerde metinsiz */
+/* --- StockForm için Kalan Global Yardımcı Sınıflar --- */
 
-/* StockList.css - Tablo Hizalama ve Buton Düzenlemeleri */
+/* Flexible width for responsive input */
+.min-w-120 { min-width: 120px; }
+.max-w-150 { max-width: 150px; }
+.min-w-200 { min-width: 200px; }
 
-/* Tüm tablo başlıklarını (th) ve hücrelerini (td) dikey olarak ortala */
-.table th,
-.table td {
-  vertical-align: middle;
-}
 
-/* Tablodaki resimlerin boyutlarını ve görünümünü zorunlu kıl */
-.table td img {
-  width: 50px;
-  height: 50px;
-  object-fit: cover;
-  display: block;
-  margin: 0 auto;
+/* DİKKAT: Ant Design formunda bu kurallara ihtiyaç kalmadı,
+   ancak diğer yerlerde kullanılıyorsa korumakta fayda var. 
+   StockForm.js'ten gelen form-group, form-row vb. kaldırıldı. 
+*/
+
+
+/* --- Eksi Butonunu Kırmızı Yapma (StockList için hala geçerli) --- */
+.ant-btn.minus-button-red {
+    background-color: #ff4d4f !important; /* Ant Design'ın varsayılan danger rengi */
+    border-color: #ff4d4f !important;
+    color: #fff !important;
 }
 
-/* + ve - butonları arasına boşluk */
-.stock-actions-group .btn {
-  margin-right: 8px;
-}
-.stock-actions-group .btn:last-child {
-  margin-right: 0;
+.ant-btn.minus-button-red:hover {
+    background-color: #ff7875 !important;
+    border-color: #ff7875 !important;
+    color: #fff !important;
 }
 
-/* Delete butonu genişlik ve tipografi */
-.stock-delete-button {
-  max-width: 120px;
-  font-size: 0.8rem;
-  margin-left: auto;
-  margin-right: auto;
+.ant-btn.minus-button-red:focus {
+    background-color: #ff4d4f !important;
+    border-color: #ff4d4f !important;
+    color: #fff !important;
 }
 
-/* --- Önizleme Popup Stilleri --- */
-.stock-preview-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-  padding: 10px;
-  box-sizing: border-box;
-}
 
-.stock-preview-container {
-  position: relative;
-  background-color: white;
-  border-radius: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 500px;
-  height: 500px;
-  max-width: 90%;
-  max-height: 90%;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  animation: fadeIn 0.2s ease-in-out;
-  overflow: hidden;
-  padding: 5px;
+/* --- StockList Tablosu için kalan kural --- */
+@media (max-width: 768px) {
+    /* Ant Design'daki tablo görselini küçültme (Kaydırma olsa bile daha derli toplu durması için) */
+    .ant-table-wrapper .stock-image-container img {
+        max-width: 40px !important;
+        max-height: 40px !important;
+        width: 40px !important; 
+        height: 40px !important; 
+    }
 }
-
-.stock-preview-close {
-  position: absolute;
-  top: 5px;
-  right: 8px;
-  background: none;
-  border: none;
-  font-size: 24px;
-  cursor: pointer;
-  font-weight: bold;
-  color: #333;
-  z-index: 1;
-}
-
-.stock-preview-image {
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  display: block;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to   { opacity: 1; transform: scale(1); }
-}
-
-/* Küçük önizleme overlay'i (büyüteç ikonu) */
-.stock-thumb-wrapper {
-  position: relative;
-  display: inline-block;
-}
-.stock-thumb-wrapper.can-preview .stock-thumb-overlay {
-  opacity: 0;
-  transition: opacity 0.15s ease-in-out;
-}
-.stock-thumb-wrapper.can-preview:hover .stock-thumb-overlay {
-  opacity: 1;
-}
-.stock-thumb-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.25);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-}
-.stock-thumb-overlay .material-icons,
-.stock-thumb-overlay .mi {
-  color: #fff;
-  font-size: 22px;
-  margin-right: 0; /* ortada ikon, sağ boşluk istemeyiz */
-}
-
-/* Var olan yardımcı sınıflar (korundu) */
-.image-preview { width: 100px; height: auto; cursor: pointer; margin-top: 8px; }
-.stock-image { width: 60px; height: auto; cursor: pointer; }
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); display: flex; justify-content: center; align-items: center; z-index: 9999; }
-.modal-image { max-width: 90%; max-height: 90%; border-radius: 10px; }
