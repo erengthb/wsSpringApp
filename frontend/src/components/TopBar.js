@@ -3,14 +3,12 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { Layout, Menu, Dropdown, Avatar, Badge, Button, Modal, Spin, Divider } from "antd";
-import { BellOutlined, UserOutlined, LogoutOutlined, GiftOutlined, StockOutlined, SyncOutlined } from "@ant-design/icons";
+import { Layout, Menu, Dropdown, Avatar, Badge, Button, Spin } from "antd";
+import { BellOutlined, LogoutOutlined } from "@ant-design/icons";
 
 import { getNotifications } from "../api/apiCalls";
 import { logoutSuccess } from "../redux/authActions";
-import ProfileImageWithDefault from "./ProfileImageWithDefault";
 import ChangelogModal from "./ChangelogModal";
-import PaymentLinkPreviewModal from "./PaymentLinkPreviewModal";
 import logo from "../assets/otoenvanterlogo.jpg";
 
 const { Header } = Layout;
@@ -33,9 +31,7 @@ const TopBar = () => {
   const [notifPage, setNotifPage] = useState(0);
   const [notifLoading, setNotifLoading] = useState(false);
   const [hasMore, setHasMore] = useState(false);
-
   const [showChangelog, setShowChangelog] = useState(false);
-  const [showPaymentPreview, setShowPaymentPreview] = useState(false);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -84,7 +80,9 @@ const TopBar = () => {
                 </span>
               )}
               <br />
-              <small className="text-muted">{new Date(n.createdAt).toLocaleString()}</small>
+              <small className="text-muted">
+                {new Date(n.createdAt).toLocaleString()}
+              </small>
             </div>
           ))}
           {hasMore && (
@@ -113,7 +111,10 @@ const TopBar = () => {
       <Menu.Item key="stock">
         <Link to="/stock">{t("Stock Tracking")}</Link>
       </Menu.Item>
-      <Menu.Item key="payment" onClick={() => setShowPaymentPreview(true)}>
+      <Menu.Item
+        key="payment"
+        onClick={() => window.open(PAYMENT_URL, "_blank")}
+      >
         {t("Ödeme Linki")}
       </Menu.Item>
       <Menu.Item key="changelog" onClick={() => setShowChangelog(true)}>
@@ -141,7 +142,7 @@ const TopBar = () => {
           <img src={logo} alt="Logo" style={{ height: 40 }} />
         </Link>
 
-        <div style={{ flex: 1 }} /> {/* Boşluk */}
+        <div style={{ flex: 1 }} />
 
         {!isLoggedIn && (
           <Link to="/" style={{ marginLeft: "auto" }}>
@@ -151,13 +152,13 @@ const TopBar = () => {
 
         {isLoggedIn && (
           <div style={{ display: "flex", alignItems: "center", gap: 15 }}>
-            <Dropdown overlay={notifMenu} trigger={['click']} placement="bottomRight">
+            <Dropdown overlay={notifMenu} trigger={["click"]} placement="bottomRight">
               <Badge count={notifications.length} overflowCount={99}>
                 <BellOutlined style={{ fontSize: 20, cursor: "pointer" }} />
               </Badge>
             </Dropdown>
 
-            <Dropdown overlay={profileMenu} trigger={['click']} placement="bottomRight">
+            <Dropdown overlay={profileMenu} trigger={["click"]} placement="bottomRight">
               <div style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
                 <Avatar src={image} size="small" />
                 <span style={{ marginLeft: 8 }}>{displayName}</span>
@@ -169,15 +170,6 @@ const TopBar = () => {
 
       {isLoggedIn && (
         <ChangelogModal open={showChangelog} onClose={() => setShowChangelog(false)} />
-      )}
-
-      {isLoggedIn && (
-        <PaymentLinkPreviewModal
-          open={showPaymentPreview}
-          onClose={() => setShowPaymentPreview(false)}
-          url={PAYMENT_URL}
-          title="Ödeme Linki Önizleme"
-        />
       )}
     </>
   );
