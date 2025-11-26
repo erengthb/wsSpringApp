@@ -33,8 +33,8 @@ const App = () => {
           <Switch>
             <Route exact path="/" component={Homepage} />
             {!isLoggedIn && <Route path="/login" component={LoginPage} />}
-              <Route path="/signup" component={UserSignupPage} />
-               {/* <Route path="/signup" component={UserSignupFormPage} />   */}
+             {/* <Route path="/signup" component={UserSignupPage} />*/}
+              <Route path="/signup" component={UserSignupFormPage} />  
             <Route path="/user/:username" component={UserPage} />
             <Route path="/stock" component={StockPage} />
             <Redirect to="/" />
