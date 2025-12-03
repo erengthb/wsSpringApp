@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -33,8 +34,18 @@ public class Hoax {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date timestamp;
 
+	@Column(nullable = false, columnDefinition = "integer default 1")
+	private int status = HoaxStatus.ACTIVE;
+
 	@ManyToOne
     @JoinColumn(name = "user_id") 
 	private User user;
+
+	@PrePersist
+	void prePersist() {
+		if (status == 0) {
+			status = HoaxStatus.ACTIVE;
+		}
+	}
 
 }

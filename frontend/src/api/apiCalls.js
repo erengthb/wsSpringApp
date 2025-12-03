@@ -55,6 +55,14 @@ export const postHoax = (hoax) => {
   return axios.post("/api/1.0/hoaxes", hoax);
 };
 
+export const updateHoax = (id, hoax) => {
+  return axios.put(`/api/1.0/hoaxes/${id}`, hoax);
+};
+
+export const deleteHoax = (id) => {
+  return axios.delete(`/api/1.0/hoaxes/${id}`);
+};
+
 export const getHoaxes = (username, page = 0) => {
   const path = username
     ? `/api/1.0/users/${username}/hoaxes?page=`

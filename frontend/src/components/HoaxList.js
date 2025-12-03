@@ -47,6 +47,20 @@ const HoaxList = ({ refreshTrigger }) => {
     }));
   };
 
+  const handleHoaxUpdate = (updatedHoax) => {
+    setHoaxPage((prev) => ({
+      ...prev,
+      content: prev.content.map((item) => (item.id === updatedHoax.id ? updatedHoax : item)),
+    }));
+  };
+
+  const handleHoaxDelete = (hoaxId) => {
+    setHoaxPage((prev) => ({
+      ...prev,
+      content: prev.content.filter((item) => item.id !== hoaxId),
+    }));
+  };
+
   const { content, last } = hoaxPage;
 
   return (
@@ -68,7 +82,12 @@ const HoaxList = ({ refreshTrigger }) => {
       ) : (
         <div className="hoax-list">
           {content.map((hoax) => (
-            <HoaxView key={hoax.id} hoax={hoax} />
+            <HoaxView
+              key={hoax.id}
+              hoax={hoax}
+              onUpdate={handleHoaxUpdate}
+              onDelete={handleHoaxDelete}
+            />
           ))}
         </div>
       )}
