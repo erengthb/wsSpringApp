@@ -27,6 +27,7 @@ const TopBar = () => {
     username: store.username,
     image: store.image,
   }));
+  const isAdmin = isLoggedIn && username === "admin";
 
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -205,6 +206,11 @@ const TopBar = () => {
 
         {isLoggedIn && (
           <div className="topbar-actions">
+            {isAdmin && (
+              <Link to="/admin" className="btn btn-outline-light btn-sm">
+                Admin
+              </Link>
+            )}
             <div ref={notifTriggerRef} className="notif-trigger" onClick={handleNotifToggle}>
               <Badge count={unreadCount} overflowCount={99} size="small">
                 <BellOutlined style={{ fontSize: 20 }} />

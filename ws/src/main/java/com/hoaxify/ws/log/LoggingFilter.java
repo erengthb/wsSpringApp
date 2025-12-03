@@ -10,6 +10,8 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
@@ -56,6 +58,7 @@ public class LoggingFilter implements Filter {
         String requestBody = getContent(wrappedRequest.getContentAsByteArray());
         String rawResponseBody = getContent(wrappedResponse.getContentAsByteArray());
         String sanitizedResponseBody = sanitizeResponseBody(rawResponseBody);
+        String username = resolveUsername();
 
         LogRecord log = new LogRecord();
         log.setMethod(wrappedRequest.getMethod());
@@ -66,6 +69,7 @@ public class LoggingFilter implements Filter {
         log.setDuration(duration);
         log.setTimestamp(LocalDateTime.now());
         log.setRemoteAddress(request.getRemoteAddr());
+        log.setUsername(username);
 
         logRecordRepository.save(log);
 
@@ -105,6 +109,14 @@ public class LoggingFilter implements Filter {
             // JSON parse edilemezse orijinal haliyle döner
             return responseBody;
         }
+    }
+
+    private String resolveUsername() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()) {
+            return null;
+        }
+        return auth.getName();
     }
 
 }

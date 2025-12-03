@@ -21,10 +21,14 @@ public class LogRecord {
     private long duration;
     private LocalDateTime timestamp;
 
+    private String username;
+
     @Lob
+    @Column(columnDefinition = "TEXT")
     private String requestBody;
 
     @Lob
+    @Column(columnDefinition = "TEXT")
     private String responseBody;
 
 }

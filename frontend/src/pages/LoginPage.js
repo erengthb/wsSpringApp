@@ -116,8 +116,12 @@ const LoginPage = (props) => {
 
     setError(undefined);
     try {
-      await dispatch(loginHandler(creds));
-      push("/");
+      const res = await dispatch(loginHandler(creds));
+      if (res?.data?.username === "admin") {
+        push("/admin");
+      } else {
+        push("/");
+      }
     } catch (apiError) {
       setError(apiError.response?.data?.message || t("Load Failure"));
     }

@@ -16,11 +16,14 @@ import StockPage from "../pages/StockPage";
 import WhatsAppButton from "../components/WhatsAppButton";
 import Footer from "../components/Footer";
 import UserSignupFormPage from "../pages/UserSignupFormPage";
+import AdminDashboard from "../admin/AdminDashboard";
 
 const App = () => {
-  const { isLoggedIn } = useSelector((store) => ({
+  const { isLoggedIn, username } = useSelector((store) => ({
     isLoggedIn: store.isLoggedIn,
+    username: store.username,
   }));
+  const isAdmin = isLoggedIn && username === "admin";
 
   return (
     <div
@@ -31,7 +34,12 @@ const App = () => {
         <TopBar />
         <div className="content-wrap" style={{ flex: 1 }}>
           <Switch>
-            <Route exact path="/" component={Homepage} />
+            <Route
+              exact
+              path="/"
+              render={(props) => (isAdmin ? <Redirect to="/admin" /> : <Homepage {...props} />)}
+            />
+            {isAdmin && <Route path="/admin" component={AdminDashboard} />}
             {!isLoggedIn && <Route path="/login" component={LoginPage} />}
              {/* <Route path="/signup" component={UserSignupPage} />*/}
               <Route path="/signup" component={UserSignupFormPage} />  

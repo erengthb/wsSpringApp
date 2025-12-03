@@ -63,6 +63,8 @@ public class User implements UserDetails {
     @Column(length = 255)
     private String address;
 
+    @Column(nullable = false, columnDefinition = "integer default 1")
+    private int status = 1; // 1=aktif, 0=pasif
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -99,7 +101,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return status == 1;
     }
 
     @Override

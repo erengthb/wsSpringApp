@@ -15,7 +15,12 @@ public class AuthEntryPoint implements AuthenticationEntryPoint{
 	@Override
 	public void commence(HttpServletRequest request, HttpServletResponse response,
 			AuthenticationException authException) throws IOException, ServletException {
-		response.sendError(HttpStatus.UNAUTHORIZED.value(),HttpStatus.UNAUTHORIZED.getReasonPhrase());
+		response.setStatus(HttpStatus.UNAUTHORIZED.value());
+		response.setContentType("application/json;charset=UTF-8");
+		String message = authException != null && authException.getMessage() != null
+				? authException.getMessage()
+				: HttpStatus.UNAUTHORIZED.getReasonPhrase();
+		response.getWriter().write("{\"message\":\"" + message.replace("\"", "\\\"") + "\"}");
 		
 	}
 

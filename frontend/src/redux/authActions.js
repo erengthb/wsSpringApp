@@ -26,11 +26,15 @@ export const updateSuccess = ({ displayName, image }) => {
 
 export const loginHandler = (credentials) => {
   return async function (dispatch) {
-    const response = await login(credentials);
+    const normalized = {
+      username: credentials.username ? credentials.username.trim() : "",
+      password: credentials.password,
+    };
+    const response = await login(normalized);
 
     const authState = {
       ...response.data,
-      password: credentials.password,
+      password: normalized.password,
     };
     dispatch(loginSuccess(authState));
     return response;
