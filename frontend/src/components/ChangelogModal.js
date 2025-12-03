@@ -52,11 +52,14 @@ const ChangelogModal = ({ open, onClose, updates }) => {
 
   useEffect(() => {
     if (open) {
+      document.body.classList.add("modal-open");
       document.body.style.overflow = "hidden";
     } else {
+      document.body.classList.remove("modal-open");
       document.body.style.overflow = "";
     }
     return () => {
+      document.body.classList.remove("modal-open");
       document.body.style.overflow = "";
     };
   }, [open]);
@@ -89,8 +92,17 @@ const ChangelogModal = ({ open, onClose, updates }) => {
 
   return (
     <>
-      <div className="modal d-block" role="dialog" aria-modal="true" style={{ zIndex: 1050 }}>
-        <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
+      <div
+        className="modal d-block"
+        role="dialog"
+        aria-modal="true"
+        style={{ zIndex: 1050, overflowY: "auto", padding: "1rem" }}
+      >
+        <div
+          className="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable"
+          role="document"
+          style={{ margin: "0 auto" }}
+        >
           <div className="modal-content border-0 shadow-lg" style={{ borderRadius: 14 }}>
             <div className="modal-header border-0 pb-0">
               <div>
@@ -109,7 +121,7 @@ const ChangelogModal = ({ open, onClose, updates }) => {
               </button>
             </div>
 
-            <div className="modal-body pt-3">
+            <div className="modal-body pt-3" style={{ maxHeight: "70vh", overflowY: "auto" }}>
               {list.length > 0 ? (
                 <div className="d-grid gap-3">
                   {list.map((item) => (
