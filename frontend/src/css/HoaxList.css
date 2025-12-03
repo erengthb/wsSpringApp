@@ -1,0 +1,141 @@
+.hoax-panel {
+  background: #f7f9fc;
+  border: 1px solid #e5eaf5;
+  border-radius: 16px;
+  box-shadow: 0 24px 60px rgba(17, 38, 87, 0.12);
+  padding: 16px;
+  margin-bottom: 24px;
+}
+
+.hoax-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed #d6def0;
+}
+
+.hoax-panel__title {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #0f172a;
+}
+
+.hoax-panel__subtitle {
+  font-size: 0.9rem;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+.hoax-panel__count {
+  min-width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  background: #e8edfb;
+  color: #1f2937;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.hoax-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.hoax-card {
+  background: #ffffff;
+  border: 1px solid #e6eaf5;
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
+}
+
+.hoax-card__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.hoax-card__avatar {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #e1e8ff, #f2f5ff);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px;
+}
+
+.hoax-card__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.hoax-card__user {
+  color: #0f172a;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.hoax-card__user:hover {
+  color: #111827;
+  text-decoration: underline;
+}
+
+.hoax-card__time {
+  font-size: 0.88rem;
+  color: #6b7280;
+}
+
+.hoax-card__content {
+  font-size: 0.95rem;
+  color: #1f2937;
+  line-height: 1.5;
+}
+
+.hoax-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  padding: 24px 12px;
+}
+
+.hoax-load-more {
+  margin-top: 14px;
+  text-align: center;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid #d8e0f2;
+  background: #eef2fb;
+  color: #1f2937;
+  font-weight: 600;
+  transition: all 150ms ease;
+  cursor: pointer;
+}
+
+.hoax-load-more:hover {
+  background: #e3e9fb;
+  border-color: #cdd7f0;
+}
+
+.hoax-load-more--disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .hoax-panel {
+    padding: 14px;
+  }
+}

@@ -108,6 +108,11 @@ export const getNotifications = (page = 0, limit = 3) => {
   });
 };
 
+// Genel istatistikler
+export const getStatsOverview = () => {
+  return axios.get("/api/1.0/stats/overview");
+};
+
 // ✅ STOCK işlemleri
 export const addStock = (stockData) => {
   return axios.post("/api/1.0/stocks", stockData, {

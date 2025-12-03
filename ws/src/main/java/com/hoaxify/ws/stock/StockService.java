@@ -5,16 +5,16 @@ import com.hoaxify.ws.file.FileService;
 import com.hoaxify.ws.stock.vm.StockVM;
 import com.hoaxify.ws.user.User;
 import com.hoaxify.ws.user.UserService;
-import jakarta.transaction.Transactional;
 
 import java.io.IOException;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class StockService {
@@ -29,6 +29,7 @@ public class StockService {
         this.fileService = fileService;
     }
 
+    @Transactional(readOnly = true)
     public Page<StockVM> getStocks(String username, Pageable page) {
         return stockRepository.findByUserUsername(username, page).map(StockVM::new);
     }
@@ -57,7 +58,7 @@ public class StockService {
         inDB.setDescription(updated.getDescription());
         inDB.setQuantity(updated.getQuantity());
         inDB.setImage(updated.getImage());
-        return new StockVM(stockRepository.save(inDB));
+        return new StockVM(inDB);
     }
 
     @Transactional
@@ -91,9 +92,10 @@ public void deleteStock(String username, Long id) {
             throw new NotFoundException();
         }
         inDB.setQuantity(newQuantity);
-        return new StockVM(stockRepository.save(inDB));
+        return new StockVM(inDB);
     }
 
+    @Transactional(readOnly = true)
     public Page<StockVM> searchStocksOfUser(String username, String productName, Pageable page) {
         if (productName != null && !productName.trim().isEmpty()) {
             return stockRepository

@@ -52,7 +52,15 @@ const StockList = () => {
                 response = await searchUserStocks(username, search, pageToSend, pageSize);
             }
 
-            setStocks(response.data.content.map(stock => ({ ...stock, key: stock.id })) || []);
+            const content = response.data.content || [];
+            const sorted = [...content].sort((a, b) => {
+                const aDate = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+                const bDate = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+                if (bDate !== aDate) return bDate - aDate;
+                return (b.id || 0) - (a.id || 0);
+            });
+
+            setStocks(sorted.map(stock => ({ ...stock, key: stock.id })) || []);
             
             setPagination((prev) => ({
                 ...prev,

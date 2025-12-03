@@ -1,0 +1,145 @@
+/* src/css/LoginPage.css */
+.login-page {
+  background: radial-gradient(circle at 20% 20%, rgba(68, 119, 255, 0.12), transparent 22%),
+    radial-gradient(circle at 80% 0%, rgba(119, 201, 255, 0.14), transparent 28%),
+    #f4f6fb;
+  min-height: calc(100vh - 120px);
+  padding: 48px 0 64px;
+}
+
+.login-card {
+  background: #ffffff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 28px 70px rgba(15, 23, 42, 0.12);
+}
+
+.login-intro {
+  background: linear-gradient(140deg, #0f172a, #12264d);
+  color: #e8edf5;
+  padding: 32px;
+}
+
+.login-intro h2 {
+  margin: 12px 0 10px;
+  color: #ffffff;
+}
+
+.intro-sub {
+  color: #c9d4e8;
+  margin-bottom: 16px;
+}
+
+.intro-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 18px;
+  display: grid;
+  gap: 10px;
+}
+
+.intro-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #e8edf5;
+}
+
+.intro-list svg {
+  color: #5ce2ff;
+}
+
+.pill-soft,
+.pill-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.pill-soft {
+  background: rgba(255, 255, 255, 0.08);
+  color: #dce7ff;
+}
+
+.pill-ghost {
+  background: rgba(99, 123, 255, 0.12);
+  border-color: rgba(99, 123, 255, 0.28);
+  color: #0f172a;
+}
+
+.intro-stat {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.intro-stat strong {
+  display: block;
+  font-size: 1.4rem;
+  color: #ffffff;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  color: #9fb4d8;
+  margin: 0 0 4px;
+}
+
+.login-form-wrap {
+  padding: 32px;
+  background: #ffffff;
+  color: #0f172a;
+}
+
+.login-form__title h3 {
+  margin: 10px 0 6px;
+  color: #0f172a;
+}
+
+.login-form__title p {
+  margin: 0;
+}
+
+.login-form .alert {
+  border-radius: 10px;
+}
+
+.login-hint {
+  margin-top: 14px;
+  text-align: center;
+  color: #4b5563;
+}
+
+.hint-link {
+  color: #3358ff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.hint-link:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 992px) {
+  .login-intro,
+  .login-form-wrap {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 576px) {
+  .login-page {
+    padding: 32px 0 48px;
+  }
+
+  .login-card {
+    border-radius: 12px;
+  }
+}

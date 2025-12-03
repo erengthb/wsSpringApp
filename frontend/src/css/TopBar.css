@@ -1,0 +1,270 @@
+/* src/css/TopBar.css */
+.app-topbar {
+  display: flex;
+  align-items: center;
+  background: radial-gradient(circle at 20% 20%, rgba(68, 119, 255, 0.16), transparent 25%),
+    radial-gradient(circle at 80% 0%, rgba(119, 201, 255, 0.18), transparent 28%),
+    rgba(11, 18, 33, 0.94);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+  color: #e8edf5;
+}
+
+.app-topbar a {
+  color: #e8edf5;
+}
+
+.topbar-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
+.topbar-logo {
+  height: 52px;
+  width: auto;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.topbar-brand-text {
+  font-size: 1.05rem;
+  display: none;
+}
+
+.topbar-link {
+  margin-left: auto;
+  padding: 9px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.06);
+  color: #dce6ff;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 150ms ease, transform 150ms ease, color 150ms ease;
+}
+
+.topbar-link:hover {
+  color: #ffffff;
+  border-color: rgba(92, 226, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: #e8edf5;
+  position: relative;
+}
+
+.app-topbar .ant-badge,
+.app-topbar .ant-dropdown-trigger {
+  color: #e8edf5;
+}
+
+.app-topbar .ant-badge-count {
+  background: linear-gradient(120deg, #ff6b6b, #ffa94d);
+  box-shadow: 0 0 0 1px rgba(11, 18, 33, 0.6);
+}
+
+.app-topbar .ant-dropdown-menu {
+  background: #0f1c33;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.35);
+  border-radius: 12px;
+  padding: 6px;
+}
+
+.app-topbar .ant-dropdown-menu-item {
+  color: #e8edf5;
+  border-radius: 8px;
+}
+
+.app-topbar .ant-dropdown-menu-item a {
+  color: #e8edf5;
+}
+
+.app-topbar .ant-dropdown-menu-item:hover {
+  background: rgba(92, 226, 255, 0.14);
+  color: #ffffff;
+}
+
+.app-topbar .ant-dropdown-menu-item:hover a {
+  color: #ffffff;
+}
+
+.notif-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  transition: all 140ms ease;
+  cursor: pointer;
+}
+
+.notif-trigger:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+}
+
+.notif-panel {
+  position: absolute;
+  right: 0;
+  top: 58px;
+  width: 380px;
+  max-width: calc(100vw - 24px);
+  background: #f7f9fc;
+  border: 1px solid #e5eaf5;
+  border-radius: 16px;
+  box-shadow: 0 24px 60px rgba(17, 38, 87, 0.22);
+  padding: 14px;
+  z-index: 1300;
+  animation: notif-fade 180ms ease;
+}
+
+.notif-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 4px 10px 4px;
+  border-bottom: 1px dashed #d7deed;
+}
+
+.notif-panel__title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.notif-panel__subtitle {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+.notif-panel__body {
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: 10px 2px 6px;
+}
+
+.notif-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.notif-card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #e5eaf5;
+  background: #ffffff;
+  box-shadow: 0 12px 32px rgba(17, 38, 87, 0.08);
+}
+
+.notif-card__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.notif-card__title {
+  font-weight: 700;
+  color: #1f2937;
+  font-size: 0.95rem;
+}
+
+.notif-card__desc {
+  color: #4b5563;
+  font-size: 0.93rem;
+  margin-top: 2px;
+}
+
+.notif-card__time {
+  font-size: 0.82rem;
+  color: #9ca3af;
+  margin-top: 6px;
+}
+
+.notif-empty {
+  text-align: center;
+  padding: 28px 10px 20px;
+  color: #6b7280;
+}
+
+.notif-empty__title {
+  font-weight: 700;
+  color: #1f2937;
+  margin-top: 6px;
+}
+
+.notif-empty__subtitle {
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.notif-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 0;
+}
+
+.notif-load-more {
+  margin-top: 4px;
+  border-radius: 10px;
+  border-color: #d9e1f5;
+  background: #f3f5fb;
+  color: #1f2937;
+}
+
+.notif-load-more:hover {
+  border-color: #c3cde8;
+  color: #111827;
+}
+
+@keyframes notif-fade {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 576px) {
+  .topbar-brand-text {
+    display: none;
+  }
+
+  .topbar-logo {
+    height: 46px;
+  }
+
+  .topbar-link {
+    padding: 8px 12px;
+  }
+}

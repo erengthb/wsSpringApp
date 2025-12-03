@@ -1,49 +1,68 @@
-/* App genel kapsayıcı */
+/* src/css/Footer.css */
 .app-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh; /* ekran yüksekliği kadar */
+  background-color: #f7f9fb; /* içerik alanını açık tonda tut */
 }
 
-/* içerik footer’ı itmek için büyüsün */
-.content-wrap {
-  flex: 1;
-}
-
-/* footer CSS’iniz */
 .app-footer {
-  background: linear-gradient(
-    90deg,
-    rgba(248, 249, 250, 1) 0%,
-    rgba(233, 236, 239, 1) 100%
-  );
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
-  position: relative;
-  padding: 1rem 0;
-  text-align: center;
+  background: linear-gradient(120deg, rgba(15, 28, 51, 0.94), rgba(26, 38, 70, 0.96));
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  color: #dfe7fb;
 }
 
-.app-footer .footer-nav a {
-  color: rgba(0, 0, 0, 0.7);
+.footer-brand strong {
+  color: #ffffff;
+  letter-spacing: 0.01em;
+}
+
+.footer-nav a {
+  color: #dfe7fb;
   text-decoration: none;
 }
 
-.app-footer .footer-nav a:hover {
-  text-decoration: underline;
+.footer-nav a:hover {
+  color: #ffffff;
 }
 
-.guest-home h1 {
-  font-weight: 700;
+.footer-credits a {
+  color: #8ab6ff;
+  text-decoration: none;
+}
+
+.footer-credits a:hover {
+  color: #ffffff;
+}
+
+.pill-link,
+.pill-link-outline {
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.06);
+  transition: transform 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+.pill-link-outline {
+  background: transparent;
+}
+
+.pill-link:hover,
+.pill-link-outline:hover {
+  transform: translateY(-1px);
+  border-color: rgba(92, 226, 255, 0.5);
+  color: #ffffff;
+}
+
+.content-wrap {
+  background: transparent;
 }
 
 @media (max-width: 576px) {
-  .guest-home .btn {
-    width: 48%;
-  }
   .app-footer .footer-nav {
     flex-wrap: wrap;
     justify-content: center;
   }
+
   .app-footer .footer-brand,
   .app-footer .footer-credits {
     text-align: center;

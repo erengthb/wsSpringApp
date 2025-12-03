@@ -36,9 +36,11 @@ public class SecurityConfiguration {
             .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
 
             // Authenticated endpointler
-            .requestMatchers(new AntPathRequestMatcher("/api/1.0/auth", "POST")).authenticated()
+            .requestMatchers(new AntPathRequestMatcher("/api/1.0/auth", "POST")).permitAll()
             .requestMatchers(new AntPathRequestMatcher("/api/1.0/users/{username}", "PUT")).authenticated()
-            .requestMatchers(new AntPathRequestMatcher("/api/1.0/hoaxes", "PUT")).authenticated()
+            .requestMatchers(new AntPathRequestMatcher("/api/1.0/hoaxes", "POST")).authenticated()
+            .requestMatchers(new AntPathRequestMatcher("/api/1.0/users/*/follow", "POST")).authenticated()
+            .requestMatchers(new AntPathRequestMatcher("/api/1.0/users/*/unfollow", "POST")).authenticated()
 
             // Diğer tüm endpointlere izin ver
             .anyRequest().permitAll()

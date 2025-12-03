@@ -4,15 +4,25 @@ import PropTypes from "prop-types";
 
 const DEFAULT_UPDATES = [
   {
-    id: 1,
-    date: "2025-09-29",
+    id: "latest",
+    date: "03/12/2025",
+    title: "Son Güncellemeler",
+    notes: [
+      "Bildirim paneli üst barda açık renk kartlarla açılıyor; okundu sayacı resetleniyor.",
+      "Profildeki son hoaxlar başlık, sayaç ve kart tasarımıyla öne çıktı.",
+      "Giriş ve ana sayfa akışında daha temiz, modern arayüz dokunuşları.",
+    ],
+  },
+  {
+    id: "next",
+    date: "25/12/2025",
     title: "Gelecek Güncellemeler",
     notes: [
-      "QR Kodu ile Stok listesine ürün ekleme ve çıkarma ",
-      "Destek talepleri için yeni bir sayfa geliştirmesi: Destek taleplerini artık bu yeni geliştirilecek olan sayfada kolayca bize bildirebilirsiniz.",
-      "Detaylıca hoax araması yapabilmek için hoax sayfası  içinde hoax  arama alanının  geliştirilmesi",
-      "Sayfa Tasarımı iyileştirmeleri",
-      "Uygulama performans  iyileştirmeleri",
+      "QR Kodu ile stok listesine ürün ekleme ve çıkarma",
+      "Destek talepleri için yeni bir sayfa: talepleri kolayca iletebileceksiniz.",
+      "Hoax sayfası içinde detaylı arama alanı",
+      "Sayfa tasarım iyileştirmeleri",
+      "Uygulama performans iyileştirmeleri",
     ],
   },
 ];
@@ -38,10 +48,8 @@ Backdrop.propTypes = {
 };
 
 const ChangelogModal = ({ open, onClose, updates }) => {
-  const list =
-    Array.isArray(updates) && updates.length > 0 ? updates : DEFAULT_UPDATES;
+  const list = Array.isArray(updates) && updates.length > 0 ? updates : DEFAULT_UPDATES;
 
-  // Body scroll kilidi – short-circuit kullanımını if ile değiştiriyoruz
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
@@ -53,7 +61,6 @@ const ChangelogModal = ({ open, onClose, updates }) => {
     };
   }, [open]);
 
-  // ESC kapatma – yine if kullanıyoruz
   useEffect(() => {
     function onKeyDown(e) {
       if (e.key === "Escape") {
@@ -82,63 +89,60 @@ const ChangelogModal = ({ open, onClose, updates }) => {
 
   return (
     <>
-      <div
-        className="modal d-block"
-        role="dialog"
-        aria-modal="true"
-        style={{ zIndex: 1050 }}
-      >
-        <div
-          className="modal-dialog modal-lg modal-dialog-centered"
-          role="document"
-        >
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title">Güncelleme Notları</h5>
-              <button
-                type="button"
-                className="close"
-                aria-label="Close"
-                onClick={handleCloseClick}
-              >
+      <div className="modal d-block" role="dialog" aria-modal="true" style={{ zIndex: 1050 }}>
+        <div className="modal-dialog modal-lg modal-dialog-centered" role="document">
+          <div className="modal-content border-0 shadow-lg" style={{ borderRadius: 14 }}>
+            <div className="modal-header border-0 pb-0">
+              <div>
+                <div className="d-inline-block px-2 py-1 bg-light rounded-pill text-uppercase small text-muted">
+                  Güncellemeler
+                </div>
+                <h5 className="modal-title mt-2 mb-1" style={{ fontWeight: 800 }}>
+                  Son değişiklikler ve yol haritası
+                </h5>
+                <p className="mb-0 text-muted small">
+                 Uygulama hakkındaki son güncelleme bilgileri ve gelecek olan günceleme hakkında içerik bilgisi burada gösterilir.
+                </p>
+              </div>
+              <button type="button" className="close" aria-label="Close" onClick={handleCloseClick}>
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
 
-            <div className="modal-body">
+            <div className="modal-body pt-3">
               {list.length > 0 ? (
-                <ul className="list-unstyled mb-0">
+                <div className="d-grid gap-3">
                   {list.map((item) => (
-                    <li key={item.id} className="mb-3 pb-3 border-bottom">
-                      <div className="d-flex justify-content-between">
-                        <strong>{item.title}</strong>
-                        <small className="text-muted">{item.date}</small>
+                    <div key={item.id} className="card shadow-sm border-0" style={{ borderRadius: 12 }}>
+                      <div className="card-body">
+                        <div className="d-flex justify-content-between align-items-center mb-2">
+                          <span className="badge badge-primary" style={{ fontSize: "0.8rem" }}>
+                            {item.title}
+                          </span>
+                          <small className="text-muted">{item.date}</small>
+                        </div>
+                        {Array.isArray(item.notes) && item.notes.length > 0 ? (
+                          <ul className="mb-0 pl-3">
+                            {item.notes.map((n, idx) => (
+                              <li key={idx} style={{ marginBottom: 6 }}>
+                                {n}
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="text-muted mb-0">Detay yok.</p>
+                        )}
                       </div>
-                      {Array.isArray(item.notes) && item.notes.length > 0 ? (
-                        <ul className="mt-2 mb-0">
-                          {item.notes.map((n, idx) => (
-                            <li key={idx}>{n}</li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p className="text-muted mb-0">Detay yok.</p>
-                      )}
-                    </li>
+                    </div>
                   ))}
-                </ul>
-              ) : (
-                <div className="text-muted">
-                  Şimdilik gösterilecek güncelleme yok.
                 </div>
+              ) : (
+                <div className="text-muted">Şimdilik gösterilecek güncelleme yok.</div>
               )}
             </div>
 
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                onClick={handleCloseClick}
-              >
+            <div className="modal-footer border-0 pt-0">
+              <button type="button" className="btn btn-secondary" onClick={handleCloseClick}>
                 Kapat
               </button>
             </div>

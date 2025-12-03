@@ -65,8 +65,24 @@ public class UserController {
 
     @PostMapping("/users/{username}/follow")
     public ResponseEntity<?> follow(@PathVariable String username, @AuthenticationPrincipal User loggedInUser) {
-        userService.follow(loggedInUser.getUsername(), username);
-        return ResponseEntity.ok().build();
+        try {
+            if (loggedInUser == null) {
+                return ResponseEntity.status(401).build();
+            }
+            if (loggedInUser.getUsername().equals(username)) {
+                return ResponseEntity.badRequest().body(new GenericResponse("You cannot follow yourself."));
+            }
+            userService.follow(loggedInUser.getUsername(), username);
+            return ResponseEntity.ok().build();
+        } catch (IllegalArgumentException ex) {
+            return ResponseEntity.badRequest().body(new GenericResponse(ex.getMessage()));
+        } catch (org.springframework.dao.DataIntegrityViolationException ex) {
+            Throwable root = ex.getMostSpecificCause();
+            String msg = root != null ? root.getMessage() : ex.getMessage();
+            return ResponseEntity.status(409).body(new GenericResponse("Follow failed: " + msg));
+        } catch (Exception ex) {
+            return ResponseEntity.status(500).body(new GenericResponse("Follow failed: " + ex.getMessage()));
+        }
     }
 
     @PostMapping("/users/{username}/unfollow")

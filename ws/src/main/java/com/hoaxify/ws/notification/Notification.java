@@ -24,7 +24,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class Notification {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name = "notification_seq", sequenceName = "notification_seq", allocationSize = 50)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "notification_seq")
     private Long id;
 
     // hedef kullanıcıyı LAZY bırakıyoruz ama sorguda EntityGraph kullanacağız (aşağıda).
@@ -45,7 +46,14 @@ public class Notification {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(nullable = false)
-    @Builder.Default
-    private boolean read = false;
+@Column(nullable = false)
+@Builder.Default
+private boolean read = false;
+
+    @PrePersist
+    private void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+    }
 }

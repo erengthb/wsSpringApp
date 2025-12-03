@@ -1,6 +1,8 @@
 package com.hoaxify.ws.auth;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,9 +20,10 @@ public class AuthController {
 	UserRepository userRepository;
 	@Transactional(readOnly = true)
 	@PostMapping("/api/1.0/auth")
-	UserVM handleAuthentication(@CurrentUserAnnotation User user) {
-    return new UserVM(user); 
-}
-
-
+	public ResponseEntity<?> handleAuthentication(@CurrentUserAnnotation User user) {
+		if (user == null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+		return ResponseEntity.ok(new UserVM(user));
+	}
 }

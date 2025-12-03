@@ -1,56 +1,45 @@
 import React, { useState, useEffect } from "react";
-import { getHoaxes, getOldHoaxes, getOldHoaxesOfUser } from "../api/apiCalls"; // getOldHoaxesOfUser'ı import ediyoruz.
+import { getHoaxes, getOldHoaxes, getOldHoaxesOfUser } from "../api/apiCalls";
 import { useTranslation } from "react-i18next";
 import HoaxView from "./HoaxView";
 import { useApiProgress } from "../shared/ApiProgress";
 import Spinner from "./Spinner";
 import { useParams } from "react-router-dom";
+import "../css/HoaxList.css";
 
 const HoaxList = ({ refreshTrigger }) => {
-  const [hoaxPage, setHoaxPage] = useState({
-    content: [],
-    last: true,
-    number: 0,
-  });
+  const [hoaxPage, setHoaxPage] = useState({ content: [], last: true, number: 0 });
   const { t } = useTranslation();
-  const { username } = useParams(); // Kullanıcının profil sayfası mı, ana sayfa mı?
+  const { username } = useParams();
+  const isProfileView = Boolean(username);
 
-  // Profil sayfası mı kontrol et
-  const path = username
-    ? `/api/1.0/users/${username}/hoaxes?page=`
-    : "/api/1.0/hoaxes?page=";
+  const path = username ? `/api/1.0/users/${username}/hoaxes?page=` : "/api/1.0/hoaxes?page=";
   const pendingApiCall = useApiProgress("get", path);
 
   const loadHoaxes = async (page = 0) => {
     try {
-      // Profil sayfası ise getHoaxesOfUser, ana sayfa ise getHoaxes kullanılır
-      const response = username
-        ? await getHoaxes(username, page)
-        : await getHoaxes(null, page);
+      const response = username ? await getHoaxes(username, page) : await getHoaxes(null, page);
       setHoaxPage((prev) => ({
         ...response.data,
         content:
-          page === 0
-            ? response.data.content
-            : [...prev.content, ...response.data.content],
+          page === 0 ? response.data.content : [...prev.content, ...response.data.content],
       }));
-    } catch (error) {
-      // Hata durumunda yapılacak işlemler
+    } catch {
+      // no-op on load failure
     }
   };
 
   useEffect(() => {
     loadHoaxes(0);
-  }, [username, refreshTrigger]); // refreshTrigger tetiklenir
+  }, [username, refreshTrigger]);
 
-  // Profil sayfasındaki eski hoax'ları yüklemek için getOldHoaxesOfUser'ı kullanıyoruz
   const loadOldHoaxes = async () => {
     const lastHoax = hoaxPage.content[hoaxPage.content.length - 1];
     if (!lastHoax) return;
 
     const response = username
-      ? await getOldHoaxesOfUser(username, lastHoax.id) // Profil sayfası, kendi eski hoax'larını yükle
-      : await getOldHoaxes(lastHoax.id); // Ana sayfa için tüm hoax'ları yükle
+      ? await getOldHoaxesOfUser(username, lastHoax.id)
+      : await getOldHoaxes(lastHoax.id);
 
     setHoaxPage((prev) => ({
       ...response.data,
@@ -60,23 +49,33 @@ const HoaxList = ({ refreshTrigger }) => {
 
   const { content, last } = hoaxPage;
 
-  if (content.length === 0) {
-    return (
-      <div className="alert alert-secondary text-center">
-        {pendingApiCall ? <Spinner /> : t("There are no hoaxes")}
-      </div>
-    );
-  }
-
   return (
-    <div>
-      {content.map((hoax) => (
-        <HoaxView key={hoax.id} hoax={hoax} />
-      ))}
+    <div className="hoax-panel">
+      {isProfileView && (
+        <div className="hoax-panel__header">
+          <div>
+            <div className="hoax-panel__title">{t("Latest hoaxes")}</div>
+            <div className="hoax-panel__subtitle">{t("Shared by you")}</div>
+          </div>
+          <div className="hoax-panel__count">{content.length}</div>
+        </div>
+      )}
+
+      {content.length === 0 ? (
+        <div className="hoax-empty">
+          {pendingApiCall ? <Spinner /> : t("There are no hoaxes")}
+        </div>
+      ) : (
+        <div className="hoax-list">
+          {content.map((hoax) => (
+            <HoaxView key={hoax.id} hoax={hoax} />
+          ))}
+        </div>
+      )}
+
       {!last && (
         <div
-          className="alert alert-secondary text-center"
-          style={{ cursor: pendingApiCall ? "not-allowed" : "pointer" }}
+          className={`hoax-load-more ${pendingApiCall ? "hoax-load-more--disabled" : ""}`}
           onClick={pendingApiCall ? undefined : loadOldHoaxes}
         >
           {pendingApiCall ? <Spinner /> : t("Load old hoaxes")}
