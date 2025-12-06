@@ -15,8 +15,12 @@ public class AdminUserVM {
     private String email;
     private String phoneNumber;
     private String address;
+    private String taxId;
     private int status;
     private LocalDateTime createDate;
+    private LocalDateTime lastLoginAt;
+    private LocalDateTime lastSeenAt;
+    private long activeDurationSeconds;
 
     public AdminUserVM(User user) {
         this.id = user.getId();
@@ -25,7 +29,11 @@ public class AdminUserVM {
         this.email = user.getEmail();
         this.phoneNumber = user.getPhoneNumber();
         this.address = user.getAddress();
+        this.taxId = user.getTaxId();
         this.status = user.getStatus();
         this.createDate = user.getCreateDate();
+        this.lastLoginAt = user.getLastLoginAt();
+        this.lastSeenAt = user.getLastSeenAt();
+        this.activeDurationSeconds = user.getActiveDurationSeconds();
     }
 }

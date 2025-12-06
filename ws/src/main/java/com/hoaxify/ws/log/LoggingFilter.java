@@ -26,6 +26,9 @@ public class LoggingFilter implements Filter {
     @Autowired
     private LogRecordRepository logRecordRepository;
 
+    @Autowired
+    private com.hoaxify.ws.user.UserActivityService userActivityService;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
@@ -72,6 +75,11 @@ public class LoggingFilter implements Filter {
         log.setUsername(username);
 
         logRecordRepository.save(log);
+        try {
+            userActivityService.recordActivity(username);
+        } catch (Exception ignored) {
+            // Activity tracking should never break request flow or logging
+        }
 
         wrappedResponse.copyBodyToResponse();
 

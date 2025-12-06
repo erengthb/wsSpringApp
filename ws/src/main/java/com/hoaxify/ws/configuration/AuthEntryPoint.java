@@ -17,11 +17,9 @@ public class AuthEntryPoint implements AuthenticationEntryPoint{
 			AuthenticationException authException) throws IOException, ServletException {
 		response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		response.setContentType("application/json;charset=UTF-8");
-		String message = authException != null && authException.getMessage() != null
-				? authException.getMessage()
-				: HttpStatus.UNAUTHORIZED.getReasonPhrase();
-		response.getWriter().write("{\"message\":\"" + message.replace("\"", "\\\"") + "\"}");
-		
-	}
+        String message = "Kullanıcı adı veya şifre hatalı";
+        response.getWriter().write("{\"message\":\"" + message + "\"}");
+        
+    }
 
 }

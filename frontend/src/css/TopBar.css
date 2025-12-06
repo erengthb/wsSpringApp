@@ -1,4 +1,4 @@
-/* src/css/TopBar.css */
+﻿/* src/css/TopBar.css */
 .app-topbar {
   display: flex;
   align-items: center;
@@ -80,7 +80,7 @@
   background: #0f1c33;
   border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 0 18px 48px rgba(0, 0, 0, 0.35);
-  border-radius: 12px;
+  border-radius: 10px;
   padding: 6px;
 }
 
@@ -107,7 +107,7 @@
   align-items: center;
   justify-content: center;
   padding: 8px 10px;
-  border-radius: 12px;
+  border-radius: 10px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.14);
   transition: all 140ms ease;
@@ -153,7 +153,7 @@
 .notif-panel__subtitle {
   font-size: 0.85rem;
   color: #6b7280;
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
 .notif-panel__body {
@@ -173,16 +173,16 @@
   grid-template-columns: auto 1fr;
   gap: 12px;
   padding: 12px 14px;
-  border-radius: 12px;
+  border-radius: 10px;
   border: 1px solid #e5eaf5;
   background: #ffffff;
   box-shadow: 0 12px 32px rgba(17, 38, 87, 0.08);
 }
 
 .notif-card__icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -191,20 +191,20 @@
 
 .notif-card__title {
   font-weight: 700;
-  color: #1f2937;
-  font-size: 0.95rem;
+  color: #111827;
+  font-size: 0.92rem;
 }
 
 .notif-card__desc {
-  color: #4b5563;
-  font-size: 0.93rem;
-  margin-top: 2px;
+  color: #374151;
+  font-size: 0.9rem;
+  margin-top: 1px;
 }
 
 .notif-card__time {
   font-size: 0.82rem;
   color: #9ca3af;
-  margin-top: 6px;
+  margin-top: 4px;
 }
 
 .notif-empty {
@@ -215,7 +215,7 @@
 
 .notif-empty__title {
   font-weight: 700;
-  color: #1f2937;
+  color: #111827;
   margin-top: 6px;
 }
 
@@ -236,7 +236,7 @@
   border-radius: 10px;
   border-color: #d9e1f5;
   background: #f3f5fb;
-  color: #1f2937;
+  color: #111827;
 }
 
 .notif-load-more:hover {
@@ -268,3 +268,5 @@
     padding: 8px 12px;
   }
 }
+
+

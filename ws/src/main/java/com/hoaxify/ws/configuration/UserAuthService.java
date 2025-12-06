@@ -1,30 +1,30 @@
-package com.hoaxify.ws.configuration;
+﻿package com.hoaxify.ws.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.stereotype.Service;
 
 import com.hoaxify.ws.user.User;
 import com.hoaxify.ws.user.UserRepository;
 
 @Service
-public class UserAuthService implements UserDetailsService{
+public class UserAuthService implements UserDetailsService {
 
-	@Autowired
-	UserRepository userRepository;
+    @Autowired
+    UserRepository userRepository;
 
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User inDB = userRepository.findByUsername(username);
-		if(inDB == null)
-			throw new UsernameNotFoundException("User not found");
-		if (inDB.getStatus() == 0) {
-			throw new DisabledException("Hesabınız pasife edilmiştir");
-		}
-		return inDB;
-	}
-
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User inDB = userRepository.findByUsername(username);
+        if (inDB == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+        if (inDB.getStatus() == 0) {
+            throw new DisabledException("Hesabiniz henuz aktiflestirilmedi");
+        }
+        return inDB;
+    }
 }

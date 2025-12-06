@@ -4,6 +4,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.hoaxify.admin.AdminAccessDeniedException;
 import com.hoaxify.ws.error.NotFoundException;
@@ -15,9 +16,11 @@ public class AdminUserService {
     private static final String ADMIN_USERNAME = "admin";
 
     private final AdminUserRepository adminUserRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public AdminUserService(AdminUserRepository adminUserRepository) {
+    public AdminUserService(AdminUserRepository adminUserRepository, PasswordEncoder passwordEncoder) {
         this.adminUserRepository = adminUserRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional(readOnly = true)
@@ -50,6 +53,12 @@ public class AdminUserService {
                 throw new AdminAccessDeniedException();
             }
             target.setStatus(request.getStatus());
+        }
+        if (request.getTaxId() != null) {
+            target.setTaxId(request.getTaxId());
+        }
+        if (request.getPassword() != null && !request.getPassword().isBlank()) {
+            target.setPassword(passwordEncoder.encode(request.getPassword()));
         }
         adminUserRepository.save(target);
         return new AdminUserVM(target);

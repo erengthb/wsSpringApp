@@ -1,4 +1,4 @@
-// src/pages/HomePage.jsx
+﻿// src/pages/HomePage.jsx
 import React, { useEffect, useState } from "react";
 import UserList from "../components/UserList";
 import HoaxSubmit from "../components/HoaxSubmit";
@@ -324,11 +324,11 @@ const HomePage = () => {
 
   if (!isLoggedIn) return <GuestHomepage />;
 
-  const tabs = [
+      const tabs = [
     {
       key: "feed",
       icon: "dynamic_feed",
-      label: t("Hoax Akış"),
+      label: "Hoax Akışı",
       content: (
         <div className="feed-tab">
           <div className="mb-3">
@@ -341,7 +341,7 @@ const HomePage = () => {
     {
       key: "users",
       icon: "people",
-      label: t("Kullanıcılar"),
+      label: "Kullanıcılar",
       content: (
         <div className="users-tab">
           <UserList />
@@ -349,6 +349,7 @@ const HomePage = () => {
       ),
     },
   ];
+
 
   return (
     <div className="container main-home py-3">
@@ -362,3 +363,7 @@ const HomePage = () => {
 };
 
 export default HomePage;
+
+
+
+

@@ -36,6 +36,12 @@ public class UserService {
     public void save(User user) {
         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
         user.setCreateDate(DateUtil.getCurrentLocalDateTime());
+        // Yeni kayıtlar varsayılan olarak pasif gelsin; admin hariç
+        if ("admin".equalsIgnoreCase(user.getUsername())) {
+            user.setStatus(1);
+        } else {
+            user.setStatus(0);
+        }
         userRepository.save(user);
     }
 

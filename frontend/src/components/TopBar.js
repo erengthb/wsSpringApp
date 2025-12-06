@@ -1,10 +1,10 @@
-﻿// src/components/TopBar.jsx
+// src/components/TopBar.jsx
 import React, { useState, useEffect, useRef } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useHistory } from "react-router-dom";
 import { Layout, Menu, Dropdown, Avatar, Badge, Button, Spin } from "antd";
-import { BellOutlined, LogoutOutlined, UserAddOutlined, InfoCircleOutlined } from "@ant-design/icons";
+import { BellOutlined, LogoutOutlined, UserAddOutlined, InfoCircleOutlined, MessageOutlined } from "@ant-design/icons";
 
 import { getNotifications } from "../api/apiCalls";
 import { logoutSuccess } from "../redux/authActions";
@@ -106,11 +106,32 @@ const TopBar = () => {
   };
 
   const getNotificationMeta = (notif) => {
+    const statusMap = {
+      OPEN: "Açık",
+      IN_PROGRESS: "İşlemde",
+      RESOLVED: "Çözüldü",
+    };
     if (notif?.type === "FOLLOW") {
       return {
         icon: <UserAddOutlined />,
         accent: "#4c6fff",
         title: t("New follower"),
+      };
+    }
+    if (notif?.type === "SUPPORT_MESSAGE") {
+      return {
+        icon: <MessageOutlined />,
+        accent: "#10b981",
+        title: "Destek talebi yanıtlandı",
+      };
+    }
+    if (notif?.type === "SUPPORT_STATUS") {
+      const statusCode = notif?.message?.split(":").pop()?.trim();
+      const statusText = statusMap[statusCode] || statusCode || "Güncellendi";
+      return {
+        icon: <InfoCircleOutlined />,
+        accent: "#f59e0b",
+        title: `Destek talebi durumu: ${statusText}`,
       };
     }
 
@@ -182,6 +203,9 @@ const TopBar = () => {
       <Menu.Item key="stock">
         <Link to="/stock">{t("Stock Tracking")}</Link>
       </Menu.Item>
+      <Menu.Item key="support">
+        <Link to="/support">Destek Talebi</Link>
+      </Menu.Item>
       <Menu.Item key="payment" onClick={() => window.open(PAYMENT_URL, "_blank")}>
         {t("Payment Link")}
       </Menu.Item>
@@ -206,6 +230,9 @@ const TopBar = () => {
 
         {isLoggedIn && (
           <div className="topbar-actions">
+            <Link to="/" className="btn btn-outline-light btn-sm">
+              Anasayfa
+            </Link>
             {isAdmin && (
               <Link to="/admin" className="btn btn-outline-light btn-sm">
                 Admin
@@ -254,9 +281,20 @@ const TopBar = () => {
                   {notifications.length > 0 && (
                     <div className="notif-list">
                       {notifications.map((n) => {
+                        const isSupport = n.type === "SUPPORT_MESSAGE" || n.type === "SUPPORT_STATUS";
+                        const statusCode = n.message?.split(":").pop()?.trim();
+                        const statusMap = { OPEN: "Açık", IN_PROGRESS: "İşlemde", RESOLVED: "Çözüldü" };
+                        const statusText = statusMap[statusCode] || statusCode;
                         const meta = getNotificationMeta(n);
                         return (
-                          <div key={n.id} className="notif-card">
+                          <div
+                            key={n.id}
+                            className="notif-card"
+                            onClick={() => {
+                              if (isSupport) history.push("/support");
+                            }}
+                            style={{ cursor: isSupport ? "pointer" : "default" }}
+                          >
                             <div
                               className="notif-card__icon"
                               style={{
@@ -274,7 +312,20 @@ const TopBar = () => {
                                     <strong>@{n.triggeredBy?.username}</strong> {t("Started follow you")}
                                   </span>
                                 )}
-                                {n.type !== "FOLLOW" && (n.message || t("Notifications"))}
+                                {n.type === "SUPPORT_MESSAGE" && (
+                                  <span>
+                                    {n.message || "Destek talebi yanıtlandı"}
+                                    {n.referenceId ? ` (#${n.referenceId})` : ""}
+                                  </span>
+                                )}
+                                {n.type === "SUPPORT_STATUS" && (
+                                  <span>
+                                    Destek talebi {n.referenceId ? `#${n.referenceId} ` : ""}
+                                    durumu: {statusText || "Güncellendi"}
+                                  </span>
+                                )}
+                                {n.type !== "FOLLOW" && n.type !== "SUPPORT_MESSAGE" && n.type !== "SUPPORT_STATUS" &&
+                                  (n.message || t("Notifications"))}
                               </div>
                               <div className="notif-card__time">{formatDate(n.createdAt)}</div>
                             </div>
@@ -301,13 +352,9 @@ const TopBar = () => {
         )}
       </Header>
 
-      {isLoggedIn && (
-        <ChangelogModal open={showChangelog} onClose={() => setShowChangelog(false)} />
-      )}
+      {isLoggedIn && <ChangelogModal open={showChangelog} onClose={() => setShowChangelog(false)} />}
     </>
   );
 };
 
 export default TopBar;
-
-

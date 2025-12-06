@@ -42,6 +42,12 @@ public class Notification {
     @Column(nullable = false, length = 20)
     private NotificationType type;
 
+    @Column(name = "reference_id")
+    private Long referenceId;
+
+    @Column(columnDefinition = "TEXT")
+    private String message;
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;

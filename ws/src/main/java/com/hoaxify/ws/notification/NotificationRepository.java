@@ -8,9 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
     @EntityGraph(attributePaths = {"triggeredBy"})
-    Slice<Notification> findByTargetUser_UsernameAndType(
-            String username,
-            NotificationType type,
-            Pageable pageable
-    );
+    Slice<Notification> findByTargetUser_Username(String username, Pageable pageable);
+
+    void deleteByCreatedAtBefore(java.time.LocalDateTime threshold);
 }

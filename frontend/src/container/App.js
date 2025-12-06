@@ -1,5 +1,4 @@
 import React from "react";
-import UserSignupPage from "../pages/UserSignupPage";
 import LoginPage from "../pages/LoginPage";
 import LanguageSelector from "../components/LanguageSelector";
 import Homepage from "../pages/Homepage";
@@ -17,6 +16,7 @@ import WhatsAppButton from "../components/WhatsAppButton";
 import Footer from "../components/Footer";
 import UserSignupFormPage from "../pages/UserSignupFormPage";
 import AdminDashboard from "../admin/AdminDashboard";
+import SupportCenter from "../components/support/SupportCenter";
 
 const App = () => {
   const { isLoggedIn, username } = useSelector((store) => ({
@@ -41,8 +41,11 @@ const App = () => {
             />
             {isAdmin && <Route path="/admin" component={AdminDashboard} />}
             {!isLoggedIn && <Route path="/login" component={LoginPage} />}
-             {/* <Route path="/signup" component={UserSignupPage} />*/}
-              <Route path="/signup" component={UserSignupFormPage} />  
+            <Route path="/signup" component={UserSignupFormPage} />  
+            <Route
+              path="/support"
+              render={(props) => (isLoggedIn ? <SupportCenter {...props} /> : <Redirect to="/login" />)}
+            />
             <Route path="/user/:username" component={UserPage} />
             <Route path="/stock" component={StockPage} />
             <Redirect to="/" />

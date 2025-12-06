@@ -43,8 +43,6 @@ export const loginHandler = (credentials) => {
 
 export const signupHandler = (user) => {
   return async function (dispatch) {
-    const response = await signup(user);
-    await dispatch(loginHandler(user));
-    return response;
+    return signup(user);
   };
 };

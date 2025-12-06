@@ -1,0 +1,108 @@
+.signup-page {
+  min-height: calc(100vh - 70px);
+  background: radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.08), transparent 28%),
+    radial-gradient(circle at 80% 0%, rgba(34, 197, 94, 0.06), transparent 30%),
+    #080e1c;
+  color: #e8edf7;
+  display: flex;
+  align-items: center;
+}
+
+.signup-card {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+}
+
+.signup-intro {
+  padding: 18px;
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.12), rgba(34, 197, 94, 0.08));
+  border-radius: 12px;
+}
+
+.signup-intro h2 {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
+.intro-sub {
+  color: #cbd5e1;
+}
+
+.intro-list {
+  margin-top: 12px;
+  color: #dfe7f5;
+  padding-left: 18px;
+  line-height: 1.5;
+}
+
+.status-note {
+  margin-top: 14px;
+  background: rgba(255, 255, 255, 0.06);
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: #e8edf7;
+}
+
+.signup-form-wrap {
+  padding: 18px;
+}
+
+.signup-form__title .pill-ghost {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.signup-form {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.signup-hint {
+  margin-top: 10px;
+  color: #cbd5e1;
+}
+
+.hint-link {
+  color: #fff;
+}
+
+.pill-soft {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  font-weight: 600;
+}
+
+.pill-ghost {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.signup-success {
+  background: rgba(34, 197, 94, 0.08);
+  border: 1px solid rgba(34, 197, 94, 0.4);
+  border-radius: 12px;
+  padding: 16px;
+  color: #e8fdf1;
+}
+
+@media (max-width: 768px) {
+  .signup-card {
+    padding: 12px;
+  }
+  .signup-intro {
+    margin-bottom: 12px;
+  }
+}

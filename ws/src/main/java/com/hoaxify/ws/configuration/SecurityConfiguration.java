@@ -41,6 +41,7 @@ public class SecurityConfiguration {
             .requestMatchers(new AntPathRequestMatcher("/api/1.0/hoaxes", "POST")).authenticated()
             .requestMatchers(new AntPathRequestMatcher("/api/1.0/hoaxes/*", "PUT")).authenticated()
             .requestMatchers(new AntPathRequestMatcher("/api/1.0/hoaxes/*", "DELETE")).authenticated()
+            .requestMatchers(new AntPathRequestMatcher("/api/1.0/support/**")).authenticated()
             .requestMatchers(new AntPathRequestMatcher("/api/admin/**")).authenticated()
             .requestMatchers(new AntPathRequestMatcher("/api/1.0/users/*/follow", "POST")).authenticated()
             .requestMatchers(new AntPathRequestMatcher("/api/1.0/users/*/unfollow", "POST")).authenticated()
