@@ -164,17 +164,17 @@ const UserSignupFormPage = (props) => {
         <div className="signup-card row align-items-stretch">
           <div className="col-12 col-lg-6 signup-intro">
             <div className="pill-soft">Topluluğa Katıl</div>
-            <h2>Hesap oluştur, incelemeye gönder</h2>
+            <h2>Şimdi uygulamaya kaydolun, otoenvanter topluluğuna dahil olun</h2>
             <p className="intro-sub">
-              Bilgilerini bırak, ekibimiz 24 saat içinde hesabını aktif etsin. Onay sonrası giriş yaparak stok ve sosyal akışı kullanabilirsin.
+              Kayıt formunu dolduruktan sonra hesabınız 24 saat içerisinde aktif hale getirilecektir. Hesabınız aktif edildikten sonra giriş yaparak stoklarınızı yönetebilir ve sosyal akışımızı kullanabilirsiniz.
             </p>
             <ul className="intro-list">
-              <li>Admin onayıyla güvenli erişim</li>
-              <li>Telefon ve e-posta doğruluğu kontrol edilir</li>
-              <li>Onaylanınca bildirimle haberdar olursun</li>
+              <li>Stoklarınızı tek panelden takip edin, tüm araçlara hızla erişin.</li>
+              <li>İlanlarınızı sosyal akışta paylaşarak topluluğa ulaştırın.</li>
+              <li>Ekibinizi davet edip rol bazlı yetkilendirmelerle birlikte çalışın.</li>
             </ul>
             <div className="status-note">
-              <strong>Not:</strong> Başvurun gönderildiğinde hesabın pasif kaydedilir, admin aktif ettiğinde giriş yapabilirsin.
+              <strong>Not:</strong> Kaydolduktan sonra ilk 2 ay boyunca otoenvanter'i ücretsiz kullanabilirsiniz; süre bitmeden önce plan seçerek kesintisiz devam edebilirsiniz.
             </div>
           </div>
 
