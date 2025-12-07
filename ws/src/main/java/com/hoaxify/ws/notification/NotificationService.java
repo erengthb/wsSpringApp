@@ -1,4 +1,4 @@
-﻿package com.hoaxify.ws.notification;
+package com.hoaxify.ws.notification;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;

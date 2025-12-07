@@ -1,4 +1,4 @@
-﻿package com.hoaxify.ws.support;
+package com.hoaxify.ws.support;
 
 import java.util.List;
 

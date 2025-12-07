@@ -1,4 +1,4 @@
-﻿package com.hoaxify.ws.configuration;
+package com.hoaxify.ws.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.DisabledException;
